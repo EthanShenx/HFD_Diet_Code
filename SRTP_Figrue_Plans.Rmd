@@ -1,0 +1,58 @@
+---
+title: 'MG HFD Project: Figure Plans'
+author: "Yuchen SHEN, Yixiang REN, Yifei HUANG"
+date: "2025-06-21"
+output: pdf_document
+geometry: "top=2cm, bottom=2cm, left=2cm, right=2cm"
+---
+
+# Figure 1: snRNA-seq Profiling (Basis)
+1. **Experimental Workflow**  
+2. **UMAP Visualization**  
+   2.1 By Condition  
+   2.2 By Cell Type  
+   2.3 By Duo  
+3. **Cell Number Changes** (Bar Chart)  
+4. **Marker Gene Expression**  
+5. **Correlation Heatmap**  
+6. **Subtype-specific Marker Genes**  
+   6.1 Luminal Progenitors  
+   6.2 Adipocytes  
+   6.3 Stromal Cells  
+   6.4 Basal Cells  
+7. **Subtype-specific Transcription Factors**  
+   7.1 Luminal Progenitors  
+   7.2 Adipocytes  
+   7.3 Stromal Cells  
+   7.4 Basal Cells  
+8. **Functional Enrichment Analysis** of Each Cell Type  
+
+# Figure 2: Overview of Mammary Phenotypic Changes under HFD (What)
+1. **Wet-lab Images**: Ductal development under HFD  
+2. **Data Analysis**  
+  2.1 Adipocyte Over-differentiation  
+  2.2 Impaired Development of Luminal Progenitors  
+  2.3 Major Cell–Cell Communicators with Luminal Progenitors (CellChat)  
+  2.4 DEGs in Luminal Progenitors, Adipocytes, Stromal Cells, Basal Cells  
+  2.5 Over-Representation Analysis (ORA) across Diet Conditions  
+  2.6 Gene Set Enrichment Analysis (GSEA) across Diet Conditions  
+
+# Figure 3: Pseudotime Analysis of Development under ND vs. HFD (What + Why)
+- (To be filled by Yixiang & Yufei)
+
+# Figure 4: Cell–Cell Communication in Mammary Gland under ND (What)
+- (By Yuchen)
+
+# Figure 5: HFD-Induced Changes in Cell–Cell Communication (Why)
+- (By Yuchen)
+
+# Figure 6: Dysregulation of Regulons under ND vs. HFD (Why)
+- **pySCENIC Analysis** (by Yufei)  
+- **CellCall Analysis** (by Yuchen)
+
+# Figure 7: In Silico Validation via GeneFormer Simulation
+- (By Yixiang)
+
+# Figure 8: Graphical Summary
+- Mechanistic Summary of HFD Effects  
+- (Summarized by Yuchen & Yixiang)
