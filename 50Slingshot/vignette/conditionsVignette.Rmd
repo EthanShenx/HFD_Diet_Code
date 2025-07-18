@@ -1,0 +1,319 @@
+---
+title: "Differential Topology: Comparing Conditions along a Trajectory"
+author: "Kelly Street and Koen Van den Berge"
+date: "`r Sys.Date()`"
+output: 
+  BiocStyle::html_document:
+    toc: true
+vignette: >
+  %\VignetteEncoding{UTF-8}
+---
+
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Differential Topology: Comparing Conditions along a Trajectory}
+-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(SingleCellExperiment, quietly = TRUE)
+library(slingshot, quietly = TRUE)
+library(RColorBrewer)
+graphics:::par(pch = 16, las = 1)
+set.seed(1)
+```
+
+# Deprecation Notice
+
+This vignette represents some of our very early thinking on these topics, which
+has since developed significantly. For more up-to-date recommendations, we
+strongly encourage you to check out our workflow
+[here](https://kstreet13.github.io/bioc2020trajectories/articles/workshopTrajectories.html),
+or either of our presentations from [BioC
+2020](https://www.youtube.com/watch?v=Fbd08bIv4yk) and
+[EuroBioc2020](https://www.youtube.com/watch?v=4NwIbsJ9lMI). We also recommend
+checking out our upcoming package, `condiments`, which implements these concepts
+and more!
+
+# Problem Statement
+
+This vignette is designed to help you think about the problem of trajectory inference in the presence of two or more conditions. These conditions may be thought of as an organism-level status with potential effects on the lineage topology, ie. "case vs. control" or "mutant vs. wild-type." While some such conditions may induce global changes in cell composition or cell state, we will assume that at least some cell types along the trajectory of interest remain comparable between conditions.
+
+# Methods
+
+While it may seem reasonable to perform trajectory inference separately on cells from our different conditions, this is problematic for two reasons: 1) inferred trajectories will be less stable, as they would use only a subset of the available data, and 2) there would be no straightforward method for combining these results (eg. how would we map a branching trajectory onto a non-branching trajectory?).
+
+Therefore, we propose the following workflow: first, use all available cells to construct the most stable trajectory possible. Second, use this common trajectory framework to compare distributions of cells from different conditions. We will demonstrate this process on an example dataset.
+
+```{r dataSetup}
+data('slingshotExample')
+rd <- slingshotExample$rd
+cl <- slingshotExample$cl
+condition <- factor(rep(c('A','B'), length.out = nrow(rd)))
+condition[110:140] <- 'A'
+ls()
+```
+```{r, echo=FALSE}
+plot(rd, asp = 1, pch = 16, col = brewer.pal(3,'Set1')[condition], las=1)
+legend('topleft','(x,y)',legend = c('A','B'), title = 'Condition', pch=16, col = brewer.pal(3,'Set1')[1:2])
+```
+
+This dataset consists of a branching trajectory with two conditions (`A` and `B`). Under condition `A`, we find cells from all possible states along the trajectory, but under condition `B`, one of the branches is blocked and only one terminal state can be reached.
+
+## Trajectory Inference
+
+We will start by performing trajectory inference on the full dataset. In principle, any method could be used here, but we will use `slingshot` (cf. [PopGenGoogling](https://twitter.com/popgengoogling/status/1065022894659592192)).
+
+```{r}
+pto <- slingshot(rd, cl)
+```
+
+```{r, echo=FALSE}
+plot(rd, asp = 1, pch = 16, col = brewer.pal(3,'Set1')[condition], las=1)
+lines(SlingshotDataSet(pto), lwd=3)
+legend('topleft','(x,y)',legend = c('A','B'), title = 'Condition', pch=16, col = brewer.pal(3,'Set1')[1:2])
+```
+
+Each cell has now been assigned to one or two lineages (with an associated weight indicating the certainty of each assignment) and pseudotime values have been calculated.
+
+```{r, fig.height=4, fig.width=8, echo = FALSE}
+n <- nrow(rd); L <- ncol(slingPseudotime(pto))
+noise <- runif(n, -.1,.1)
+plot(as.numeric(slingPseudotime(pto)), rep(1:L, each=n)+noise,pch=16, col = brewer.pal(9,'Set1')[condition], axes=FALSE, xlab='Pseudotime', ylab='Lineage', las=1)
+axis(1); axis(2, at=1:L, las=1)
+```
+
+## Approach 1: Distributional Differences
+
+```{r, echo=FALSE}
+# tA1 <- slingPseudotime(pto, na=FALSE)[condition=='A',1]
+# wA1 <- slingCurveWeights(pto)[condition=='A',1]; wA1 <- wA1/sum(wA1)
+# dA1 <- density(tA1, weights = wA1)
+# tB1 <- slingPseudotime(pto, na=FALSE)[condition=='B',1]
+# wB1 <- slingCurveWeights(pto)[condition=='B',1]; wB1 <- wB1/sum(wB1)
+# dB1 <- density(tB1, weights = wB1)
+# tA2 <- slingPseudotime(pto, na=FALSE)[condition=='A',2]
+# wA2 <- slingCurveWeights(pto)[condition=='A',2]; wA2 <- wA2/sum(wA2)
+# dA2 <- density(tA2, weights = wA2)
+# tB2 <- slingPseudotime(pto, na=FALSE)[condition=='B',2]
+# wB2 <- slingCurveWeights(pto)[condition=='B',2]; wB2 <- wB2/sum(wB2)
+# dB2 <- density(tB2, weights = wB2)
+# 
+# plot(range(slingPseudotime(pto),na.rm=TRUE), c(1,2+7*max(c(dA2$y,dB2$y))), col='white', xlab='Pseudotime', ylab='Lineage', axes = FALSE, las=1)
+# axis(1); axis(2, at=1:2)
+# polygon(c(min(dA1$x),dA1$x,max(dA1$x)), 1+7*c(0,dA1$y,0), col=rgb(1,0,0,.5))
+# polygon(c(min(dB1$x),dB1$x,max(dB1$x)), 1+7*c(0,dB1$y,0), col=rgb(0,0,1,.5))
+# polygon(c(min(dA2$x),dA2$x,max(dA2$x)), 2+7*c(0,dA2$y,0), col=rgb(1,0,0,.5))
+# polygon(c(min(dB2$x),dB2$x,max(dB2$x)), 2+7*c(0,dB2$y,0), col=rgb(0,0,1,.5))
+
+layout(matrix(1:2,nrow=1))
+boxplot(slingPseudotime(pto)[,1] ~ condition, col = brewer.pal(3,'Set1')[1:2], main = 'Lineage 1', xlab='Condition', ylab='Pseudotime', las=1, pch = 16)
+boxplot(slingPseudotime(pto)[,2] ~ condition, col = brewer.pal(3,'Set1')[1:2], main = 'Lineage 2', xlab='Condition', ylab='Pseudotime', las=1, pch = 16)
+layout(1)
+```
+
+
+Now that we have the trajectory, we are interested in testing for differences between the conditions. Any difference in the distributions of cells along a lineage may be meaningful, as it may indicate an overabundance of a particular cell type(s) in one condition. Thus, for this paradigm, we ultimately recommend a Kolmogorov-Smirnov test for detecting differences in the distributions of cells along a lineage. However, we will begin with an illustrative example of testing for a location shift.
+
+### Permutation Test
+
+A T-test would work for this, but we'll use a slightly more robust permutation test. Specifically, we will look for a difference in the weighted means of the pseudotime values between the two conditions.
+
+```{r, eval=FALSE}
+# Permutation test
+t1 <- slingPseudotime(pto, na=FALSE)[,1]
+w1 <- slingCurveWeights(pto)[,1]
+d1 <- weighted.mean(t1[condition=='A'], w1[condition=='A']) - 
+    weighted.mean(t1[condition=='B'], w1[condition=='B'])
+dist1 <- replicate(1e4, {
+    condition.i <- sample(condition)
+    weighted.mean(t1[condition.i=='A'], w1[condition.i=='A']) - 
+        weighted.mean(t1[condition.i=='B'], w1[condition.i=='B'])
+})
+```
+```{r, echo=FALSE, fig.height=4, fig.width=9}
+t1 <- slingPseudotime(pto, na=FALSE)[,1]
+w1 <- slingCurveWeights(pto)[,1]
+d1 <- weighted.mean(t1[condition=='A'], w1[condition=='A']) - 
+    weighted.mean(t1[condition=='B'], w1[condition=='B'])
+dist1 <- replicate(1e4, {
+    condition.i <- sample(condition)
+    weighted.mean(t1[condition.i=='A'], w1[condition.i=='A']) - 
+        weighted.mean(t1[condition.i=='B'], w1[condition.i=='B'])
+})
+t2 <- slingPseudotime(pto, na=FALSE)[,2]
+w2 <- slingCurveWeights(pto)[,2]
+d2 <- weighted.mean(t2[condition=='A'], w2[condition=='A']) - 
+    weighted.mean(t2[condition=='B'], w2[condition=='B'])
+dist2 <- replicate(1e4, {
+    condition.i <- sample(condition)
+    weighted.mean(t2[condition.i=='A'], w2[condition.i=='A']) - 
+        weighted.mean(t2[condition.i=='B'], w2[condition.i=='B'])
+})
+
+layout(matrix(1:2,nrow = 1))
+hist(dist1, breaks=50, col='grey50', xlim = range(c(d1,dist1)), probability = TRUE, xlab = 'Difference of Weighted Means', main = 'Lineage 1 Permutation Test', las=1)
+abline(v=d1, col=2, lwd=2)
+legend('topright','(x,y)',legend = c('Null Distn.','Observed'), fill=c('grey50',NA), border=c(1,NA), lty=c(NA,1), lwd=c(NA,2), col=c(NA,2), merge = TRUE, seg.len = .6)
+
+hist(dist2, breaks=50, col='grey50', xlim = range(c(d2,dist2)), probability = TRUE, xlab = 'Difference of Weighted Means', main = 'Lineage 2 Permutation Test', las=1)
+abline(v=d2, col=2, lwd=2)
+legend('topright','(x,y)',legend = c('Null Distn.','Observed'), fill=c('grey50',NA), border=c(1,NA), lty=c(NA,1), lwd=c(NA,2), col=c(NA,2), merge = TRUE, seg.len = .6)
+layout(1)
+```
+```{r}
+paste0('Lineage 1 p-value: ', mean(abs(dist1) > abs(d1)))
+paste0('Lineage 2 p-value: ', mean(abs(dist2) > abs(d2)))
+```
+
+As we would expect, we see a significant difference in the second lineage (where condition `B` is impeded), but not in the first. However, because the two conditions have different distributions along the second lineage, the exchangeability assumption is violated and the resulting p-value is not valid.
+
+### Kolmogorov-Smirnov Test
+
+Another, more general approach we could take to test for a difference in distributions would be the Kolmogorov-Smirnov test (or a similar permutation test using that test's statistic). This test would, in theory, allow us to pick up subtler differences between the conditions, such as an overabundance of a cell type in one condition.
+
+```{r}
+# Kolmogorov-Smirnov test
+ks.test(slingPseudotime(pto)[condition=='A',1], slingPseudotime(pto)[condition=='B',1])
+ks.test(slingPseudotime(pto)[condition=='A',2], slingPseudotime(pto)[condition=='B',2])
+```
+
+Again, we see a significant difference in the second lineage, but not in the first. Note that unlike the difference of weighted means we used above, this test largely ignores the weights which assign cells to lineages, using any cell with a lineage weight greater than 0 (those with weights of zero are assigned pseudotime values of `NA`). Theoretically, one could use weights with the Kolmogorov-Smirnov test, as the test statistic is based on the maximum difference between cumulative distribution functions, but we were unable to find an implementation of this in base `R` or the `stats` package. For more stringent cutoffs, the user could specify a minimum lineage weight, say of 0.5. Due to this test's ability to detect a wide variety of differences, we would recommend it over the previous procedure for general purpose use.
+
+
+## Approach 2: Condition Imbalance
+
+Below, the problem is somewhat rephrased as compared to the approaches used above. Whereas the permutation and KS tests were testing within-lineage differences in **pseudotime values** between conditions, the approaches suggested below rather test for within-lineage **condition imbalance** along the progression of pseudotime.
+
+The advantages of this approach would be:
+
+* more straightforward comparison between lineages.
+* identification of pseudotime regions where the distribution of conditions is skewed.
+* automatic adjustment for baseline condition probabilities as determined by the inception of the trajectory (for example, if one condition naturally has 80% of cells and the other has 20%, which could then evolve to a different proportion as pseudotime progresses). Note that the approaches above could also handle this, but they do not directly estimate a change in contribution for the conditions (e.g. you won’t be able to say that you went from 75% condition A to 50% condition A, only that something’s happened).
+
+Its disadvantages, however, are:
+
+* requiring explicit distributional assumptions.
+* possibly more difficult to extend to assessing shifts in other moments than the mean (e.g. variance).
+
+
+### Logistic Regression
+
+As a first approach, one might check whether the probability of having a cell from a particular condition changes across pseudotime in any lineage. For two conditions, this may proceed using binomial logistic regression, which might be extended to multinomial logistic regression for multiple conditions. To loosen the restrictive binomial assumption, we allow for a more flexible variance structure by using a quasibinomial model.
+
+```{r}
+pt <- slingPseudotime(pto, na=FALSE)
+cw <- slingCurveWeights(pto)
+assignment <- apply(cw, 1, which.max)
+ptAs <- c() #assigned pseudotime
+for(ii in 1:nrow(pt)) ptAs[ii] <- pt[ii,assignment[ii]] 
+```
+```{r,echo=FALSE,fig.height=3.5}
+layout(matrix(1:2,nrow=1))
+noise <- runif(n, -.05,.05)
+plot(ptAs[assignment == 1], (as.numeric(condition)+noise)[assignment == 1], 
+     col = brewer.pal(9,'Set1')[condition[assignment == 1]],
+     xlab="Pseudotime", ylab="Condition", main="Lineage 1", pch=16, axes = FALSE)
+axis(1); axis(2, at=seq_along(levels(condition)), labels = levels(condition), las = 1)
+
+plot(ptAs[assignment == 2], (as.numeric(condition)+noise)[assignment == 2], 
+     col = brewer.pal(9,'Set1')[condition[assignment == 2]],
+     xlab="Pseudotime", ylab="Condition", main="Lineage 2", pch=16, axes = FALSE)
+axis(1); axis(2, at=seq_along(levels(condition)), labels = levels(condition), las = 1)
+layout(1)
+```
+
+
+```{r}
+# model for lineage 1: not significant
+cond1 <- factor(condition[assignment == 1])
+t1 <- ptAs[assignment == 1]
+m1 <- glm(cond1 ~ t1, family = quasibinomial(link = "logit"))
+summary(m1)
+```
+
+```{r}
+# model for lineage 2: significant
+cond2 <- factor(condition[assignment == 2])
+t2 <- ptAs[assignment == 2]
+m2 <- glm(cond2 ~ t2, family = quasibinomial(link = "logit"))
+summary(m2)
+```
+
+
+### Additive Logistic Regression
+
+Advantages:
+
+* By extending the linearity assumption, this approach can detect more subtle patterns, e.g. intermediate regions of a lineage that lack cells from a particular condition. This would be reflected by a bimodal distribution of pseudotimes for that condition.
+* Also easily extends to multiple conditions using multinomial additive models.
+
+```{r}
+### note that logistic regression is monotone hence only allows for increasing or decreasing proportion of cells for a particular condition.
+### hence, for complex trajectories, you could consider smoothing the pseudotime, i.e.
+require(mgcv, quietly = TRUE)
+m1s <- mgcv::gam(cond1 ~ s(t1), family="quasibinomial")
+summary(m1s)
+```
+
+```{r}
+m2s <- mgcv::gam(cond2 ~ s(t2), family="quasibinomial")
+summary(m2s)
+```
+
+```{r,echo=FALSE}
+layout(matrix(1:2,nrow=1))
+plot(m1s, shade = TRUE, main = "Lineage 1", 
+     xlab="Pseudotime", ylab="Logit Prob(B)", scheme=0)
+plot(m2s, shade = TRUE, main = "Lineage 2",
+     xlab="Pseudotime", ylab="Logit Prob(B)")
+layout(1)
+```
+
+
+### `tradeSeq`-like
+
+[With apologies](https://en.wiktionary.org/wiki/if_all_you_have_is_a_hammer,_everything_looks_like_a_nail), suppose that the probability of a particular condition decreases in both lineages, but moreso in one than the other. This can be obscured with the above approaches, especially if the lineages have different lengths. In that case, it would be informative to compare the lineages directly. We can accomplish this goal with an additive model.
+
+The code below fits an additive model with smoothing terms for the pseudotimes along each lineage. The smoothers may be directly compared since we require the same penalization and basis functions (by setting `id = 1`). Based on the fitted model, inference would be exactly like we do in `tradeSeq`.
+
+```{r}
+t1 <- pt[,1]
+t2 <- pt[,2]
+l1 <- as.numeric(assignment == 1)
+l2 <- as.numeric(assignment == 2)
+m <- gam(condition ~ s(t1, by=l1, id=1) + s(t2, by=l2, id=1),
+         family = quasibinomial(link = "logit"))
+summary(m)
+### and then we're back to tradeSeq-like inference ...
+```
+```{r, echo=FALSE}
+layout(matrix(1:2,nrow=1))
+plot(m, select=1, shade=TRUE, main='Lineage 1',
+     xlab="Pseudotime", ylab="Logit Prob(B)")
+plot(m, select=2, shade=TRUE, main='Lineage 2',
+     xlab="Pseudotime", ylab="Logit Prob(B)")
+layout(1)
+```
+
+
+## Other Approaches
+
+The frameworks suggested here are only a few of the many possible approaches to a highly complex problem. 
+
+We can envision another potential approach, similar to the `Condition Imbalance` framework, but requiring fewer parametric assumptions, inspired by the batch effect metric of [B&uuml;ttner, et al. (2019)](https://www.nature.com/articles/s41592-018-0254-1) (see Figure 1). Essentially, we may be able to march along the trajectory and check for condition imbalance in a series of local neighborhoods, defined by the k nearest neighbors of particular cells.
+
+
+# Parting Words
+
+For both of the above procedures, it is important to note that we are making multiple comparisons (in this case, 2). The p-values we obtain from these tests should be corrected for multiple testing, especially for trajectories with a large number of lineages.
+
+That said, trajectory inference is often one of the last computational methods in a very long analysis pipeline (generally including gene-level quantification, gene filtering / feature selection, and dimensionality reduction). Hence, we strongly discourage the reader from putting too much faith in any p-value that comes out of this analysis. Such values may be useful suggestions, indicating particular features or cells for follow-up study, but should not be treated as meaningful statistical quantities.
+
+Finally, we would like to emphasize that these procedures are merely suggestions which have not (yet) been subjected to extensive testing and revision. If you have any ideas, questions, or results that you are willing to share, we would love to hear them! Feel free to email Kelly Street or open an issue on either the [`slingshot` repo](https://github.com/kstreet13/slingshot) or [`tradeSeq` repo](https://github.com/statOmics/tradeSeq) on GitHub.
+
+# Session Info
+
+```{r session}
+sessionInfo()
+```

@@ -1,0 +1,24 @@
+dataSetup_sim	
+data_sling	slingshotExample
+genefilt	
+norm	
+pca	sce
+umap	sce
+add_RDs	rd1	rd2
+clustering_mclust	rd1
+clustering	rd1
+sling_sce	
+plot_curve_1	sce
+plot_curve_2	sce
+tradeseq	
+heatmaps	sce
+heatmapsREAL	sce
+sling_lines_unsup	cl	rd
+lines_sup_end	cl	rd
+curves	cl	lin1	rd
+sling_approxpoints	sce
+sling_omega	cl	rd
+sling_multtraj	cl2	pto2	rd2
+sling_predict	sce
+plot_sling_predict	colors	newPCA	newPTO	sce
+session	

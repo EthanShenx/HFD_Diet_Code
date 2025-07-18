@@ -1,0 +1,24 @@
+dataSetup_sim	counts	means	sce
+data_sling	cl	rd	slingshotExample
+genefilt	geneFilter	sce
+norm	FQnorm	sce
+pca	pca	rd1
+umap	rd2
+add_RDs	sce
+clustering_mclust	cl1	sce
+clustering	cl2	sce
+sling_sce	sce
+plot_curve_1	colors	plotcol
+plot_curve_2	
+tradeseq	
+heatmaps	
+heatmapsREAL	heatclus	heatdata	pst.ord	topgenes
+sling_lines_unsup	lin1
+lines_sup_end	lin2
+curves	crv1
+sling_approxpoints	colors	plotcol	sce5
+sling_omega	cl2	pto2	rd2
+sling_multtraj	
+sling_predict	newPCA	newPTO	pto
+plot_sling_predict	newplotcol
+session	
