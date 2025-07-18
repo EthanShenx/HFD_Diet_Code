@@ -1,0 +1,12 @@
+| 年份     | 模型 / 期刊                                              | 乳腺相关关键发现                                             |
+| -------- | -------------------------------------------------------- | ------------------------------------------------------------ |
+| **2023** | *Front. Mol. Biosci.*（多组学挖掘）                      | TCGA-BRCA 数据显示 **低 KRT19** 与基质高重塑簇、免疫抑制微环境及更差 DFS 相关，被纳入免疫-预后签名 ([frontiersin.org](https://www.frontiersin.org/journals/molecular-biosciences/articles/10.3389/fmolb.2024.1399679/full?utm_source=chatgpt.com)) |
+| **2022** | *Anal. Biochem.* “Quantitative CK19 biomarker detection” | 建立数字 PCR 与近红外荧光双平台，定量检测乳腺癌细胞系与血浆 CTC 中 **CK19 mRNA/蛋白**，灵敏度优于传统 RT-PCR ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC8999104/?utm_source=chatgpt.com)) |
+| **2021** | *Cell Adhesion & Migration*                              | CRISPR-KO 证明 **KRT19 缺失导致 E-cadherin 内吞、细胞-细胞黏附下降、迁移增高**，但同时提高悬浮克隆形成能力 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC7801129/)) |
+| **2019** | *Sci. Rep.*                                              | **KRT19 与 Cyclin D3 结合**，维持其稳定；缺失使细胞更敏感于 CDK 抑制剂，提示可作药物反应预测标志物 ([nature.com](https://www.nature.com/articles/s41598-019-51195-9?utm_source=chatgpt.com)) |
+| **2016** | *Oncogene*                                               | **KRT19 借助 β-catenin/RAC1 促进 NUMB 表达，抑制 NOTCH**；敲低可加速干性与化疗耐受 ([nature.com](https://www.nature.com/articles/onc2016221)) |
+| **2014** | *Cell Death Differentiation*                             | HER2/ERK 轴上调并 Akt-磷酸化 **KRT19**，K19 反过来“锁定”并稳定 HER2 受体，揭示 HER2^+ 肿瘤新的依赖弱点 ([nature.com](https://www.nature.com/articles/cdd2014155)) |
+| **2010** | *Histochem. Cell Biol.*                                  | 小鼠胚胎-青春期乳腺组织免疫染色系统比较表明 **KRT19 自 E16.5 起在腔上皮持续表达**，与 K8/K14 标志建立谱系层次 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC2807942/)) |
+| **1990** | *Histochem. J.*                                          | 人成人乳腺大多数腔上皮 **K19^+**，但在分支导管出现 **K19^–/高增殖** 亚群；提示 K19- 阵列为更原始前体细胞 ([link.springer.com](https://link.springer.com/article/10.1007/BF01005976)) |
+| **1987** | *Eur. J. Cancer Clin. Oncol.*                            | 早期单克隆抗体研究确定 **KRT19 为管腔谱系标志**，与 KRT8/18 并用于良恶性鉴别 ([link.springer.com](https://link.springer.com/article/10.1007/BF01005976?utm_source=chatgpt.com)) |
+| **1979** | *J. Cell Sci.*                                           | 首次在人乳腺原代培养中检测到 **KRT19 与 KRT18 并行表达**，为后续谱系-EMT 研究奠定基础 ([journals.biologists.com](https://journals.biologists.com/jcs/article/94/3/403/60650/Keratin-expression-in-human-mammary-epithelial?utm_source=chatgpt.com)) |

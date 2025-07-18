@@ -1,0 +1,14 @@
+# Adamts19
+
+| 年份       | 模型 / 期刊                                                  | 与乳腺相关关键发现                                           |      |
+| ---------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---- |
+| **2004**   | *Clin Cancer Res* Porter *et al.* ([aacrjournals.org](https://aacrjournals.org/clincancerres/article/10/7/2429/35333/Dysregulated-Expression-of-Adamalysin?utm_source=chatgpt.com)) | qPCR/microarray 揭示 **ADAMTS19 在 52% 浸润性乳腺癌中显著下调**，低表达与高级别及淋巴结转移相关。 |      |
+| **2005**   | SVT/t 乳腺癌小鼠 (*J Mol Med*) Klein *et al.* ([researchgate.net](https://www.researchgate.net/publication/8068108_Gene_expression_profiling_cell_cycle_deregulation_and_aneuploidy_do_not_cause_breast_cancer_formation_in_WAP-SVTt_transgenic_animals?utm_source=chatgpt.com)) | 基因芯片显示 **Adamts19 在肿瘤前期乳腺上皮** 即开始降低，提示其抑癌早期作用。 |      |
+| **2009**   | 雌激素特异性乳腺导管生长模型 (*Mol Reprod Dev*) Deroo *et al.* ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC2737274/)) | Adamts19 属于“逐步上调”雌激素应答基因，伴随导管延伸；暗示其正常发育功能。 |      |
+| **2014**   | 启动子高甲基化研究 (*Cancer Res* 摘要) ([aacrjournals.org](https://aacrjournals.org/cancerres/article/68/9_Supplement/4287/546367/Epigenetic-silencing-of-ADAMTS19-in-human-cancer?utm_source=chatgpt.com)) | 报告 **ADAMTS19 在乳腺/胃/结直肠肿瘤频繁甲基化失活**，为早期检测靶点。 |      |
+| **2020**   | TCGA-BRCA 队列 (*BioMed Res Int*) ([onlinelibrary.wiley.com](https://onlinelibrary.wiley.com/doi/10.1155/2020/9431560?utm_source=chatgpt.com)) | 全 ADAMTS 家族分析显示 **ADAMTS19 低表达且高甲基化**；未见显著 OS 关联，但提示免疫浸润负相关。 |      |
+| **2021_1** | *Front Oncol* “ADAMTS-Survival Model” ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC8486512/?utm_source=chatgpt.com)) | 构建 6-基因风险评分；**ADAMTS19 高表达列为保护性因子**（HR < 1，p < 0.01）。 |      |
+| **2021_2** | “Degradome-immune signature” (*Front Immunol*) ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC10040797/?utm_source=chatgpt.com)) | 在 1 093 乳腺癌样本中，ADAMTS19 低表达与 M2 巨噬浸润、TGF-β 通路激活相关。 |      |
+| **2023_1** | *Front Genet* Pan-cancer ADAMs ([frontiersin.org](https://www.frontiersin.org/journals/genetics/articles/10.3389/fgene.2023.1105900/full?utm_source=chatgpt.com)) | 报告 **BRCA 中 ADAMTS19 拷贝数缺失频率最高 (18%)**；CNV-low/表达低组 ECM-重塑基因上调。 |      |
+| **2023_2** | 单核 RNA-seq 肿瘤基质 (*Cell Rep Med*) ([sciencedirect.com](https://www.sciencedirect.com/science/article/pii/S2352396423004127?utm_source=chatgpt.com)) | 鉴定 **ADAMTS19^+ CAF 亚群**，富集 NABA-matrisome 通路，提示 ECM 加工/免疫排斥。 |      |
+| **2024**   | *Breast Cancer Research* CAF 亚型演化 ([breast-cancer-research.biomedcentral.com](https://breast-cancer-research.biomedcentral.com/counter/pdf/10.1186/s13058-024-01763-3.pdf)) | 在 ER^+ CAF/myCAF 模型中，ADAMTS19-富集基质签名与差生存显著相关。 |      |

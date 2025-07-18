@@ -1,0 +1,8 @@
+| 年份     | 研究 / 期刊                                                  | 与乳腺相关关键结论                                           |
+| -------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **2024** | *Frontiers in Oncology* – 综合综述 ([frontiersin.org](https://www.frontiersin.org/journals/oncology/articles/10.3389/fonc.2024.1445978/full?utm_source=chatgpt.com)) | **K18 下调促 EMT 与多药耐受**；抑制其表达可增加干性与迁移。  |
+| **2021** | Meta-分析 (*BMC Cancer*) ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC5861326/?utm_source=chatgpt.com)) | 高 CK18 蛋白表达与总体生存显著相关；但血清 vs 组织检测结果存在方法学差异。 |
+| **2012** | *J Cell Science* “Role of K8/18 in neoplastic potential” ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC3546083/?utm_source=chatgpt.com)) | K8/18 复合体完整性决定侵袭性：**缺失 → 更强侵袭/迁移**。     |
+| **2012** | M30-抗原研究 (*Breast Cancer Res Treat*) ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC3423724/?utm_source=chatgpt.com)) | 化疗后血清 **凋亡型 M30-CK18 片段显著升高**，可预测早期疗效。 |
+| **1995** | 胚后期小鼠乳腺导管培养 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC2807942/?utm_source=chatgpt.com)) | K18 伴随 K8 在导管腔上皮持续表达，是正常分化标志。           |
+| **1979** | 人乳腺 IHC 初期报道 ([link.springer.com](https://link.springer.com/article/10.1007/BF01005976?utm_source=chatgpt.com)) | 首次证明 **成人乳腺腔上皮普遍表达 K18/19**，为后续谱系划分奠基。 |

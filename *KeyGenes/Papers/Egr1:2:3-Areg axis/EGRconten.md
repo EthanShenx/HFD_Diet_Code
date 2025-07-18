@@ -1,0 +1,12 @@
+| 年份       | 研究 / 期刊                                                  | 关键结论                                                     |
+| ---------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **2025**   | *Nat Cancer* 单细胞免疫亚型 ([nature.com](https://www.nature.com/articles/s41698-024-00746-z?utm_source=chatgpt.com)) | **EGR1^hi / AREG^hi** 乳腺亚群与免疫抑制型 TAM 富集相关，影响 ER^+ 生存。 |
+| **2024**   | *Trends Endocrinol Metab* 综述 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC7169993/?utm_source=chatgpt.com)) | **EGR-AREG-EGFR** 通过 GPER/ERK 支路介导抗雌激素耐药，成为新兴靶点。 |
+| **2021_1** | 系统综述 (*Cancers*) ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC8560464/?utm_source=chatgpt.com)) | **EGR1 双刃剑**：在乳腺癌多呈抑癌，低表达 ↔ 低 OS；上调阻断细胞周期。 |
+| **2020**   | *OncoTargets Ther* EGR1 过表达实验 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC6965751/?utm_source=chatgpt.com)) | EGR1 上调 → G0/G1 阻滞，抑制体外增殖。                       |
+| **2021_2** | *Cell Rep* – **EGR2** 激活 p16/p53 促衰老通路 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC7963333/?utm_source=chatgpt.com)) | 提示 EGR2 可能抑制乳腺肿瘤发生。                             |
+| **2007_1** | *Mol Cell Biol* **EGR2/CITED1–14-3-3σ 环路** ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC2169423/?utm_source=chatgpt.com)) | 在 ERBB2^+ 乳腺癌中，EGR2 上调 **14-3-3σ** 触发抑癌反馈。    |
+| **2004**   | *J Mol Endocrinol* **EGR3 为雌激素即时靶基因** ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/15171706/?utm_source=chatgpt.com)) | 17β-雌二醇 30 min 内诱导 EGR3；拮抗剂 ICI 182,780 阻断该反应。 |
+| **2007_2** | *PNAS* **Amphiregulin 为 ERα 关键旁分泌效应物** ([pnas.org](https://www.pnas.org/doi/10.1073/pnas.0611647104?utm_source=chatgpt.com)) | ERα 基因剔除小鼠输注 AREG 可救回复乳腺导管生长。             |
+| **2005**   | *Development* **Adam17-AREG-EGFR 三元轴** ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/16079154/?utm_source=chatgpt.com)) | Adam17^-/- 胰腺复制 Egfr^-/- 表型，证实必须剪切 AREG 方可驱动导管形态发生。 |
+| **2010**   | *Cancer Res* **EGFRvIII→AREG→Tamoxifen resistance** ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC2855543/?utm_source=chatgpt.com)) | EGFRvIII 借助 AREG 激活 EGFR 回路，诱发雌激素非依赖性生长 & 耐 TAM。 |
