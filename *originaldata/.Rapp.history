@@ -1,0 +1,5 @@
+load("/Users/coellearth/Desktop/MG_HFD/7.1data/HFD_corrected.rds")
+load("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/alldiet.RDS")
+load("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/HFD_final.rds")
+load("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/alldiet.RDS")
+load("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND.rds")
