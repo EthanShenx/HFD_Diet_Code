@@ -2,9 +2,11 @@ setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPube
 
 library(Seurat)
 library(dplyr)
-library(ggplot2)
-library(clusterProfiler)
 library(org.Mm.eg.db)
+library(enrichplot)
+library(ggplot2)
+library(ReactomePA)
+library(clusterProfiler)
 library(tibble)
 
 # ===== Read in and process data str =====
@@ -69,12 +71,16 @@ LumProg_Meant_Down_but_Up <- results$LumProg$down_up
 HormSens_Meant_Up_but_Down <- results$HormSens$up_down
 HormSens_Meant_Down_but_Up <- results$HormSens$down_up
 
-# ===== Visualization =====
+# ===== Visualization 1: upset plot =====
 
-upset(
+library(UpSetR)
+
+UpSetR::upset(
   fromList(gene_lists),
   nsets   = 6,
-  nintersects = NA,      # 显示所有交集
-  order.by    = "freq",  # 按出现频率排序
-  mb.ratio    = c(0.6, 0.4)
+  nintersects = NA,
+  order.by    = "freq",
+  mb.ratio    = c(0.6, 0.4),
+  shade.color = "#ecf0f1"
 )
+
