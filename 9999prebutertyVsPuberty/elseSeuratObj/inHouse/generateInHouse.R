@@ -6,5 +6,5 @@ in_house <- subset(ND,
                    subset = cell_type 
                    %in% 
                    celltypes_to_keep)
-saveRDS(in_house, file = '/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/elseSeuratObj/inHouse/in_house.rds')
+saveRDS(in_house, file = '/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/elseSeuratObj/inHouse/in_house_pub.rds')
 rm(ND)
