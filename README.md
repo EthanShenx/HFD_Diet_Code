@@ -1,5 +1,7 @@
 ## How to ignore the files > 5M
 
+For MG-HFD project authors: Before running `git add .`, please make sure you have ran the following:
+
 ### Step 1: Create a Script to Ignore Large Files
 
 Create a script file (e.g., ignore_large_files.sh):
