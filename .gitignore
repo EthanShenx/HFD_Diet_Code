@@ -1,6 +1,4 @@
 .DS_Store
-.Rapp.history
-.Rhistory
 .git/objects/08/4c7d4f5a59d7781e2a68a0d188a7be2d50aaa3
 .git/objects/0d/98d4df2bb1ec991a6f88995ba8b3830c31caa8
 .git/objects/0f/5839347ab0456cf8e002f709e0de220e576e27
@@ -65,6 +63,9 @@
 .git/objects/fd/0b0e5d469a4a0e3485a990417b7f26dd63f077
 .git/objects/pack/pack-0ef2013604968ae0226b0cf82614e1f5672263d1.pack
 .git/objects/pack/tmp_pack_oBTNrP
+.Rapp.history
+.Rhistory
+.Rproj.user
 *.csv
 *.feather
 *.h5
@@ -93,6 +94,7 @@
 *KeyGenes/Papers/Plod2/2021.pdf
 *originaldata/9999Stages/allStages.rds
 *originaldata/Harmony/harmony_all.rds
+*originaldata/Harmony/harmony_epi.rds
 *originaldata/Harmony/harmony_HFD.rds
 *originaldata/Harmony/harmony_ND.rds
 *Seurat2Anndata/All.h5ad
@@ -100,10 +102,12 @@
 0Subdivision/.RDataTmp
 0Subdivision/Cell Immune Cell Subdivision.pdf
 0Subdivision/ND_with_subclusters.rds
+2DEG/DEG_results/All_CellTypes_Combined_DEGs_all.csv
 2DEG/DEG_results/All_CellTypes_Combined_DEGs.csv
 4CellCellCommunication/02CellChat/CellChatObjects/cellchat_HFD
 4CellCellCommunication/02CellChat/CellChatObjects/cellchat_merged.rds
 4CellCellCommunication/02CellChat/CellChatObjects/cellchat_ND
+4CellCellCommunication/02CellChat/Comparison_analysis_of_multiple_datasets.html
 4CellCellCommunication/02CellChat/OfficialCellChat-vignette.html
 4CellCellCommunication/02NATMI/Diff_HFD_vs_ND/Delta_edges_lrc2p/All_edges_mean.csv
 4CellCellCommunication/02NATMI/Diff_HFD_vs_ND/Delta_edges_lrc2p/DOWN-regulated_mean.csv
@@ -114,6 +118,9 @@
 4CellCellCommunication/02NATMI/NATMI/homology/homologene.data
 4CellCellCommunication/02NATMI/ND_expressionMatrix.csv
 4CellCellCommunication/02NATMI/ND_expressionMatrix/Edges_lrc2p.csv
+9999prebutertyVsPuberty/DEG_results/allStages_CellTypes_Combined_DEGs_all.csv
+9999prebutertyVsPuberty/DEG_results/allStages_refinedCellTypes_Combined_DEGs_all.csv
+9999prebutertyVsPuberty/elseSeuratObj/Fluidigm/GSM2512829_GSM2513049_pub.rds
 9999prebutertyVsPuberty/elseSeuratObj/GSM2510820_GSM2510963_pre.rds
 9999prebutertyVsPuberty/elseSeuratObj/GSM2510964-GSM2511099_pub.rds
 9999prebutertyVsPuberty/elseSeuratObj/GSM2759554_pub.rds
@@ -121,5 +128,6 @@
 9999prebutertyVsPuberty/elseSeuratObj/GSM4994963_pre.rds
 9999prebutertyVsPuberty/elseSeuratObj/GSM4994964_pub.rds
 9999prebutertyVsPuberty/elseSeuratObj/GSM4994965_pub.rds
+9999prebutertyVsPuberty/elseSeuratObj/inHouse/in_house.rds
 NATMI/.git/objects/pack/pack-90ddb7e64e39eb314f6258fa621b203496171444.pack
 NATMI/homology/homologene.data
