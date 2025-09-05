@@ -7,6 +7,7 @@ library(patchwork)
 library(ggplot2)
 library(DoubletFinder)
 library(purrr)
+library(future)
 set.seed(42)
 
 data_dir  <- "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/elseSeuratObj"
@@ -50,13 +51,16 @@ combined <- CellCycleScoring(
   g2m.features = g2m.genes,
   set.ident    = FALSE
 )
-head(combined@meta.data[, c("G2M.Score", "Phase")])
 
+plan("multicore", workers = 8)
 combined <- ScaleData(
   combined,
-  vars.to.regress = c("percent.mt", "nCount_RNA", "nFeature_RNA", "G2M.Score"), 
-  # key: "nCount_RNA", "nFeature_RNA"
-  features = rownames(combined)
+  vars.to.regress = c("percent.mt", 
+                      "nCount_RNA", 
+                      "nFeature_RNA", 
+                      "G2M.Score",
+                      "S.Score"), 
+  features = VariableFeatures(combined)
 )
 
 combined <- RunPCA(combined, features = VariableFeatures(combined), verbose = FALSE)
@@ -88,28 +92,43 @@ combined <- RunUMAP(
 combined <- FindNeighbors(combined, reduction = "harmony", dims = pcs_use)
 combined <- FindClusters(combined, resolution = 0.02)
 
+DimPlot(combined, reduction="umap", group.by="Phase")
 DimPlot(combined, reduction = "umap", pt.size = 0.5)
 DimPlot(combined, reduction = "umap", pt.size = 0.5, group.by = "orig.ident")
 DimPlot(combined, reduction = "umap", pt.size = 0.5, group.by = "batch", alpha = 0.3)
 
-# For anyone who wonders why only choose "G2M.Score" to regress out but not "S.Score":
+# examine marker gene expression
+FeaturePlot(combined, c("Kit", # LumProg
+                        "Cd14", # LumProg
+                        "Krt8", # LumProg, HormSens
+                        "Krt18", # LumProg, HormSens
+                        "Esr1", # HormSens
+                        "Pgr", # HormSens
+                        "Foxa1", # HormSens 
+                        "Areg", # HormSens
+                        "Krt5", # Basal
+                        "Krt14", # Basal
+                        "Myh11" # Basal
+                        ), order=TRUE, ncol=3)
+
+# For anyone who wonders why choose "G2M.Score" and "S.Score" to regress out
 # FeaturePlot(combined, c("nFeature_RNA","nCount_RNA","percent.mt"), order=TRUE)
 # Reason for a sticky tail, run below:
 # s.genes <- Seurat::cc.genes$s.genes;
 # g2m.genes <- Seurat::cc.genes$g2m.genes
 # combined <- CellCycleScoring(combined, s.features=s.genes, g2m.features=g2m.genes, set.ident=FALSE)
 # DimPlot(combined, reduction="umap", group.by="Phase")
-# So add "G2M.Score" at line 55!
+# So add them at line 55!
 
 combined@meta.data$orig.ident <- as.factor(combined@meta.data$orig.ident)
 combined <- JoinLayers(combined, assay = "RNA")
 
 Idents(combined) <- "seurat_clusters"
-cells_to_keep <- WhichCells(combined, idents = c(0, 1, 2, 3))
-combined2 <- subset(combined, cells = cells_to_keep)
+cells_to_keep <- WhichCells(combined, idents = c(0, 1, 2))
+combined <- subset(combined, cells = cells_to_keep)
 
 all_markers <- FindAllMarkers(
-  combined2,
+  combined,
   assay          = "RNA",
   slot           = "data",
   only.pos       = TRUE,
@@ -118,43 +137,31 @@ all_markers <- FindAllMarkers(
   logfc.threshold= 0.25
 )
 
-## 取每簇 top10
 top10_markers <- all_markers %>%
   group_by(cluster) %>%
   slice_max(order_by = avg_log2FC, n = 10) %>%
   select(cluster, gene)
 print(top10_markers, n = 999)
 
-## ---- 粗/细胞型映射（用 dplyr::recode 替代 plyr::mapvalues） -----------------
-coarse_map  <- c("0" = "HormSens",
-                 "1" = "LumProg",
-                 "2" = "Basal",
-                 "3" = "LumProg")
+map <- c("0" = "HormSens",
+         "1" = "Basal",
+         "2" = "LumProg")
 
-refined_map <- c("0" = "HormSens",
-                 "1" = "ER-_LumProg",
-                 "2" = "Basal",
-                 "3" = "ER+_LumProg")
+Idents(combined) <- "seurat_clusters"
 
-Idents(combined2) <- "seurat_clusters"
+combined$cell_type <- plyr::revalue(as.character(Idents(combined)), map)
 
-combined2$cell_type <- recode(as.character(Idents(combined2)), !!!coarse_map)
-combined2$cell_type_refined <- recode(as.character(Idents(combined2)), !!!refined_map)
 
-combined2$celltype <- Idents(combined2)
+Idents(combined) <- "cell_type"
+cols_to_drop <- grep("^RNA_snn", colnames(combined@meta.data), value = TRUE)
+cols_to_drop <- c(cols_to_drop, "seurat_clusters", "celltype")
 
-## ---- 清理冗余 meta 列 -------------------------------------------------------
-## 原写法 combined2[[cols_to_drop]] <- NULL 只会在传入单个列名时生效；
-## 这里改成 data.frame 方式一次性删除多列。
-cols_to_drop <- grep("^RNA_snn", colnames(combined2@meta.data), value = TRUE)
 if (length(cols_to_drop) > 0) {
-  combined2@meta.data[, cols_to_drop] <- NULL
+  combined@meta.data[, cols_to_drop] <- NULL
 }
 
-## ---- 保存 -------------------------------------------------------------------
-allStages <- combined2
+allStages <- combined
 
-## ⛔️ 修正保存路径：原路径里含有星号 * 会导致写盘失败；另外确保目录存在
 save_dir <- "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/originaldata/9999Stages"
 if (!dir.exists(save_dir)) dir.create(save_dir, recursive = TRUE)
 saveRDS(allStages, file = file.path(save_dir, "allStages.rds"))
