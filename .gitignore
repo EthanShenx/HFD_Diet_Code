@@ -26,6 +26,7 @@
 .git/objects/5f/20d657807f243231dd0073db195d9a19e49b71
 .git/objects/5f/e43ae82e73164fe8f8e0f557a028d1e6d7b73c
 .git/objects/60/a40157e22e646664241128f076901a90894ff6
+.git/objects/63/d79c764afff6e401c839056fb0651e7aa9c18a
 .git/objects/6a/6e9d27157dc1b4b503882a10f4ed07f6d546e3
 .git/objects/7d/bf5e70361715a53f37c22dae76981189d553ec
 .git/objects/7e/6e6c3ead5720f7eb10d81c5d7bab6df3e29338
@@ -119,6 +120,8 @@
 4CellCellCommunication/02NATMI/ND_expressionMatrix.csv
 4CellCellCommunication/02NATMI/ND_expressionMatrix/Edges_lrc2p.csv
 9999prebutertyVsPuberty/DEG_results/allStages_CellTypes_Combined_DEGs_all.csv
+9999prebutertyVsPuberty/DEG_results/allStages_CellTypes_Combined_DEGs_pseudobulk.csv
+9999prebutertyVsPuberty/DEG_results/allStages_CellTypes_pseudoBulk/allStages_CellTypes_Combined_DEGs_pseudobulk.csv
 9999prebutertyVsPuberty/DEG_results/allStages_refinedCellTypes_Combined_DEGs_all.csv
 9999prebutertyVsPuberty/elseSeuratObj/10x/GSM2759554_pub.rds
 9999prebutertyVsPuberty/elseSeuratObj/10x/GSM2759555_pub.rds
@@ -137,6 +140,7 @@
 9999prebutertyVsPuberty/elseSeuratObj/in_house_pub.rds
 9999prebutertyVsPuberty/elseSeuratObj/inHouse/in_house_pub.rds
 9999prebutertyVsPuberty/elseSeuratObj/inHouse/in_house.rds
+9999prebutertyVsPuberty/formerVersion.zip
 9999prebutertyVsPuberty/formerVersion/DEG_results/allStages_CellTypes_Combined_DEGs.csv
 9999prebutertyVsPuberty/formerVersion/DEG_results/allStages_refinedCellTypes_Combined_DEGs.csv
 9999prebutertyVsPuberty/formerVersion/elseSeuratObj/GSM2510820_GSM2510963_pre.rds
