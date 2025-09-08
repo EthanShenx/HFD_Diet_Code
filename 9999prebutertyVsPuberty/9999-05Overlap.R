@@ -12,13 +12,13 @@ library(tibble)
 # ===== Read in and process data str =====
 cell_types <- c("Basal", "LumProg", "HormSens")
 
-setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/DEG_results")
-prepub_files <- list.files(pattern = "*_DEGs\\.csv$")
+setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/formerVersion/DEG_results")
+prepub_files <- list.files(pattern = "*_pseudobulk\\.csv$")
 prepub_deg <- lapply(prepub_files, function(f) {
   df <- read.csv(f, row.names = 1, check.names = FALSE)
   df
 })
-names(prepub_deg) <- gsub("^prepub_|_DEGs\\.csv$", "", prepub_files)
+names(prepub_deg) <- gsub("_DEGs_pseudobulk\\.csv$", "", prepub_files)
 
 setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/2DEG/epi_DEG_results")
 hfd_files <- list.files(pattern = "*_DEGs\\.csv$")
@@ -39,10 +39,10 @@ process_deg <- function(deg_list, suffix) {
     df$gene <- rownames(df)
     list(
       up = df %>%
-        filter(avg_log2FC > 1) %>%
+        filter(avg_log2FC > 1.5) %>%
         rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene")),
       down = df %>%
-        filter(avg_log2FC < -1) %>%
+        filter(avg_log2FC < 1.5) %>%
         rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene"))
     )
   })
@@ -73,14 +73,22 @@ HormSens_Meant_Down_but_Up <- results$HormSens$down_up
 
 # ===== Visualization 1: upset plot =====
 
-library(UpSetR)
+gene_lists <- list(
+  Basal_Up_but_Down     = Basal_Meant_Up_but_Down$gene,
+  Basal_Down_but_Up     = Basal_Meant_Down_but_Up$gene,
+  LumProg_Up_but_Down   = LumProg_Meant_Up_but_Down$gene,
+  LumProg_Down_but_Up   = LumProg_Meant_Down_but_Up$gene,
+  HormSens_Up_but_Down  = HormSens_Meant_Up_but_Down$gene,
+  HormSens_Down_but_Up  = HormSens_Meant_Down_but_Up$gene
+)
 
 UpSetR::upset(
   fromList(gene_lists),
   nsets   = 6,
-  nintersects = NA,
+  nintersects = 15,
   order.by    = "freq",
   mb.ratio    = c(0.6, 0.4),
-  shade.color = "#ecf0f1"
+  point.size = 1.2,
+  shade.color = "#ecf"
 )
 

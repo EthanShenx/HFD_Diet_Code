@@ -13,12 +13,12 @@ library(tibble)
 cell_types <- c("Basal", "LumProg", "HormSens")
 
 setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/formerVersion/DEG_results")
-prepub_files <- list.files(pattern = "*_DEGs\\.csv$")
+prepub_files <- list.files(pattern = "*.csv$")
 prepub_deg <- lapply(prepub_files, function(f) {
   df <- read.csv(f, row.names = 1, check.names = FALSE)
   df
 })
-names(prepub_deg) <- gsub("^prepub_|_DEGs\\.csv$", "", prepub_files)
+names(prepub_deg) <- gsub("^prepub_|_DEGs_pseudobulk\\.csv$", "", prepub_files)
 
 setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/2DEG/epi_DEG_results")
 hfd_files <- list.files(pattern = "*_DEGs\\.csv$")
@@ -37,14 +37,16 @@ process_deg <- function(deg_list, suffix) {
   lapply(deg_list, function(df) {
     df <- as.data.frame(df)
     df$gene <- rownames(df)
-    list(
-      up = df %>%
-        filter(avg_log2FC > 1) %>%
-        rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene")),
-      down = df %>%
-        filter(avg_log2FC < -1) %>%
-        rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene"))
-    )
+
+    up <- df %>%
+      dplyr::filter(.data[["avg_log2FC"]] > 1) %>%
+      rename_with(~ paste0(.x, "_", suffix), .cols = -any_of("gene"))
+
+    down <- df %>%
+      dplyr::filter(.data[["avg_log2FC"]] < -1) %>%
+      rename_with(~ paste0(.x, "_", suffix), .cols = -any_of("gene"))
+
+    list(up = up, down = down)
   })
 }
 
@@ -59,7 +61,7 @@ merge_opposites <- function(pub, diet) {
   }, pub, diet, SIMPLIFY = FALSE)
 }
 
-cell_types <- c("Basal", "LumProg", "HormSens")
+cell_types <- c("Basal_DEGs", "LumProg_DEGs", "HormSens_DEGs")
 pub_deg <- process_deg(prepub_deg[cell_types], "pub")
 diet_deg <- process_deg(hfd_deg[cell_types], "diet")
 results <- merge_opposites(pub_deg, diet_deg)
@@ -90,6 +92,7 @@ UpSetR::upset(
   nintersects = NA,
   order.by    = "freq",
   mb.ratio    = c(0.6, 0.4),
-  shade.color = "#ecf0f1"
+  shade.color = "#ecf",
+  cutoff = NULL
 )
 

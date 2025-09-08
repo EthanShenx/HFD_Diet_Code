@@ -5,7 +5,11 @@ library(purrr)
 library(tibble)
 load("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/formerVersion/9999-02-envVariables.RData")
 
-to_variable_info <- function(df, id_type = "symbol", order_col = "avg_log2FC") {
+deg_list$Basal$symbol <- rownames(deg_list$Basal)
+deg_list$HormSens$symbol <- rownames(deg_list$HormSens)
+deg_list$LumProg$symbol <- rownames(deg_list$LumProg)
+
+to_variable_info <- function(df, id_type = "symbol", order_col = "logFC") {
   if (!(id_type %in% names(df))) {
     df <- tibble::rownames_to_column(df, var = id_type)
   }
@@ -24,7 +28,7 @@ to_variable_info <- function(df, id_type = "symbol", order_col = "avg_log2FC") {
     organism     = "org.Mm.eg.db"
   )
 
-  keep_back <- c("variable_id", tolower(order_col), intersect(c("p_val_adj","regulation"), names(df)))
+  keep_back <- c("variable_id", tolower(order_col), intersect(c("FDR","regulation"), names(df)))
   vi <- vi %>% left_join(dplyr::select(df, any_of(keep_back)), by = "variable_id")
 
   vi
@@ -33,7 +37,7 @@ to_variable_info <- function(df, id_type = "symbol", order_col = "avg_log2FC") {
 variable_info_list <- imap(deg_list, 
                            ~to_variable_info(.x, 
                                              id_type = "symbol", 
-                                             order_col = "avg_log2fc"))
+                                             order_col = "logFC"))
 
 basal_down_info <- variable_info_list$Basal %>%
   filter(regulation == "Down")
@@ -56,7 +60,6 @@ lp_up_info <- variable_info_list$LumProg %>%
 basal_ora_down <- enrich_pathway(
   variable_info   = basal_down_info,
   query_type      = "gene",
-  go.ont          = "BP",
   database        = c("go", "kegg", "reactome"),
   go.orgdb        = org.Mm.eg.db,
   go.keytype      = "ENTREZID",
@@ -68,7 +71,6 @@ basal_ora_down <- enrich_pathway(
 hs_ora_down <- enrich_pathway(
   variable_info   = hs_down_info,
   query_type      = "gene",
-  go.ont          = "BP",
   database        = c("go", "kegg", "reactome"),
   go.orgdb        = org.Mm.eg.db,
   go.keytype      = "ENTREZID",
@@ -79,7 +81,6 @@ hs_ora_down <- enrich_pathway(
 lp_ora_down <- enrich_pathway(
   variable_info   = lp_down_info,
   query_type      = "gene",
-  go.ont          = "BP",
   database        = c("go", "kegg", "reactome"),
   go.orgdb        = org.Mm.eg.db,
   go.keytype      = "ENTREZID",
@@ -90,7 +91,6 @@ lp_ora_down <- enrich_pathway(
 basal_ora_up <- enrich_pathway(
   variable_info   = basal_up_info,
   query_type      = "gene",
-  go.ont          = "BP",
   database        = c("go", "kegg", "reactome"),
   go.orgdb        = org.Mm.eg.db,
   go.keytype      = "ENTREZID",
@@ -101,7 +101,6 @@ basal_ora_up <- enrich_pathway(
 hs_ora_up <- enrich_pathway(
   variable_info   = hs_up_info,
   query_type      = "gene",
-  go.ont          = "BP",
   database        = c("go", "kegg", "reactome"),
   go.orgdb        = org.Mm.eg.db,
   go.keytype      = "ENTREZID",
@@ -112,7 +111,6 @@ hs_ora_up <- enrich_pathway(
 lp_ora_up <- enrich_pathway(
   variable_info   = lp_up_info,
   query_type      = "gene",
-  go.ont          = "BP",
   database        = c("go", "kegg", "reactome"),
   go.orgdb        = org.Mm.eg.db,
   go.keytype      = "ENTREZID",
@@ -123,7 +121,6 @@ lp_ora_up <- enrich_pathway(
 
 basal_down_similarity_result <- 
   merge_pathways(
-    query_type == "gene",
     object = basal_ora_down,
     database = c("go", "kegg", "reactome"),
     p.adjust.cutoff.go = 0.05,
@@ -132,7 +129,7 @@ basal_down_similarity_result <-
     count.cutoff.go = 5,
     count.cutoff.kegg = 5,
     count.cutoff.reactome = 5,
-    measure.method.go = "Sim_XGraSM_2013",  # GO semantic similarity
+    measure.method.go = "Sim_XGraSM_2013",
     go.orgdb = "org.Mm.eg.db",               # Required for GO analysis
     measure.method.kegg = "jaccard",        # Gene overlap similarity
     measure.method.reactome = "jaccard"     # Gene overlap similarity
@@ -173,7 +170,7 @@ hs_down_similarity_result <-
 hs_up_similarity_result <-
   merge_pathways(
     object = hs_ora_up,
-    database = c("kegg", "reactome"),
+    database = c("go", "kegg", "reactome"),
     p.adjust.cutoff.go = 0.05,
     p.adjust.cutoff.kegg = 0.05,
     p.adjust.cutoff.reactome = 0.05,
@@ -189,7 +186,7 @@ hs_up_similarity_result <-
 lp_down_similarity_result <-
   merge_pathways(
     object = lp_ora_down,
-    database = c("kegg", "reactome"),
+    database = c("go", "kegg", "reactome"),
     p.adjust.cutoff.go = 0.05,
     p.adjust.cutoff.kegg = 0.05,
     p.adjust.cutoff.reactome = 0.05,
@@ -205,7 +202,7 @@ lp_down_similarity_result <-
 lp_up_similarity_result <-
   merge_pathways(
     object = lp_ora_up,
-    database = c("kegg", "reactome"),
+    database = c("go", "kegg", "reactome"),
     p.adjust.cutoff.go = 0.05,
     p.adjust.cutoff.kegg = 0.05,
     p.adjust.cutoff.reactome = 0.05,
@@ -221,14 +218,14 @@ lp_up_similarity_result <-
 basal_down_functional_modules <- 
   get_functional_modules(
     object = basal_down_similarity_result,
-    sim.cutoff = 0.3,
+    sim.cutoff = 0.5,
     cluster_method = "louvain"
   )
 
 basal_up_functional_modules <-
   get_functional_modules(
     object = basal_up_similarity_result,
-    sim.cutoff = 0.5,
+    sim.cutoff = 0.3,
     cluster_method = "louvain"
   )
 
@@ -263,7 +260,31 @@ lp_up_functional_modules <-
 plot_similarity_network(
   object = basal_down_functional_modules,
   level = "functional_module",
+  degree_cutoff = 3,
+  text = TRUE
+)
+
+plot_similarity_network(
+  object = basal_up_functional_modules,
+  level = "module",
+  database = "reactome",
   degree_cutoff = 1,
   text = TRUE
 )
+
+plot_similarity_network(
+  object = lp_up_functional_modules,
+  level = "functional_module",
+  database = "reactome",
+  degree_cutoff = 1,
+  text = TRUE
+)
+
+plot_similarity_network(
+  object = hs_up_functional_modules,
+  level = "functional_module",
+  degree_cutoff = 1,
+  text = TRUE
+)
+
 
