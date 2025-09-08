@@ -56,6 +56,7 @@ lp_up_info <- variable_info_list$LumProg %>%
 basal_ora_down <- enrich_pathway(
   variable_info   = basal_down_info,
   query_type      = "gene",
+  go.ont          = "BP",
   database        = c("go", "kegg", "reactome"),
   go.orgdb        = org.Mm.eg.db,
   go.keytype      = "ENTREZID",
@@ -63,9 +64,11 @@ basal_ora_down <- enrich_pathway(
   kegg.keytype    = "kegg",
   reactome.organism = "mouse"
 )
+
 hs_ora_down <- enrich_pathway(
   variable_info   = hs_down_info,
   query_type      = "gene",
+  go.ont          = "BP",
   database        = c("go", "kegg", "reactome"),
   go.orgdb        = org.Mm.eg.db,
   go.keytype      = "ENTREZID",
@@ -76,6 +79,7 @@ hs_ora_down <- enrich_pathway(
 lp_ora_down <- enrich_pathway(
   variable_info   = lp_down_info,
   query_type      = "gene",
+  go.ont          = "BP",
   database        = c("go", "kegg", "reactome"),
   go.orgdb        = org.Mm.eg.db,
   go.keytype      = "ENTREZID",
@@ -86,6 +90,7 @@ lp_ora_down <- enrich_pathway(
 basal_ora_up <- enrich_pathway(
   variable_info   = basal_up_info,
   query_type      = "gene",
+  go.ont          = "BP",
   database        = c("go", "kegg", "reactome"),
   go.orgdb        = org.Mm.eg.db,
   go.keytype      = "ENTREZID",
@@ -96,6 +101,7 @@ basal_ora_up <- enrich_pathway(
 hs_ora_up <- enrich_pathway(
   variable_info   = hs_up_info,
   query_type      = "gene",
+  go.ont          = "BP",
   database        = c("go", "kegg", "reactome"),
   go.orgdb        = org.Mm.eg.db,
   go.keytype      = "ENTREZID",
@@ -106,6 +112,7 @@ hs_ora_up <- enrich_pathway(
 lp_ora_up <- enrich_pathway(
   variable_info   = lp_up_info,
   query_type      = "gene",
+  go.ont          = "BP",
   database        = c("go", "kegg", "reactome"),
   go.orgdb        = org.Mm.eg.db,
   go.keytype      = "ENTREZID",
@@ -114,9 +121,9 @@ lp_ora_up <- enrich_pathway(
   reactome.organism = "mouse"
 )
 
-
 basal_down_similarity_result <- 
   merge_pathways(
+    query_type == "gene",
     object = basal_ora_down,
     database = c("go", "kegg", "reactome"),
     p.adjust.cutoff.go = 0.05,
@@ -166,7 +173,7 @@ hs_down_similarity_result <-
 hs_up_similarity_result <-
   merge_pathways(
     object = hs_ora_up,
-    database = c("go", "kegg", "reactome"),
+    database = c("kegg", "reactome"),
     p.adjust.cutoff.go = 0.05,
     p.adjust.cutoff.kegg = 0.05,
     p.adjust.cutoff.reactome = 0.05,
@@ -182,7 +189,7 @@ hs_up_similarity_result <-
 lp_down_similarity_result <-
   merge_pathways(
     object = lp_ora_down,
-    database = c("go", "kegg", "reactome"),
+    database = c("kegg", "reactome"),
     p.adjust.cutoff.go = 0.05,
     p.adjust.cutoff.kegg = 0.05,
     p.adjust.cutoff.reactome = 0.05,
@@ -198,7 +205,7 @@ lp_down_similarity_result <-
 lp_up_similarity_result <-
   merge_pathways(
     object = lp_ora_up,
-    database = c("go", "kegg", "reactome"),
+    database = c("kegg", "reactome"),
     p.adjust.cutoff.go = 0.05,
     p.adjust.cutoff.kegg = 0.05,
     p.adjust.cutoff.reactome = 0.05,
@@ -214,58 +221,30 @@ lp_up_similarity_result <-
 basal_down_functional_modules <- 
   get_functional_modules(
     object = basal_down_similarity_result,
-    sim.cutoff = 0.6,
+    sim.cutoff = 0.3,
     cluster_method = "louvain"
   )
-
-plot_similarity_network(
-  object = basal_down_functional_modules,
-  level = "functional_module",
-  degree_cutoff = 3,
-  text = TRUE
-)
 
 basal_up_functional_modules <-
   get_functional_modules(
     object = basal_up_similarity_result,
-    sim.cutoff = 0.4,
-    cluster_method = "louvain"
-  )
-
-plot_similarity_network(
-  object = basal_up_functional_modules,
-  level = "functional_module",
-  degree_cutoff = 3,
-  text = TRUE
-)
-
-hs_down_functional_modules <-
-  get_functional_modules(
-    object = hs_down_similarity_result,
     sim.cutoff = 0.5,
     cluster_method = "louvain"
   )
 
-plot_similarity_network(
-  object = hs_down_functional_modules,
-  level = "functional_module",
-  degree_cutoff = 3,
-  text = TRUE
-)
+hs_down_functional_modules <-
+  get_functional_modules(
+    object = hs_down_similarity_result,
+    sim.cutoff = 0.45,
+    cluster_method = "louvain"
+  )
 
 hs_up_functional_modules <-
   get_functional_modules(
     object = hs_up_similarity_result,
-    sim.cutoff = 0.4,
+    sim.cutoff = 0.5,
     cluster_method = "louvain"
   )
-
-plot_similarity_network(
-  object = hs_up_functional_modules,
-  level = "functional_module",
-  degree_cutoff = 3,
-  text = TRUE
-)
 
 lp_down_functional_modules <-
   get_functional_modules(
@@ -274,25 +253,17 @@ lp_down_functional_modules <-
     cluster_method = "louvain"
   )
 
-plot_similarity_network(
-  object = lp_down_functional_modules,
-  level = "functional_module",
-  degree_cutoff = 3,
-  text = TRUE
-)
-
 lp_up_functional_modules <-
   get_functional_modules(
     object = lp_up_similarity_result,
-    sim.cutoff = 0.3,
+    sim.cutoff = 0.5,
     cluster_method = "louvain"
   )
 
 plot_similarity_network(
-  object = lp_up_functional_modules,
+  object = basal_down_functional_modules,
   level = "functional_module",
-  degree_cutoff = 3,
+  degree_cutoff = 1,
   text = TRUE
 )
-
 

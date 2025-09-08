@@ -114,7 +114,7 @@ mm_gmt <- read.gmt("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/3Enrich
 for (cell in cell_types) {
   deg <- deg_list[[cell]]
   
-  gene_vector <- deg$avg_log2FC
+  gene_vector <- deg$logFC
   gene_vector <- gene_vector[is.finite(gene_vector)]
   gene_vector <- sort(gene_vector, decreasing = TRUE)
   names(gene_vector) <- rownames(deg)
