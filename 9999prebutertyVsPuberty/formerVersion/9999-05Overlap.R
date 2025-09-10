@@ -41,14 +41,29 @@ process_deg_pub <- function(deg_list, suffix) {
     df$gene <- rownames(df)
     list(
       up = df %>%
-        filter(regulation == "Up") %>%
+        filter(FDR < 0.05, avg_log2FC > 0.25) %>%
         rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene")),
       down = df %>%
-        filter(regulation == "Down") %>%
+        filter(FDR < 0.05, avg_log2FC < -0.25) %>%
         rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene"))
     )
   })
 }
+
+# process_deg_pub <- function(deg_list, suffix) {
+#   lapply(deg_list, function(df) {
+#     df <- as.data.frame(df)
+#     df$gene <- rownames(df)
+#     list(
+#       up = df %>%
+#         filter(regulation == "Up") %>%
+#         rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene")),
+#       down = df %>%
+#         filter(regulation == "Down") %>%
+#         rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene"))
+#     )
+#   })
+# }
 
 process_deg_diet <- function(deg_list, suffix) {
   lapply(deg_list, function(df) {
@@ -56,14 +71,29 @@ process_deg_diet <- function(deg_list, suffix) {
     df$gene <- rownames(df)
     list(
       up = df %>%
-        filter(regulation == "Up") %>%
+        filter(p_val_adj < 0.05, avg_log2FC > 0.25) %>%
         rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene")),
       down = df %>%
-        filter(regulation == "Down") %>%
+        filter(p_val_adj < 0.05, avg_log2FC < -0.25) %>%
         rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene"))
     )
   })
 }
+
+# process_deg_diet <- function(deg_list, suffix) {
+#   lapply(deg_list, function(df) {
+#     df <- as.data.frame(df)
+#     df$gene <- rownames(df)
+#     list(
+#       up = df %>%
+#         filter(regulation == "Up") %>%
+#         rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene")),
+#       down = df %>%
+#         filter(regulation == "Down") %>%
+#         rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene"))
+#     )
+#   })
+# }
 
 merge_opposites <- function(pub, diet) {
   mapply(function(p, d) {
@@ -111,9 +141,6 @@ UpSetR::upset(
   shade.color = "#ecf"
 )
 
-for (nm in names(gene_lists)) {
-  outfile <- file.path(outdir, paste0(nm, ".csv"))
-  write.csv(gene_lists[[nm]], outfile, row.names = FALSE)
-  message("Saved:", outfile)
-}
+
+
 
