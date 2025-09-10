@@ -16,6 +16,7 @@
 .git/objects/3e/e234660789129cba6e637f1861d84d9850254e
 .git/objects/3f/3c8e64954eda3b4e869d1a4f36f19ea4de8d5e
 .git/objects/40/6eebc391ae1bd2edd86223b26d9d8a0a3b0415
+.git/objects/41/756992e6194a8bf59a1ac2dc80f187c77e2eb8
 .git/objects/46/423da4439f3b9164af87cdbf6357bb9d01a2ee
 .git/objects/49/54ffc76b74b7bfe9d4657cf8dd7ae75dd3e161
 .git/objects/4b/b592a0153d58ea2e266c2bd3381065eed807eb
@@ -28,6 +29,7 @@
 .git/objects/60/a40157e22e646664241128f076901a90894ff6
 .git/objects/63/d79c764afff6e401c839056fb0651e7aa9c18a
 .git/objects/6a/6e9d27157dc1b4b503882a10f4ed07f6d546e3
+.git/objects/6d/ef9bce1c2063cd3b997e999d2084e87e736956
 .git/objects/7d/bf5e70361715a53f37c22dae76981189d553ec
 .git/objects/7e/6e6c3ead5720f7eb10d81c5d7bab6df3e29338
 .git/objects/86/8ca560c9453c46540d460d1f24c90d27497c5e
@@ -36,6 +38,7 @@
 .git/objects/8c/093a3602eaafe13fa3053cc654c7ef73d6329b
 .git/objects/8c/aff5e999673160e96f40494fa6760fc8bd14ae
 .git/objects/8e/2124a28364bc5ae5187e36b540a6114fec545d
+.git/objects/91/ca3af50a93125a570a5a2ce08774990f8bf020
 .git/objects/98/54ded516d251d2bf121dbca2c528a31c3e2508
 .git/objects/9a/ef412d37027d3fc1d92349f99323d8984bafb4
 .git/objects/9b/54b58132133da086c303a945dfdde7fe26e8d7
@@ -64,6 +67,7 @@
 .git/objects/fd/0b0e5d469a4a0e3485a990417b7f26dd63f077
 .git/objects/pack/pack-0ef2013604968ae0226b0cf82614e1f5672263d1.pack
 .git/objects/pack/pack-37fd5e90d17af9cf9be78a51e666d74e88d9cf20.pack
+.git/objects/pack/pack-89a93a5d570776180d4cc0a3594752a8b2269bf9.pack
 .git/objects/pack/tmp_pack_oBTNrP
 .Rapp.history
 .Rhistory
@@ -95,6 +99,7 @@
 *KeyGenes/Papers/Plod2/2019_1.pdf
 *KeyGenes/Papers/Plod2/2021.pdf
 *originaldata/9999Stages/allStages.rds
+*originaldata/9999Stages/allStages.rds.zip
 *originaldata/Harmony/harmony_all.rds
 *originaldata/Harmony/harmony_epi.rds
 *originaldata/Harmony/harmony_HFD.rds
@@ -144,6 +149,10 @@
 9999prebutertyVsPuberty/formerVersion.zip
 9999prebutertyVsPuberty/formerVersion/DEG_results/allStages_CellTypes_Combined_DEGs.csv
 9999prebutertyVsPuberty/formerVersion/DEG_results/allStages_refinedCellTypes_Combined_DEGs.csv
+9999prebutertyVsPuberty/formerVersion/DoRothEA_analysis_reference/cell_reports_fig4d.pdf
+9999prebutertyVsPuberty/formerVersion/DoRothEA_analysis_reference/nat_c_fig_4e.pdf
+9999prebutertyVsPuberty/formerVersion/DoRothEA_analysis_reference/nat_c_fig2d-f.pdf
+9999prebutertyVsPuberty/formerVersion/DoRothEA_analysis_reference/nat_c_fig2d.pdf
 9999prebutertyVsPuberty/formerVersion/elseSeuratObj/GSM2510820_GSM2510963_pre.rds
 9999prebutertyVsPuberty/formerVersion/elseSeuratObj/GSM2510964-GSM2511099_pub.rds
 9999prebutertyVsPuberty/formerVersion/elseSeuratObj/GSM2759554_pub.rds

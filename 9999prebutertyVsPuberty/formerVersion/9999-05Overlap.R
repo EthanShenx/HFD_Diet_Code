@@ -1,5 +1,7 @@
 setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/formerVersion")
 
+outdir <- "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/formerVersion/overlapEffectFiles"
+
 library(Seurat)
 library(dplyr)
 library(org.Mm.eg.db)
@@ -13,12 +15,12 @@ library(tibble)
 cell_types <- c("Basal", "LumProg", "HormSens")
 
 setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/formerVersion/DEG_results")
-prepub_files <- list.files(pattern = "*.csv$")
+prepub_files <- list.files(pattern = "*_pseudobulk\\.csv$")
 prepub_deg <- lapply(prepub_files, function(f) {
   df <- read.csv(f, row.names = 1, check.names = FALSE)
   df
 })
-names(prepub_deg) <- gsub("^prepub_|_DEGs_pseudobulk\\.csv$", "", prepub_files)
+names(prepub_deg) <- gsub("_DEGs_pseudobulk\\.csv$", "", prepub_files)
 
 setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/2DEG/epi_DEG_results")
 hfd_files <- list.files(pattern = "*_DEGs\\.csv$")
@@ -33,20 +35,33 @@ names(hfd_deg) <- gsub("^HFD_|_DEGs\\.csv$", "", hfd_files)
 # 1. Areg (prior knowledge)
 # 2. Different level of adjustment for false positive will cause # different level of false negative
 
-process_deg <- function(deg_list, suffix) {
+process_deg_pub <- function(deg_list, suffix) {
   lapply(deg_list, function(df) {
     df <- as.data.frame(df)
     df$gene <- rownames(df)
+    list(
+      up = df %>%
+        filter(regulation == "Up") %>%
+        rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene")),
+      down = df %>%
+        filter(regulation == "Down") %>%
+        rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene"))
+    )
+  })
+}
 
-    up <- df %>%
-      dplyr::filter(.data[["avg_log2FC"]] > 1) %>%
-      rename_with(~ paste0(.x, "_", suffix), .cols = -any_of("gene"))
-
-    down <- df %>%
-      dplyr::filter(.data[["avg_log2FC"]] < -1) %>%
-      rename_with(~ paste0(.x, "_", suffix), .cols = -any_of("gene"))
-
-    list(up = up, down = down)
+process_deg_diet <- function(deg_list, suffix) {
+  lapply(deg_list, function(df) {
+    df <- as.data.frame(df)
+    df$gene <- rownames(df)
+    list(
+      up = df %>%
+        filter(regulation == "Up") %>%
+        rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene")),
+      down = df %>%
+        filter(regulation == "Down") %>%
+        rename_with(~ paste0(.x, "_", suffix), .cols = !any_of("gene"))
+    )
   })
 }
 
@@ -61,9 +76,9 @@ merge_opposites <- function(pub, diet) {
   }, pub, diet, SIMPLIFY = FALSE)
 }
 
-cell_types <- c("Basal_DEGs", "LumProg_DEGs", "HormSens_DEGs")
-pub_deg <- process_deg(prepub_deg[cell_types], "pub")
-diet_deg <- process_deg(hfd_deg[cell_types], "diet")
+cell_types <- c("Basal", "LumProg", "HormSens")
+pub_deg <- process_deg_pub(prepub_deg[cell_types], "pub")
+diet_deg <- process_deg_diet(hfd_deg[cell_types], "diet")
 results <- merge_opposites(pub_deg, diet_deg)
 
 Basal_Meant_Up_but_Down <- results$Basal$up_down
@@ -78,21 +93,27 @@ HormSens_Meant_Down_but_Up <- results$HormSens$down_up
 library(UpSetR)
 
 gene_lists <- list(
-  Basal_UpDown   = Basal_Meant_Up_but_Down$gene,
-  Basal_DownUp   = Basal_Meant_Down_but_Up$gene,
-  LumProg_UpDown = LumProg_Meant_Up_but_Down$gene,
-  LumProg_DownUp = LumProg_Meant_Down_but_Up$gene,
-  HormSens_UpDown = HormSens_Meant_Up_but_Down$gene,
-  HormSens_DownUp = HormSens_Meant_Down_but_Up$gene
+  Basal_Up_but_Down     = Basal_Meant_Up_but_Down$gene,
+  Basal_Down_but_Up     = Basal_Meant_Down_but_Up$gene,
+  LumProg_Up_but_Down   = LumProg_Meant_Up_but_Down$gene,
+  LumProg_Down_but_Up   = LumProg_Meant_Down_but_Up$gene,
+  HormSens_Up_but_Down  = HormSens_Meant_Up_but_Down$gene,
+  HormSens_Down_but_Up  = HormSens_Meant_Down_but_Up$gene
 )
 
 UpSetR::upset(
   fromList(gene_lists),
   nsets   = 6,
-  nintersects = NA,
+  nintersects = 15,
   order.by    = "freq",
   mb.ratio    = c(0.6, 0.4),
-  shade.color = "#ecf",
-  cutoff = NULL
+  point.size = 1.2,
+  shade.color = "#ecf"
 )
+
+for (nm in names(gene_lists)) {
+  outfile <- file.path(outdir, paste0(nm, ".csv"))
+  write.csv(gene_lists[[nm]], outfile, row.names = FALSE)
+  message("Saved:", outfile)
+}
 
