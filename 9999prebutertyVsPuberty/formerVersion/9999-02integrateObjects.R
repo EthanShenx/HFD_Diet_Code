@@ -53,6 +53,8 @@ combined <- CellCycleScoring(
 )
 
 plan("multicore", workers = 8)
+
+# Not this
 combined <- ScaleData(
   combined,
   vars.to.regress = c("percent.mt", 
@@ -60,6 +62,18 @@ combined <- ScaleData(
                       "nFeature_RNA", 
                       "G2M.Score",
                       "S.Score"), 
+  features = VariableFeatures(combined)
+)
+
+# Run this
+combined <- ScaleData(
+  combined,
+  vars.to.regress = c("percent.mt", 
+                      "nCount_RNA", 
+                      "nFeature_RNA" #, 
+                      # "G2M.Score",
+                      # "S.Score"
+                      ), 
   features = VariableFeatures(combined)
 )
 
@@ -164,4 +178,4 @@ allStages <- combined
 
 save_dir <- "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/originaldata/9999Stages"
 if (!dir.exists(save_dir)) dir.create(save_dir, recursive = TRUE)
-saveRDS(allStages, file = file.path(save_dir, "allStages.rds"))
+# saveRDS(allStages, file = file.path(save_dir, "allStages.rds"))
