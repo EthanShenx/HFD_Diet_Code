@@ -1,10 +1,10 @@
 library(Seurat)
 library(Matrix)
 
-# 设置文件路径
+# Set data directory
 data_dir <- "D:/data/23BMI/ND_HFD_MG_snRNAseq/GSM4994965/"
 
-# 将文件组合成一个列表，Read10X 识别标准 10X 格式
+# Transfer to 10X format
 data <- Read10X(data.dir = data_dir, gene.column = 2)
 seurat_obj <- CreateSeuratObject(counts = data, project = "Pre-puberty", min.cells = 3, min.features = 200)
 seurat_obj[["percent.mt"]] <- PercentageFeatureSet(seurat_obj, pattern = "^mt-")
@@ -26,3 +26,4 @@ seurat_obj <- FindClusters(seurat_obj, resolution = 0.5)
 DimPlot(seurat_obj, reduction = "umap", label = TRUE)
 
 saveRDS(seurat_obj, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/GSM4994965/pre_puberty.rds")
+
