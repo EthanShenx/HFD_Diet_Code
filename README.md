@@ -1,3 +1,5 @@
+# Authors: If the script has annotation, please ensure it's IN FULL ENGLISH!!!
+
 ## How to ignore the files > 5M
 
 For MG-HFD project authors: Before running `git add .`, please make sure you have ran the following:
