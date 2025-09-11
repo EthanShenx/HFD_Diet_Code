@@ -100,6 +100,8 @@
 *KeyGenes/Papers/Plod2/2021.pdf
 *originaldata/9999Stages/allStages.rds
 *originaldata/9999Stages/allStages.rds.zip
+*originaldata/9999Stages/allStageswithcycle.rds
+*originaldata/9999Stages/allStageswithcycle.rds.zip
 *originaldata/Harmony/harmony_all.rds
 *originaldata/Harmony/harmony_epi.rds
 *originaldata/Harmony/harmony_HFD.rds
@@ -129,6 +131,7 @@
 9999prebutertyVsPuberty/DEG_results/allStages_CellTypes_Combined_DEGs_pseudobulk.csv
 9999prebutertyVsPuberty/DEG_results/allStages_CellTypes_pseudoBulk/allStages_CellTypes_Combined_DEGs_pseudobulk.csv
 9999prebutertyVsPuberty/DEG_results/allStages_refinedCellTypes_Combined_DEGs_all.csv
+9999prebutertyVsPuberty/elseSeuratObj.zip
 9999prebutertyVsPuberty/elseSeuratObj/10x/GSM2759554_pub.rds
 9999prebutertyVsPuberty/elseSeuratObj/10x/GSM2759555_pub.rds
 9999prebutertyVsPuberty/elseSeuratObj/10x/GSM4994963_pre.rds
@@ -160,6 +163,8 @@
 9999prebutertyVsPuberty/formerVersion/elseSeuratObj/GSM4994963_pre.rds
 9999prebutertyVsPuberty/formerVersion/elseSeuratObj/GSM4994964_pub.rds
 9999prebutertyVsPuberty/formerVersion/elseSeuratObj/GSM4994965_pub.rds
+9999prebutertyVsPuberty/formerVersion/trajectoryOutput/All_stages_trajectory.rds
+9999prebutertyVsPuberty/formerVersion/trajectoryOutput/cds_obj.rds
 NATMI/.git/objects/pack/pack-90ddb7e64e39eb314f6258fa621b203496171444.pack
 NATMI/homology/homologene.data
 originaldata/9999Stages/allStages.rds
