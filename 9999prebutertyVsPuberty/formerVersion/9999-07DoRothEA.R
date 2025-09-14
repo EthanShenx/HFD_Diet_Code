@@ -99,10 +99,24 @@ All_stage[["dorothea_mlm"]] <- CreateAssayObject(data = mlm_mat)
 
 # Split into time boxes according to pseudotime
 
-K <- 5
+All_stage <- FindClusters(All_stage, resolution = 0.2)
+
+DimPlot(All_stage, 
+        reduction = "umap", 
+        group.by = "seurat_clusters", 
+        label = TRUE, 
+        repel = TRUE)
+
+K <- 15
 All_stage$pt_bin <- ggplot2::cut_number(All_stage$monocle3_pseudotime, 
                                n = K, 
                                labels = paste0("B", 1:K))
+
+DimPlot(All_stage, 
+        reduction = "umap", 
+        group.by = "pt_bin", 
+        label = TRUE, 
+        repel = TRUE)
 
 DefaultAssay(All_stage) <- "dorothea_mlm"
 
@@ -144,3 +158,28 @@ top_tbl_B <- map2_df(DE_list_B, seq_along(DE_list_B), function(x, i){
     mutate(x$down, direction = "down")
   ) %>% mutate(step = i) %>% select(step, from, to, tf, avg_log2FC, p_val_adj, direction)
 })
+
+####################################
+####################################
+####################################
+
+pga <- monocle3::principal_graph_aux(cds_obj)
+closest_idx <- as.integer(pga$UMAP$pr_graph_cell_proj_closest_vertex[, 1])
+node_names  <- colnames(pga$UMAP$dp_mst)
+closest_node <- node_names[closest_idx]
+names(closest_node) <- rownames(pga$UMAP$pr_graph_cell_proj_closest_vertex)
+
+pt <- monocle3::pseudotime(cds_obj)
+All_stage$monocle3_pseudotime <- pt[Seurat::Cells(All_stage)]
+All_stage$node <- closest_node[Seurat::Cells(All_stage)]
+
+node_order <- as.data.frame(Seurat::FetchData(All_stage, vars = c("node","monocle3_pseudotime"))) %>%
+  group_by(node) %>%
+  summarise(med_pt = median(monocle3_pseudotime, na.rm = TRUE), .groups = "drop") %>%
+  arrange(med_pt) %>% pull(node)
+
+DimPlot(All_stage, 
+        reduction = "umap", 
+        group.by = "node", 
+        label = F, 
+        repel = F)

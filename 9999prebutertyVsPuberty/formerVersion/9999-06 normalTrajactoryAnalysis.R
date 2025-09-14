@@ -85,10 +85,8 @@ cds_obj <- order_cells(cds_obj, root_pr_nodes = rank_tbl$node[1])
 # == select node end=====
 # =======================
 
-cds_obj <- order_cells(cds_obj, root_pr_nodes = "Y_182") # an explicity statement of the above
-
-pt <- monocle3::pseudotime(cds_obj)
-All_stage$monocle3_pseudotime <- pt[Seurat::Cells(All_stage)]
+cds_obj <- order_cells(cds_obj, 
+                       root_pr_nodes = "Y_101") # an explicity statement of the above
 
 p2 <- plot_cells(cds_obj, 
                  color_cells_by = "pseudotime",
@@ -96,6 +94,16 @@ p2 <- plot_cells(cds_obj,
                  label_leaves = F,
                  label_branch_points = F)
 p2
+
+pt <- monocle3::pseudotime(cds_obj)
+All_stage$monocle3_pseudotime <- pt[Seurat::Cells(All_stage)]
+
+# p2 <- plot_cells(cds_obj, 
+#                  color_cells_by = "pseudotime",
+#                  label_groups_by_cluster = F, 
+#                  label_leaves = F,
+#                  label_branch_points = F)
+# p2
 
 plot_cells(
   cds_obj,
