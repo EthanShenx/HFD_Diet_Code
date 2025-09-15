@@ -7,7 +7,6 @@ library(ReactomePA)
 setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/3Enrichment")
 load("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/2DEG/02-01-envVariables.RData")
 
-
 ###### ORA ######
 
 ora_results_list <- list()
