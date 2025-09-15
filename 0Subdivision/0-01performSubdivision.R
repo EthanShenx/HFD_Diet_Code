@@ -97,7 +97,7 @@ DimPlot(Immune_All, reduction = "umap", label = TRUE, group.by = "orig.ident")
 # Adipo_All <- FindClusters(Adipo_All, resolution = 0.1)
 # Adipo_All <- RunUMAP(Adipo_All, dims = 1:20)
 # 
-# # Examine
+# Examine
 # DimPlot(Adipo_All, reduction = "umap", label = TRUE)
 # DimPlot(Adipo_All, reduction = "umap", label = TRUE, group.by = "orig.ident")
 # 
@@ -124,7 +124,7 @@ DimPlot(Immune_All, reduction = "umap", label = TRUE, group.by = "orig.ident")
 #            "IGFBP5+ PreA", # ASC
 #            "ImmuneLike adipo") # Immune verified
 #   )
-
+# 
 # markers_to_check <- list(
 #   ASC = c("Dpp4", "Cd55", "Thy1", "Cd19", "Sca1"),
 #   PreA  = c("Icam1", "Aoc3", "Pparg", "Fabp4", "Lpl"),
@@ -141,6 +141,8 @@ DimPlot(Immune_All, reduction = "umap", label = TRUE, group.by = "orig.ident")
 # =====  Put back in! =====
 # =========================
 
+targets <- c("Adipolike immune")
+
 Immune_All$subcluster <- as.character(Immune_All$subcluster)
 # Adipo_All$subcluster  <- as.character(Adipo_All$subcluster)
 
@@ -152,8 +154,18 @@ All$subcluster[Cells(Immune_All)] <- Immune_All$subcluster
 na_idx <- is.na(All$subcluster)
 All$subcluster[na_idx] <- as.character(All$cell_type[na_idx])
 
-Idents(All) <- "subcluster"
-table(All$cell_type, All$subcluster, useNA = "ifany")
-DimPlot(All, reduction = "umap", group.by = "subcluster", label = TRUE)
+All_no_adipolike <- subset(All, subset = !(subcluster %in% targets))
 
-saveRDS(All, "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub.rds")
+Idents(All_no_adipolike) <- "subcluster"
+table(All_no_adipolike$cell_type, All_no_adipolike$subcluster, useNA = "ifany")
+DimPlot(All_no_adipolike, reduction = "umap", group.by = "subcluster", label = TRUE)
+
+saveRDS(All_no_adipolike, "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub.rds")
+
+Idents(All_no_adipolike) <- "orig.ident"
+ND_no_adipolike <- subset(All_no_adipolike, idents = "ND")
+HFD_no_adipolike <- subset(All_no_adipolike, idents = "HFD")
+saveRDS(ND_no_adipolike, 
+        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_sub.rds")
+saveRDS(HFD_no_adipolike, 
+        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_sub.rds")

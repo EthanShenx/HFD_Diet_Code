@@ -7,7 +7,7 @@ library(Seurat)
 library(patchwork)
 library(ggplot2)
 
-All <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_all.rds")
+All <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub.rds")
 
 colnames(All@meta.data)[1] <- "exp.group"
 All$celltype_with_condition <- paste0(All$exp.group, All$cell_type)

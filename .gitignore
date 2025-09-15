@@ -105,7 +105,9 @@
 *originaldata/Harmony/harmony_All_sub.rds
 *originaldata/Harmony/harmony_all.rds
 *originaldata/Harmony/harmony_epi.rds
+*originaldata/Harmony/harmony_HFD_sub.rds
 *originaldata/Harmony/harmony_HFD.rds
+*originaldata/Harmony/harmony_ND_sub.rds
 *originaldata/Harmony/harmony_ND.rds
 *Seurat2Anndata/All.h5ad
 *Seurat2Anndata/All.h5Seurat
