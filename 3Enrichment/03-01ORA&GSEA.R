@@ -12,6 +12,8 @@ load("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/2DEG/02-01-envVariabl
 
 ora_results_list <- list()
 
+cell_types <- gsub("[/ ]", "_", cell_types)
+
 for (cell in cell_types) {
   deg <- deg_list[[cell]]
 

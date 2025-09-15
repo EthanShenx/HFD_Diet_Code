@@ -15,6 +15,9 @@ Idents(All) <- "celltype_with_condition"
 
 if (!dir.exists("DEG_results")) dir.create("DEG_results")
 
+base_dir <- "DEG_results"
+if (!dir.exists(base_dir)) dir.create(base_dir)
+
 cell_types <- unique(All@meta.data$cell_type)
 deg_list <- list()
 
@@ -31,9 +34,10 @@ for (cell in cell_types) {
   deg$regulation[deg$p_val_adj < 0.05 & deg$avg_log2FC > 1.5] <- "Up"
   deg$regulation[deg$p_val_adj < 0.05 & deg$avg_log2FC < -1.5] <- "Down"
   
-  write.csv(deg,
-            file      = paste0("DEG_results/", cell, "_DEGs.csv"),
-            row.names = TRUE)
+  safe_cell <- gsub("[/\\\\]", "_", cell)
+  out_file  <- file.path(base_dir, paste0(safe_cell, "_DEGs.csv"))
+
+  write.csv(deg, file = out_file, row.names = TRUE)
   
   deg_list[[cell]] <- deg
 }
