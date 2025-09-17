@@ -116,6 +116,11 @@
 0Subdivision/ND_with_subclusters.rds
 2DEG/DEG_results/All_CellTypes_Combined_DEGs_all.csv
 2DEG/DEG_results/All_CellTypes_Combined_DEGs.csv
+4CellCellCommunication/02CellChat-sub/.RData
+4CellCellCommunication/02CellChat-sub/CellChatObjects/cellchat_HFD-sub.rds
+4CellCellCommunication/02CellChat-sub/CellChatObjects/cellchat_ND-sub.rds
+4CellCellCommunication/02CellChat-sub/Comparison_analysis_of_multiple_datasets.html
+4CellCellCommunication/02CellChat-sub/OfficialCellChat-vignette.html
 4CellCellCommunication/02CellChat/CellChatObjects/cellchat_HFD
 4CellCellCommunication/02CellChat/CellChatObjects/cellchat_merged.rds
 4CellCellCommunication/02CellChat/CellChatObjects/cellchat_ND
