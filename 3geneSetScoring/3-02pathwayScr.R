@@ -210,13 +210,29 @@ print(hormsens_rankl$plot)
 # Notch
 target_celltype <- "Basal"
 gmt_file <- "HALLMARK_NOTCH_SIGNALING.v2025.1.Mm.gmt"
-hormsens_rankl <- score_and_compare(
+basal_notch <- score_and_compare(
   seu,
   cell_type        = target_celltype,
   gmt_file         = gmt_file,
   gene_set_name    = gene_set_name,
   condition_col    = condition_col,
   celltype_col     = celltype_col,
+  assay            = assay_to_use,
+  slot             = slot_to_use,
+  condition_levels = condition_levels,
+  condition_colors = condition_colors
+)
+print(basal_notch$plot)
+
+target_celltype <- "Immune"
+gmt_file <- "HALLMARK_NOTCH_SIGNALING.v2025.1.Mm.gmt"
+hormsens_rankl <- score_and_compare(
+  seu,
+  cell_type        = target_celltype,
+  gmt_file         = gmt_file,
+  gene_set_name    = gene_set_name,
+  condition_col    = condition_col,
+  celltype_col     = "cell_type",
   assay            = assay_to_use,
   slot             = slot_to_use,
   condition_levels = condition_levels,
