@@ -10,6 +10,8 @@ library(RColorBrewer)
 library(reshape2)
 library(circlize)
 library(clusterProfiler)
+library(ggplot2)
+library(dplyr)
 
 # Downstream analysis of tradeSeq results
 ND_sce <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/ND_epi_cds_fitGAM_sce.rds")
@@ -38,7 +40,6 @@ plotSmoothers(HFD_sce, counts = counts_mat_HFD, gene ="Wnt4")
 ## 1 Get ND HFD genes intersection
 ND_assoRes_noNA <- ND_assoRes[!is.na(ND_assoRes$pvalue), ]
 ND_sigGenes <- rownames(ND_assoRes_noNA[ND_assoRes_noNA$pvalue < 0.05, ])
-write.csv(sigGenes_intersect, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/sig_genes.csv" )
 HFD_assoRes_noNA <- HFD_assoRes[!is.na(HFD_assoRes$pvalue), ]
 HFD_sigGenes <- rownames(HFD_assoRes_noNA[HFD_assoRes_noNA$pvalue < 0.05, ])
 
@@ -144,9 +145,9 @@ ht_hfd
 ## 13  Draw expression line chart
 nd_time <- as.numeric(colnames(ND_scaled_ordered))
 hfd_time <- as.numeric(colnames(HFD_scaled_ordered))
-genes_of_interest <- c("Wnt4","Areg","Trp63","Foxa1") 
-col_nd  <- "green"
-col_hfd <- "green"
+genes_of_interest <- c("Wnt4","Areg","Gapdh","Esr1") 
+col_nd  <- "blue"
+col_hfd <- "blue"
 
 collect_df <- list()
 panel_info <- list()
@@ -187,7 +188,6 @@ for (i in seq_along(genes_of_interest)) {
     stringsAsFactors = FALSE
   )
 }
-
 plot_df <- bind_rows(collect_df)
 
 if (nrow(plot_df) == 0) {
