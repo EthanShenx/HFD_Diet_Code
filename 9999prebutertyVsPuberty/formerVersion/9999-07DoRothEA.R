@@ -5,27 +5,41 @@ library(dplyr)
 library(tidyr)
 library(purrr)
 library(pheatmap)
+library(igraph)
 
 # cds_obj <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/formerVersion/trajectoryOutput/cds_obj.rds")
 
 All_stage <- readRDS(file = "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/formerVersion/trajectoryOutput/All_stages_trajectory.rds")
 
+load("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/formerVersion/proteinNetwork/up_data.rda")
+load("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/formerVersion/proteinNetwork/df_up_common.rda")
+load("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/formerVersion/proteinNetwork/orthologs.rda")
+
 DefaultAssay(All_stage) <- "RNA"
 expr <- as.matrix(GetAssayData(All_stage, slot = "data"))
 
-## ===== construct DoRothEA network =====
+## ===== construct DoRothEA network (mouse) =====
 data(dorothea_mm)
+data(dorothea_hs)
+
 regulons_abc <- dorothea_mm %>%
-  filter(confidence %in% c("A","B","C")) %>%
-  transmute(tf = tf, 
-            target = target, 
-            mor = mor, 
-            confidence = confidence)
+  dplyr::filter(confidence %in% c("A","B","C")) %>%
+  dplyr::transmute(tf = tf, target = target, mor = mor, confidence = confidence)
+
+reg_hs <- dorothea_hs %>%
+  dplyr::filter(confidence %in% c("A","B","C","D","E")) %>%
+  dplyr::select(tf, target, mor, confidence)
+
+up_hs <- orthologs %>% dplyr::filter(mouse_symbol %in% up_mouse) %>% dplyr::pull(human_symbol) %>% unique()
+bg_hs <- orthologs %>% dplyr::filter(mouse_symbol %in% rownames(expr)) %>% dplyr::pull(human_symbol) %>% unique()
+
+reg_hs_pos <- reg_hs %>% dplyr::filter(mor > 0, target %in% bg_hs)
 
 common_genes <- intersect(rownames(expr), unique(regulons_abc$target))
 expr <- expr[common_genes, , drop = FALSE]
-regulons_abc <- regulons_abc %>% filter(target %in% common_genes)
+regulons_abc <- regulons_abc %>% dplyr::filter(target %in% common_genes)
 
+# --- collapse duplicate TFs with identical target(+mor) signatures, prefer high-confidence
 sig_tbl <- regulons_abc %>%
   arrange(tf, target) %>%
   group_by(tf) %>%
@@ -48,22 +62,22 @@ if (nrow(dup_groups) > 0) {
   regulons_abc <- regulons_abc %>% filter(!tf %in% drop_dup)
 }
 
+# --- drop highly collinear TFs (identical/near-identical signatures)
 cc <- decoupleR::check_corr(
   regulons_abc, 
   .source="tf", 
   .target="target", 
   .mor="mor"
 )
-
-bad <- cc %>% filter(abs(correlation) >= 0.9)
+bad <- cc %>% dplyr::filter(abs(correlation) >= 0.9)
 
 if (nrow(bad) > 0) {
   g <- graph_from_data_frame(bad %>% transmute(from=source, to=source.2), directed=FALSE)
   comps <- components(g)$membership
   groups <- split(names(comps), comps)
   conf_w <- c(A=3,B=2,C=1)
-  keep <- map_chr(groups, function(gs){
-    regulons_abc %>% filter(tf %in% gs) %>%
+  keep <- purrr::map_chr(groups, function(gs){
+    regulons_abc %>% dplyr::filter(tf %in% gs) %>%
       group_by(tf) %>%
       summarise(A_targets = sum(confidence=="A"),
                 total_targets = n(),
@@ -74,11 +88,56 @@ if (nrow(bad) > 0) {
   drop <- setdiff(unique(c(bad$source, bad$source.2)), keep)
   message("Dropping ", length(drop), " highly collinear TFs: ", paste(head(drop, 10), collapse=", "),
           ifelse(length(drop)>10, " ...", ""))
-  regulons_abc <- regulons_abc %>% filter(!tf %in% drop)
+  regulons_abc <- regulons_abc %>% dplyr::filter(!tf %in% drop)
 }
 
+up_mouse <- df_up_common %>%
+  dplyr::transmute(gene = as.character(gene)) %>%
+  dplyr::pull(gene) %>% unique()
 
-## ===== decoupleR::run_mlm to estimate TF activity =====
+bg_mouse <- rownames(expr)
+
+reg_pos <- regulons_abc %>%
+  dplyr::filter(mor > 0, target %in% bg_mouse)
+
+minSize <- 10L
+tf_sets <- reg_pos %>%
+  dplyr::group_by(tf) %>%
+  dplyr::summarise(targets = list(unique(target)),
+                   n_target = dplyr::n(), .groups = "drop") %>%
+  dplyr::filter(n_target >= minSize)
+
+up_in_bg <- intersect(up_mouse, bg_mouse)
+N <- length(bg_mouse); n <- length(up_in_bg)
+
+dorothea_up_common_TF_ora <- purrr::pmap_dfr(
+  list(tf_sets$tf, tf_sets$targets, tf_sets$n_target),
+  function(tf, targets, M){
+    k <- sum(up_in_bg %in% targets)
+    a <- k; b <- M - k
+    c <- n - k; d <- N - M - (n - k)
+    p <- stats::fisher.test(matrix(c(a,b,c,d), nrow = 2),
+                            alternative = "greater")$p.value
+    tibble(
+      tf = tf,
+      k = k, M = M, n = n, N = N,
+      overlap_ratio = ifelse(M > 0, k/M, NA_real_),
+      overlap_genes = paste(intersect(up_in_bg, targets), collapse = ";"),
+      pvalue = p
+    )
+  }
+) %>%
+  dplyr::mutate(padj = p.adjust(pvalue, method = "BH")) %>%
+  dplyr::arrange(padj, desc(k), desc(overlap_ratio))
+
+# 输出结果文件（可按需修改路径）
+# readr::write_csv(dorothea_up_common_TF_ora,
+#                  "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/formerVersion/proteinNetwork/dorothea_up_common_TF_ora.csv")
+# save(dorothea_up_common_TF_ora,
+#      file = "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9999prebutertyVsPuberty/formerVersion/proteinNetwork/dorothea_up_common_TF_ora.rda")
+
+## ===== decoupleR::run_mlm to estimate TF activity (per cell) =====
+
 mlm_res <- run_mlm(
   mat       = expr,
   network   = regulons_abc,
@@ -89,97 +148,10 @@ mlm_res <- run_mlm(
 )
 
 mlm_mat <- mlm_res %>%
-  select(source, condition, score) %>%
-  rename(tf = source, cell = condition, score = score) %>%
-  pivot_wider(names_from = cell, values_from = score) %>%
+  dplyr::select(source, condition, score) %>%
+  dplyr::rename(tf = source, cell = condition, score = score) %>%
+  tidyr::pivot_wider(names_from = cell, values_from = score) %>%
   tibble::column_to_rownames("tf") %>%
   as.matrix()
 
 All_stage[["dorothea_mlm"]] <- CreateAssayObject(data = mlm_mat)
-
-# Split into time boxes according to pseudotime
-
-All_stage <- FindClusters(All_stage, resolution = 0.2)
-
-DimPlot(All_stage, 
-        reduction = "umap", 
-        group.by = "seurat_clusters", 
-        label = TRUE, 
-        repel = TRUE)
-
-K <- 15
-All_stage$pt_bin <- ggplot2::cut_number(All_stage$monocle3_pseudotime, 
-                               n = K, 
-                               labels = paste0("B", 1:K))
-
-DimPlot(All_stage, 
-        reduction = "umap", 
-        group.by = "pt_bin", 
-        label = TRUE, 
-        repel = TRUE)
-
-DefaultAssay(All_stage) <- "dorothea_mlm"
-
-bins <- paste0("B", 1:K)
-transitions_B <- tibble(from = bins[-length(bins)], to = bins[-1])
-
-DE_list_B <- pmap(transitions_B, function(from, to){
-  
-  keep <- which(All_stage$pt_bin %in% c(from, to))
-  
-  sub  <- subset(All_stage, cells = colnames(All_stage)[keep])
-  
-  Idents(sub) <- 
-    factor(
-      ifelse(sub$pt_bin == to, "to", "from"), 
-      levels = c("from","to"))
-  
-  res <- FindMarkers(sub, 
-                     ident.1 = "to", 
-                     ident.2 = "from",
-                     logfc.threshold = 0, 
-                     min.pct = 0,
-                     test.use = "t")
-  
-  res$tf <- rownames(res)
-  
-  res$from <- from
-  res$to <- to
-  
-  res <- res[order(res$avg_log2FC, decreasing = TRUE), ]
-  up   <- head(res, 5)
-  down <- head(res[order(res$avg_log2FC, decreasing = FALSE), ], 5)
-  list(all = res, up = up, down = down)
-})
-
-top_tbl_B <- map2_df(DE_list_B, seq_along(DE_list_B), function(x, i){
-  bind_rows(
-    mutate(x$up,   direction = "up"),
-    mutate(x$down, direction = "down")
-  ) %>% mutate(step = i) %>% select(step, from, to, tf, avg_log2FC, p_val_adj, direction)
-})
-
-####################################
-####################################
-####################################
-
-pga <- monocle3::principal_graph_aux(cds_obj)
-closest_idx <- as.integer(pga$UMAP$pr_graph_cell_proj_closest_vertex[, 1])
-node_names  <- colnames(pga$UMAP$dp_mst)
-closest_node <- node_names[closest_idx]
-names(closest_node) <- rownames(pga$UMAP$pr_graph_cell_proj_closest_vertex)
-
-pt <- monocle3::pseudotime(cds_obj)
-All_stage$monocle3_pseudotime <- pt[Seurat::Cells(All_stage)]
-All_stage$node <- closest_node[Seurat::Cells(All_stage)]
-
-node_order <- as.data.frame(Seurat::FetchData(All_stage, vars = c("node","monocle3_pseudotime"))) %>%
-  group_by(node) %>%
-  summarise(med_pt = median(monocle3_pseudotime, na.rm = TRUE), .groups = "drop") %>%
-  arrange(med_pt) %>% pull(node)
-
-DimPlot(All_stage, 
-        reduction = "umap", 
-        group.by = "node", 
-        label = F, 
-        repel = F)

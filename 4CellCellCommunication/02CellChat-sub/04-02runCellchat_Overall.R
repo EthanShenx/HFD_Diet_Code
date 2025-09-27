@@ -363,6 +363,14 @@ ggplot(combined, aes(
   )
 
 # === Comparison analysis of multiple datasets using CellChat 2025-9-17 ===
+cellchat_ND <- netAnalysis_computeCentrality(
+  object = cellchat_ND,
+  thresh = 0.05
+)
+cellchat_HFD <- netAnalysis_computeCentrality(
+  object = cellchat_HFD,
+  thresh = 0.05
+)
 object.list <- list(ND = cellchat_ND, HFD = cellchat_HFD)
 cellchat <- mergeCellChat(object.list, add.names = names(object.list))
 par(mfrow = c(1,2), xpd=TRUE)
@@ -373,3 +381,108 @@ netVisual_diffInteraction(cellchat,
                           weight.scale = T, 
                           measure = "weight",
                           vertex.size.max = 6)
+
+gg1 <- netVisual_heatmap(cellchat)
+gg2 <- netVisual_heatmap(cellchat, measure = "weight")
+gg1 + gg2
+
+gg1 <- netAnalysis_signalingChanges_scatter(cellchat, 
+                                            idents.use = "Tissue-resident mac")
+gg2 <- netAnalysis_signalingChanges_scatter(cellchat, 
+                                            idents.use = "HormSens")
+gg3 <- netAnalysis_signalingChanges_scatter(cellchat, 
+                                            idents.use = "Basal")
+gg4 <- netAnalysis_signalingChanges_scatter(cellchat, 
+                                            idents.use = "Stroma")
+
+library(patchwork)
+(gg1 | gg2)/(gg3 | gg4)
+
+gg1 <- rankNet(cellchat, 
+               mode = "comparison", 
+               measure = "weight", 
+               sources.use = NULL, 
+               targets.use = NULL, 
+               stacked = T, 
+               do.stat = TRUE)
+gg2 <- rankNet(cellchat, 
+               mode = "comparison", 
+               measure = "weight", 
+               sources.use = NULL, 
+               targets.use = NULL, 
+               stacked = F, 
+               do.stat = TRUE)
+
+gg1 + gg2
+
+cellchat@meta$datasets = factor(cellchat@meta$datasets, 
+                                levels = c("ND", "HFD")) # set factor level
+
+plotGeneExpression(cellchat, 
+                   signaling = "NOTCH", 
+                   split.by = "datasets", 
+                   colors.ggplot = T, 
+                   type = "violin")
+
+plotGeneExpression(cellchat, 
+                   signaling = "WNT", 
+                   split.by = "datasets", 
+                   colors.ggplot = T, 
+                   type = "violin")
+
+plotGeneExpression(cellchat, 
+                   signaling = "FGF", 
+                   split.by = "datasets", 
+                   colors.ggplot = T, 
+                   type = "violin")
+
+plotGeneExpression(cellchat, 
+                   signaling = "IGF", 
+                   split.by = "datasets", 
+                   colors.ggplot = T, 
+                   type = "violin")
+
+plotGeneExpression(cellchat, 
+                   signaling = "GAS", 
+                   split.by = "datasets", 
+                   colors.ggplot = T, 
+                   type = "violin")
+
+plotGeneExpression(cellchat, 
+                   signaling = "GALECTIN", 
+                   split.by = "datasets", 
+                   colors.ggplot = T, 
+                   type = "violin")
+
+plotGeneExpression(cellchat, 
+                   signaling = "EGF", 
+                   split.by = "datasets", 
+                   colors.ggplot = T, 
+                   type = "violin")
+
+pathways.show <- c("FGF") 
+
+par(mfrow = c(1,2), xpd=TRUE)
+
+for (i in 1:length(object.list)) {
+  netVisual_aggregate(object.list[[i]], 
+                      signaling = pathways.show, 
+                      layout = "chord", 
+                      signaling.name = paste(pathways.show, names(object.list)[i]))
+}
+
+netVisual_aggregate(cellchat_HFD, 
+                      signaling = "EGF", 
+                      layout = "chord")
+
+pathways.show <- c("EGF") 
+pathways.show <- c("FGF")
+pathways.show <- c("IGF")
+pathways.show <- c("HGF")
+weight.max <- getMaxWeight(object.list, slot.name = c("netP"), attribute = pathways.show)
+par(mfrow = c(1,2), xpd=TRUE)
+for (i in 1:length(object.list)) {
+  netVisual_aggregate(object.list[[i]], signaling = pathways.show, layout = "circle", edge.weight.max = weight.max[1], edge.width.max = 10, signaling.name = paste(pathways.show, names(object.list)[i]))
+}
+
+

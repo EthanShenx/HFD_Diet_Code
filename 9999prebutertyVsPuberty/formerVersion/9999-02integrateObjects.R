@@ -70,9 +70,9 @@ combined <- ScaleData(
   combined,
   vars.to.regress = c("percent.mt", 
                       "nCount_RNA", 
-                      "nFeature_RNA" #, 
-                      # "G2M.Score",
-                      # "S.Score"
+                      "nFeature_RNA", 
+                      "G2M.Score",
+                      "S.Score"
                       ), 
   features = VariableFeatures(combined)
 )
