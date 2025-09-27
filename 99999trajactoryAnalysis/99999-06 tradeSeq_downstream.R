@@ -10,39 +10,38 @@ library(RColorBrewer)
 library(reshape2)
 library(circlize)
 library(clusterProfiler)
+library(ggplot2)
+library(dplyr)
 
 # Downstream analysis of tradeSeq results
 ND_sce <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/ND_epi_cds_fitGAM_sce.rds")
-counts_mat <- counts(ND_sce) 
+counts_mat_ND <- counts(ND_sce) 
 ND_assoRes <- associationTest(ND_sce)
 head(ND_assoRes)
 ND_startRes <- startVsEndTest(ND_sce)
 ND_oStart <- order(ND_startRes$waldStat, decreasing = T)
-plotSmoothers(ND_sce, counts = counts_mat, gene ="Wnt4")
+plotSmoothers(ND_sce, counts = counts_mat_ND, gene ="Wnt4")
 # saveRDS(ND_sce, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/ND_epi_cds_fitGAM_sce.rds")
 # write.csv(ND_assoRes, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/ND_siggenes.csv")
 
 
 HFD_sce <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/HFD_epi_cds_fitGAM_sce.rds")
-counts_mat <- counts(HFD_sce) 
+counts_mat_HFD <- counts(HFD_sce) 
 HFD_assoRes <- associationTest(HFD_sce)
 head(HFD_assoRes)
 HFD_startRes <- startVsEndTest(HFD_sce)
 HFD_oStart <- order(HFD_startRes$waldStat, decreasing = T)
-plotSmoothers(HFD_sce, counts = counts_mat, gene ="Wnt4")
+plotSmoothers(HFD_sce, counts = counts_mat_HFD, gene ="Wnt4")
 # saveRDS(HFD_sce, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/HFD_epi_cds_fitGAM_sce.rds")
 # write.csv(HFD_assoRes, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/HFD_siggenes.csv")
 
 
 # Making graph
 ## 1 Get ND HFD genes intersection
-ND_assoRes <- associationTest(ND_sce)
 ND_assoRes_noNA <- ND_assoRes[!is.na(ND_assoRes$pvalue), ]
-ND_sigGenes <- rownames(ND_assoRes_noNA[ND_assoRes_noNA$pvalue < 0.1, ])
-
-HFD_assoRes <- associationTest(HFD_sce)
+ND_sigGenes <- rownames(ND_assoRes_noNA[ND_assoRes_noNA$pvalue < 0.05, ])
 HFD_assoRes_noNA <- HFD_assoRes[!is.na(HFD_assoRes$pvalue), ]
-HFD_sigGenes <- rownames(HFD_assoRes_noNA[HFD_assoRes_noNA$pvalue < 0.1, ])
+HFD_sigGenes <- rownames(HFD_assoRes_noNA[HFD_assoRes_noNA$pvalue < 0.05, ])
 
 sigGenes_intersect <- intersect(ND_sigGenes, HFD_sigGenes)
 cat("ND sig genes:", length(ND_sigGenes), "\n")
@@ -87,7 +86,8 @@ ht <- Heatmap(
     labels = c("≤−3", "0", "≥4"),
     title = "Z-score"
   )
-)
+) 
+
 ht
 ## 8 Process HFD
 genes_in_order <- rownames(ND_scaled_ordered)
@@ -145,9 +145,9 @@ ht_hfd
 ## 13  Draw expression line chart
 nd_time <- as.numeric(colnames(ND_scaled_ordered))
 hfd_time <- as.numeric(colnames(HFD_scaled_ordered))
-genes_of_interest <- c("Wnt4") 
-col_nd  <- "green"
-col_hfd <- "green"
+genes_of_interest <- c("Wnt4","Areg","Gapdh","Esr1") 
+col_nd  <- "blue"
+col_hfd <- "blue"
 
 collect_df <- list()
 panel_info <- list()
@@ -188,7 +188,6 @@ for (i in seq_along(genes_of_interest)) {
     stringsAsFactors = FALSE
   )
 }
-
 plot_df <- bind_rows(collect_df)
 
 if (nrow(plot_df) == 0) {
