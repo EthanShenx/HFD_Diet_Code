@@ -11,20 +11,21 @@ use_condaenv("base",
 # 再确认一下
 py_config()
 # 读取 RDS
-ND_seu <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/ND_epi_seu.rds")
-HFD_seu <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/HFD_epi_seu.rds")
+ND_seu <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/ND_basal_seu.rds")
+HFD_seu <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/HFD_basal_seu.rds")
 
 # 保存为 anndata (h5ad)
 sceasy::convertFormat(
   ND_seu,                  # 也可以是 Seurat 对象
   from = "seurat",      # 如果是 Seurat 对象
   to = "anndata",
-  outFile = "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/ND_epi.h5ad"
+  outFile = "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/ND_basal.h5ad"
 )
 
 sceasy::convertFormat(
   HFD_seu,                  # 也可以是 Seurat 对象
   from = "seurat",      # 如果是 Seurat 对象
   to = "anndata",
-  outFile = "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/HFD_epi.h5ad"
+  outFile = "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/HFD_basal.h5ad"
 )
+

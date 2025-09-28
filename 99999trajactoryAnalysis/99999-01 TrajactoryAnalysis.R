@@ -3,18 +3,12 @@ library(SeuratWrappers)
 library(monocle3)
 library(dplyr)
 library(ggplot2)
-
-# Load data
-library(Seurat)
-library(SeuratWrappers)
-library(monocle3)
-library(dplyr)
-library(ggplot2)
+library(viridis)
 
 All <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/7.1data/harmony_All_sub.rds")
 cells_to_keep <- subset(
   All, 
-  subset = cell_type %in% c("LumProg", "HormSens", "Basal")
+  subset = cell_type %in% c("LumProg", "HormSens")
 )  
 
 cells_to_keep <- NormalizeData(
@@ -77,11 +71,12 @@ cells_to_keep <- RunUMAP(
 
 # Preprocess ND or HFD
 cells_to_keep <- subset(cells_to_keep, subset = orig.ident %in% "HFD")
+DimPlot(cells_to_keep, reduction = "umap", group.by = "cell_type")
 
 # Convert to cds
 cds <- as.cell_data_set(cells_to_keep)
 cds <- cluster_cells(cds)
-nc <- max(100, round(ncol(cds) / 50))
+nc <- 40
 cds <- learn_graph(
   cds,
   use_partition = FALSE,
@@ -93,7 +88,7 @@ cds <- learn_graph(
 )
 plot_cells(cds)
 
-Early_genes <-c("Krt5","Krt14","Krt17","Col17a1","Pdpn","Cdh3","Itgb1","Lgr5","Acta2","Igfbp7")
+Early_genes <-c("Kit","Cd14","Elf5")
 E <- intersect(Early_genes, rownames(cells_to_keep))
 stopifnot(length(E) >= 3)
 cells_to_keep <- AddModuleScore(cells_to_keep, features = list(E), name = "EarlyScore")
@@ -133,6 +128,23 @@ plot_cells(
   graph_label_size = 1.5
 )
 
-saveRDS(cds, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/ND_epi_cds.rds")
-saveRDS(cells_to_keep, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/ND_epi_seu.rds")
+saveRDS(cds, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/ND_lumhorm_cds.rds")
+saveRDS(cells_to_keep, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/ND_lumhorm_seu.rds")
+
+# Get Gata3 expression UMAP
+cds <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/ND_lumhorm_cds.rds")
+cells_to_keep <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/HFD_lumhorm_seu.rds")
+gata3_expr <- FetchData(cells_to_keep, vars = "Gata3")
+
+colData(cds)$Gata3_expr <- gata3_expr[colnames(cds), 1]
+
+plot_cells(
+  cds,
+  color_cells_by = "Gata3_expr",
+  label_cell_groups = FALSE,
+  label_leaves = FALSE,
+  label_branch_points = FALSE,
+  graph_label_size = 1.5
+) +
+  scale_color_viridis(option = "magma")
 
