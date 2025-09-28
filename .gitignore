@@ -13,6 +13,7 @@
 .git/objects/33/0f8f7852e1277312742e651fe08788d6e6feff
 .git/objects/33/6de97e1778d19751628fb4a29c0bc33a19f2e7
 .git/objects/3b/55526a397348509a8de21f65c83c2602c24cc3
+.git/objects/3c/tmp_obj_Dzcpp0
 .git/objects/3e/e234660789129cba6e637f1861d84d9850254e
 .git/objects/3f/3c8e64954eda3b4e869d1a4f36f19ea4de8d5e
 .git/objects/40/6eebc391ae1bd2edd86223b26d9d8a0a3b0415
@@ -72,6 +73,7 @@
 .Rapp.history
 .Rhistory
 .Rproj.user
+.Rproj.user/876D6AAD/explorer-cache/5a63d269d2b64bd3899fcbb131d5c4b1
 *.csv
 *.feather
 *.h5
@@ -102,11 +104,17 @@
 *originaldata/9999Stages/allStages.rds.zip
 *originaldata/9999Stages/allStageswithcycle.rds
 *originaldata/9999Stages/allStageswithcycle.rds.zip
+*originaldata/Harmony/harmony_All_Stroma_sub.rds
+*originaldata/Harmony/harmony_All_sub_sub.rds
 *originaldata/Harmony/harmony_All_sub.rds
 *originaldata/Harmony/harmony_all.rds
 *originaldata/Harmony/harmony_epi.rds
+*originaldata/Harmony/harmony_HFD_Stroma_sub.rds
+*originaldata/Harmony/harmony_HFD_sub_sub.rds
 *originaldata/Harmony/harmony_HFD_sub.rds
 *originaldata/Harmony/harmony_HFD.rds
+*originaldata/Harmony/harmony_ND_Stroma_sub.rds
+*originaldata/Harmony/harmony_ND_sub_sub.rds
 *originaldata/Harmony/harmony_ND_sub.rds
 *originaldata/Harmony/harmony_ND.rds
 *Seurat2Anndata/All.h5ad
@@ -116,6 +124,11 @@
 0Subdivision/ND_with_subclusters.rds
 2DEG/DEG_results/All_CellTypes_Combined_DEGs_all.csv
 2DEG/DEG_results/All_CellTypes_Combined_DEGs.csv
+4CellCellCommunication/02CellChat-sub-sub/.RData
+4CellCellCommunication/02CellChat-sub-sub/CellChatObjects/cellchat_HFD-sub.rds
+4CellCellCommunication/02CellChat-sub-sub/CellChatObjects/cellchat_ND-sub.rds
+4CellCellCommunication/02CellChat-sub-sub/Comparison_analysis_of_multiple_datasets.html
+4CellCellCommunication/02CellChat-sub-sub/OfficialCellChat-vignette.html
 4CellCellCommunication/02CellChat-sub/.RData
 4CellCellCommunication/02CellChat-sub/CellChatObjects/cellchat_HFD-sub.rds
 4CellCellCommunication/02CellChat-sub/CellChatObjects/cellchat_ND-sub.rds

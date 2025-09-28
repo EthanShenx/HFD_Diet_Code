@@ -1,7 +1,7 @@
 # =========== Prep ===========
-obj_path <- "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_Stroma_sub.rds"
-gs_dir   <- "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/fig3-stroma/stromaSubGSVAScoring/geneSets"
-out_dir  <- "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/fig3-stroma/stromaSubGSVAScoring"
+obj_path <- "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub.rds"
+gs_dir   <- "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/fig3-stroma/epiDNAAUCellScoring/geneSets"
+out_dir  <- "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/fig3-stroma/epiDNAAUCellScoring"
 
 suppressPackageStartupMessages({
   library(Seurat)
@@ -15,12 +15,15 @@ suppressPackageStartupMessages({
 
 # =========== Load Seurat object ===========
 obj <- readRDS(obj_path)
-obj <- Stroma_All
-subcol <- "subcluster"
+subcol <- "cell_type"
 obj$combo <- paste0(obj$orig.ident, "_", obj@meta.data[[subcol]])
 
 # =========== Expression matrix for GSVA ===========
 DefaultAssay(obj) <- "RNA"
+
+Idents(obj) <- "cell_type"
+obj <- subset(obj, idents = c("Basal","LumProg","HormSens"))
+
 expr <- as.matrix(GetAssayData(obj, slot = "data"))
 
 dup <- duplicated(rownames(expr))
@@ -62,13 +65,13 @@ gs_list <- unlist(lapply(gmt_files, read_gmt_as_list), recursive = FALSE)
 # # =========== Long format + stats ===========
 # scores_df <- as.data.frame(t(gsva_scores))
 # scores_df$cell  <- rownames(scores_df)
-# scores_df$combo <- obj$combo[rownames(scores_df)]
+# scores_df$cell_type <- obj$cell_type[rownames(scores_df)]
 # 
 # long_df <- scores_df |>
-#   tidyr::pivot_longer(cols = -c(cell, combo),
+#   tidyr::pivot_longer(cols = -c(cell, cell_type),
 #                       names_to = "gene_set",
 #                       values_to = "score") |>
-#   dplyr::filter(!is.na(combo))
+#   dplyr::filter(!is.na(cell_type))
 # 
 # long_df_norm <- long_df |>
 #   group_by(gene_set) |>
@@ -84,7 +87,7 @@ gs_list <- unlist(lapply(gmt_files, read_gmt_as_list), recursive = FALSE)
 #   dplyr::select(-mu, -sigma, -smin, -smax)
 # 
 # summary_df <- long_df_norm |>
-#   group_by(gene_set, combo) |>
+#   group_by(gene_set, cell_type) |>
 #   summarise(
 #     n = dplyr::n(),
 #     mean_raw   = mean(score,        na.rm = TRUE),
@@ -96,11 +99,11 @@ gs_list <- unlist(lapply(gmt_files, read_gmt_as_list), recursive = FALSE)
 #     .groups = "drop"
 #   )
 # 
-# p_z <- ggplot(long_df_norm, aes(x = combo, y = score_z, fill = combo)) +
+# p_z <- ggplot(long_df_norm, aes(x = cell_type, y = score_z, fill = cell_type)) +
 #   geom_boxplot(outlier.size = 0.4, width = 0.7) +
 #   facet_wrap(~ gene_set, scales = "free_y", ncol = 2) +
 #   scale_fill_npg(guide = "none") +
-#   labs(title = "GSVA (z-score) by combo", x = "Combo", y = "GSVA z-score") +
+#   labs(title = "GSVA (z-score) by cell_type", x = "cell_type", y = "GSVA z-score") +
 #   theme_bw(base_size = 11) +
 #   theme(axis.text.x = element_text(angle = 45, hjust = 1),
 #         strip.text = element_text(size = 9))
@@ -116,17 +119,14 @@ suppressPackageStartupMessages({
 # =========== Run AUCell ===========
 set.seed(1234)
 
+rankings <- AUCell_buildRankings(expr, 
+                                 plotStats = FALSE, 
+                                 verbose = TRUE)
+
 min_sz <- 5
 max_sz <- 500
 gs_list <- lapply(gs_list, function(v) intersect(v, rownames(rankings)))
 gs_list <- gs_list[sapply(gs_list, function(v) length(v) >= min_sz & length(v) <= max_sz)]
-
-
-rankings <- AUCell_buildRankings(
-  expr,
-  plotStats = FALSE,
-  verbose   = TRUE
-)
 
 nGenes <- nrow(rankings)
 aucMaxRank <- min(nGenes, max(50, ceiling(0.05 * nGenes)))
@@ -199,7 +199,6 @@ p_z <-
         axis.line.x = element_line(color = "black", size = 0.3),
         axis.ticks = element_line(color = "black", size = 0.3))
 print(p_z)
-
 
 make_gs_labels <- function(x) {
   x1 <- sub("^.*::", "", x)

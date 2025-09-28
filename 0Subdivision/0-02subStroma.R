@@ -10,7 +10,7 @@ library(Nebulosa)
 library(SingleR)
 library(celldex)
 
-All <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All.rds")
+All <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub.rds")
 
 Idents(All) <- "cell_type"
 
@@ -65,13 +65,29 @@ DimPlot(Stroma_All, reduction = "umap", label = F, group.by = "subcluster") + No
 DimPlot(Stroma_All, reduction = "umap", label = F, group.by = "orig.ident", cols = c(HFD = "lightblue", ND = "orange"))
 DimPlot(Stroma_All, reduction = "umap", label = F, group.by = "orig.ident", cols = c(HFD = "lightblue", ND = "orange"))  + NoLegend()
 
-Idents(Stroma_All) <- "orig.ident"
-Stroma_All_ND <- subset(Stroma_All, idents = "ND")
-Stroma_All_HFD <- subset(Stroma_All, idents = "HFD")
-saveRDS(Stroma_All_ND, 
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_Stroma_sub.rds")
-saveRDS(Stroma_All_HFD,
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_Stroma_sub.rds")
-saveRDS(Stroma_All,
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_Stroma_sub.rds")
+# Idents(Stroma_All) <- "orig.ident"
+# Stroma_All_ND <- subset(Stroma_All, idents = "ND")
+# Stroma_All_HFD <- subset(Stroma_All, idents = "HFD")
+# saveRDS(Stroma_All_ND, 
+#         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_Stroma_sub.rds")
+# saveRDS(Stroma_All_HFD,
+#         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_Stroma_sub.rds")
+# saveRDS(Stroma_All,
+#         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_Stroma_sub.rds")
 
+labs <- as.character(Stroma_All$subcluster)
+cells <- colnames(Stroma_All)
+sel <- !is.na(labs) & grepl("^Stroma_", labs)
+All$subcluster <- as.character(All$subcluster)
+All@meta.data[cells[sel], "subcluster"] <- labs[sel]
+All$subcluster <- factor(All$subcluster, levels = unique(c(All$subcluster, labs[sel])))
+
+Idents(All) <- "orig.ident"
+All_ND_sub_sub <- subset(All, idents = "ND")
+All_HFD_sub_sub <- subset(All, idents = "HFD")
+saveRDS(All_ND_sub_sub, 
+        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_sub_sub.rds")
+saveRDS(All_HFD_sub_sub,
+        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_sub_sub.rds")
+saveRDS(All,
+        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub_sub.rds")
