@@ -5,7 +5,6 @@ library(CellChat)
 library(patchwork)
 library(Seurat)
 library(dplyr)
-library(dplyr)
 library(tidyr)
 library(purrr)
 library(tidyverse)
@@ -418,11 +417,28 @@ gg1 + gg2
 cellchat@meta$datasets = factor(cellchat@meta$datasets, 
                                 levels = c("ND", "HFD")) # set factor level
 
-plotGeneExpression(cellchat, 
-                   signaling = "NOTCH", 
-                   split.by = "datasets", 
-                   colors.ggplot = T, 
-                   type = "violin")
+
+update_geom_defaults("violin", list(colour = NA, size = 0, linewidth = 0))
+
+p <- plotGeneExpression(
+  cellchat,
+  signaling = "EGF",
+  split.by = "datasets",
+  colors.ggplot = TRUE,
+  type = "violin",
+  color.use = c("#74c5be", "#e95503")
+)
+print(p)
+
+p <- plotGeneExpression(
+  cellchat,
+  signaling = "COLLAGEN",
+  split.by = "datasets",
+  colors.ggplot = TRUE,
+  type = "violin",
+  color.use = c("#74c5be", "#e95503")
+)
+print(p)
 
 plotGeneExpression(cellchat, 
                    signaling = "WNT", 
@@ -575,3 +591,27 @@ gg2 <- netVisual_bubble(cellchat,
 
 gg1 + gg2
 
+###########################################
+###########################################
+###########################################
+
+num.link <- sapply(object.list, function(x) {rowSums(x@net$count) + colSums(x@net$count)-diag(x@net$count)})
+weight.MinMax <- c(min(num.link), max(num.link)) # control the dot size in the different datasets
+gg <- list()
+for (i in 1:length(object.list)) {
+  gg[[i]] <- netAnalysis_signalingRole_scatter(object.list[[i]], title = names(object.list)[i], weight.MinMax = weight.MinMax)
+}
+#> Signaling role analysis on the aggregated cell-cell communication network from all signaling pathways
+#> Signaling role analysis on the aggregated cell-cell communication network from all signaling pathways
+patchwork::wrap_plots(plots = gg)
+
+###########################################
+###########################################
+###########################################
+
+gg1 <- netAnalysis_signalingChanges_scatter(cellchat, 
+                                            idents.use = "Basal",
+                                            dot.alpha = 8,
+                                            color.use = c("#6495ed", "#ffa503", "#ff6ab4"),
+                                            top.label = 1)
+gg1
