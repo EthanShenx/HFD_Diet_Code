@@ -403,7 +403,7 @@ for (i in seq_along(genes_of_interest)) {
     next
   }
   
-  # ND 数据
+  # ND 
   nd_values <- ND_scaled_ordered[gene_name, ]
   df_nd <- data.frame(
     time = nd_time,
@@ -414,7 +414,7 @@ for (i in seq_along(genes_of_interest)) {
     stringsAsFactors = FALSE
   )
   
-  # HFD 数据
+  # HFD 
   hfd_values <- HFD_scaled_ordered[gene_name, ]
   df_hfd <- data.frame(
     time = hfd_time,
@@ -425,7 +425,7 @@ for (i in seq_along(genes_of_interest)) {
     stringsAsFactors = FALSE
   )
   
-  # 合并 ND 和 HFD 数据
+  # merge ND & HFD 
   collect_df[[length(collect_df) + 1]] <- rbind(df_nd, df_hfd)
   panel_info[[length(panel_info) + 1]] <- data.frame(
     gene = gene_name,
@@ -449,7 +449,7 @@ for (gene_lab in panels) {
                   aes(x = time, y = value,
                       color = panel, linetype = condition)) +
     geom_line(linewidth = 2, lineend = "round") +
-    scale_color_manual(values = gene_colors) +  # 使用每个基因的指定颜色
+    scale_color_manual(values = gene_colors) + 
     scale_linetype_manual(values = c(ND = "solid", HFD = "dashed")) +
     labs(x = "Pseudotime", y = "Z-score") +
     ggtitle(gene_lab) +
@@ -475,19 +475,15 @@ data <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/HFD_epi_seu
 cds <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/HFD_epi_cds.rds")
 data$pseudotime <- pseudotime(cds)
 
-# 取出 Gata3 表达量
-# 1. 取出原始表达量
+# Get Gata3 expression
 gata3_expr <- Matrix::Matrix(exprs(cds)["Gata3", , drop = FALSE], sparse = TRUE)
 colData(cds)$Gata3_expr <- as.numeric(gata3_expr)
 gata3_raw <- colData(cds)$Gata3_expr
 
-# 2. 把大于 5 的值截断为 5，小于 0 的截断为 0
 gata3_capped <- pmin(pmax(gata3_raw, 0), 5)
 
-# 3. 存入 colData
 colData(cds)$Gata3_cap <- gata3_capped
 
-# 4. 绘图
 plot_cells(
   cds,
   color_cells_by = "Gata3_cap",
@@ -496,5 +492,6 @@ plot_cells(
   label_leaves = FALSE,
   label_branch_points = FALSE
 )
+
 
 
