@@ -1,4 +1,3 @@
-.Rhistory
 .DS_Store
 .git/objects/08/4c7d4f5a59d7781e2a68a0d188a7be2d50aaa3
 .git/objects/0d/98d4df2bb1ec991a6f88995ba8b3830c31caa8
@@ -125,8 +124,12 @@
 0Subdivision/ND_with_subclusters.rds
 2DEG/DEG_results/All_CellTypes_Combined_DEGs_all.csv
 2DEG/DEG_results/All_CellTypes_Combined_DEGs.csv
+4CellCellCommunication/01NicheNet/relatedResources/ligand_target_matrix_nsga2r_final_mouse.rds
+4CellCellCommunication/01NicheNet/relatedResources/weighted_networks_nsga2r_final_mouse.rds
 4CellCellCommunication/02CellChat-sub-sub/.RData
+4CellCellCommunication/02CellChat-sub-sub/CellChatObjects/cellchat_HFD_sub_sub.rds
 4CellCellCommunication/02CellChat-sub-sub/CellChatObjects/cellchat_HFD-sub.rds
+4CellCellCommunication/02CellChat-sub-sub/CellChatObjects/cellchat_ND_sub_sub.rds
 4CellCellCommunication/02CellChat-sub-sub/CellChatObjects/cellchat_ND-sub.rds
 4CellCellCommunication/02CellChat-sub-sub/Comparison_analysis_of_multiple_datasets.html
 4CellCellCommunication/02CellChat-sub-sub/OfficialCellChat-vignette.html
