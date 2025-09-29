@@ -471,27 +471,3 @@ high_diff_file <- "D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/High_Traj
 write.csv(high_divergence_genes, file = high_diff_file, row.names = FALSE)
 
 
-data <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/HFD_epi_seu.rds")
-cds <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/trajactoryAnalysis/HFD_epi_cds.rds")
-data$pseudotime <- pseudotime(cds)
-
-# Get Gata3 expression
-gata3_expr <- Matrix::Matrix(exprs(cds)["Gata3", , drop = FALSE], sparse = TRUE)
-colData(cds)$Gata3_expr <- as.numeric(gata3_expr)
-gata3_raw <- colData(cds)$Gata3_expr
-
-gata3_capped <- pmin(pmax(gata3_raw, 0), 5)
-
-colData(cds)$Gata3_cap <- gata3_capped
-
-plot_cells(
-  cds,
-  color_cells_by = "Gata3_cap",
-  show_trajectory_graph = TRUE,
-  label_cell_groups = FALSE,
-  label_leaves = FALSE,
-  label_branch_points = FALSE
-)
-
-
-
