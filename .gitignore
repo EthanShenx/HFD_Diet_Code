@@ -124,9 +124,12 @@
 0Subdivision/ND_with_subclusters.rds
 2DEG/DEG_results/All_CellTypes_Combined_DEGs_all.csv
 2DEG/DEG_results/All_CellTypes_Combined_DEGs.csv
+4CellCellCommunication/01LIANA-sub-sub/HFD_LIANA_res.csv
+4CellCellCommunication/01LIANA-sub-sub/ND_LIANA_res.csv
 4CellCellCommunication/01NicheNet/relatedResources/ligand_target_matrix_nsga2r_final_mouse.rds
 4CellCellCommunication/01NicheNet/relatedResources/weighted_networks_nsga2r_final_mouse.rds
 4CellCellCommunication/02CellChat-sub-sub/.RData
+4CellCellCommunication/02CellChat-sub-sub/CellChat-vignette.html
 4CellCellCommunication/02CellChat-sub-sub/CellChatObjects/cellchat_HFD_sub_sub.rds
 4CellCellCommunication/02CellChat-sub-sub/CellChatObjects/cellchat_HFD-sub.rds
 4CellCellCommunication/02CellChat-sub-sub/CellChatObjects/cellchat_ND_sub_sub.rds
