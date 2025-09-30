@@ -155,6 +155,16 @@
 4CellCellCommunication/02NATMI/NATMI/homology/homologene.data
 4CellCellCommunication/02NATMI/ND_expressionMatrix.csv
 4CellCellCommunication/02NATMI/ND_expressionMatrix/Edges_lrc2p.csv
+99999trajactoryAnalysis/data/HFD_epi_cds_fitGAM_sce_pre.rds
+99999trajactoryAnalysis/data/HFD_epi_cds_fitGAM_sce.rds
+99999trajactoryAnalysis/data/HFD_epi_cds.rds
+99999trajactoryAnalysis/data/HFD_epi_seu.rds
+99999trajactoryAnalysis/data/HFD_epi.h5ad
+99999trajactoryAnalysis/data/ND_epi_cds_fitGAM_sce_pre.rds
+99999trajactoryAnalysis/data/ND_epi_cds_fitGAM_sce.rds
+99999trajactoryAnalysis/data/ND_epi_cds.rds
+99999trajactoryAnalysis/data/ND_epi_seu.rds
+99999trajactoryAnalysis/data/ND_epi.h5ad
 99999trajactoryAnalysis/HFD_epi_cds_fitGAM_sce_pre.rds
 99999trajactoryAnalysis/HFD_epi_cds_fitGAM_sce.rds
 99999trajactoryAnalysis/HFD_epi_cds.rds

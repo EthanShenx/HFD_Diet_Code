@@ -5,7 +5,7 @@ library(dplyr)
 library(ggplot2)
 library(viridis)
 
-All <- readRDS("D:/data/23BMI/ND_HFD_MG_snRNAseq/7.1data/harmony_All_sub.rds")
+All <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub.rds")
 cells_to_keep <- subset(
   All, 
   subset = cell_type %in% c("LumProg", "HormSens")
