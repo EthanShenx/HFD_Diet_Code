@@ -503,6 +503,8 @@ for (i in 1:length(object.list)) {
                       top = 1,
                       arrow.size = 0.4,
                       arrow.width = 1.2,
+                      sources.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),
+                      targets.use = c("HormSens", "Basal", "LumProg"),
                       signaling.name = paste(pathways.show, names(object.list)[i]))
 }
 
@@ -518,6 +520,8 @@ for (i in 1:length(object.list)) {
                       top = 1,
                       arrow.size = 0.4,
                       arrow.width = 1.2,
+                      sources.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),
+                      targets.use = c("HormSens", "Basal", "LumProg"),
                       signaling.name = paste(pathways.show, names(object.list)[i]))
 }
 
