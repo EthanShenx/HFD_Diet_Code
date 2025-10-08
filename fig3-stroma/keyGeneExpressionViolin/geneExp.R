@@ -65,6 +65,36 @@ Areg <- ggplot(df, aes(x = Condition, y = Expression, fill = Condition)) +
 
 Areg
 
+#===== Sp1 HormSens =====
+
+df <- combine_diet_df(cell_type = "HormSens", gene = "Sp1", slot = slot_used)
+
+df <- na.omit(df)
+wt <- wilcox.test(Expression ~ Condition, data = df, exact = FALSE)
+wt$p.value
+
+condition_colors <- c("ND" = "#74c5be", "HFD" = "#e95503")
+
+y_lab <- "Expression"
+
+Areg <- ggplot(df, aes(x = Condition, y = Expression, fill = Condition)) +
+  geom_violin(scale = "width", trim = F, adjust = 1, width = 0.8, color = NA) +
+  geom_boxplot(width = 0.12, fill = "white", alpha = 1,
+               outlier.size = 0.8, outlier.color = "black",
+               outlier.shape = 19, linewidth = 0.3) +
+  scale_fill_manual(values = condition_colors) +
+  theme_classic(base_family = "Arial") +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 12),
+        xis.text.x  = element_text(size = 10, colour = "black"),
+        xis.text.y  = element_text(size = 10, colour = "black"),
+        legend.position = "none") +
+  labs(y = y_lab) +
+  ggpubr::stat_compare_means(comparisons = list(c("ND","HFD")),
+                             method = "wilcox.test", label = "p.format", size = 3, vjust = -0.5)
+
+Areg
+
 #===== F3 HormSens =====
 
 # 如未安装：
@@ -120,7 +150,60 @@ F3 <- ggplot(df, aes(x = Condition, y = Expression)) +
 
 F3
 
+#===== test HormSens =====
 
+# 如未安装：
+# install.packages("gghalves")
+
+library(ggplot2)
+library(ggpubr)
+library(gghalves)
+
+df <- combine_diet_df(cell_type = "HormSens", gene = "Areg", slot = slot_used)
+df <- na.omit(df)
+
+wt <- wilcox.test(Expression ~ Condition, data = df, exact = FALSE)
+wt$p.value
+
+condition_colors <- c("ND" = "#74c5be", "HFD" = "#e95503")
+y_lab <- "Expression"
+
+Test <- ggplot(df, aes(x = Condition, y = Expression)) +
+
+  gghalves::geom_half_violin(aes(fill = Condition),
+                             side = "r",
+                             trim = FALSE,
+                             adjust = 1,
+                             width = 0.8,
+                             color = NA) +
+
+  gghalves::geom_half_point(side = "l",
+                            range_scale = 0.5,
+                            position = position_jitter(width = 0.065, height = 0),
+                            color = "black",
+                            alpha = 0.9,
+                            size = 0.4) +
+
+  geom_boxplot(width = 0.12,
+               fill = "white",
+               alpha = 1,
+               outlier.shape = NA,
+               linewidth = 0.3) +
+  scale_fill_manual(values = condition_colors) +
+  theme_classic(base_family = "Arial") +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 12),
+        axis.text.x  = element_text(size = 10, colour = "black"),
+        axis.text.y  = element_text(size = 10, colour = "black"),
+        legend.position = "none") +
+  labs(y = y_lab) +
+  ggpubr::stat_compare_means(comparisons = list(c("ND","HFD")),
+                             method = "wilcox.test",
+                             label = "p.format",
+                             size = 3,
+                             vjust = -0.5)
+
+Test
 
 #===== Esr1 HormSens =====
 
