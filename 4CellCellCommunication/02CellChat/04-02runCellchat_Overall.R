@@ -359,3 +359,35 @@ ggplot(combined, aes(
     axis.text.x = element_text(angle = 45, hjust = 1),
     plot.title = element_text(hjust = 0.5)
   )
+
+##########################################
+# === Comparison analysis of multiple datasets using CellChat 2025-9-17 ===
+
+cellchat_ND <- netAnalysis_computeCentrality(
+  object = cellchat_ND,
+  thresh = 0.05
+)
+
+cellchat_HFD <- netAnalysis_computeCentrality(
+  object = cellchat_HFD,
+  thresh = 0.05
+)
+
+object.list <- list(ND = cellchat_ND, HFD = cellchat_HFD)
+cellchat <- mergeCellChat(object.list, 
+                          add.names = names(object.list),
+                          cell.prefix = TRUE)
+
+gg1 <- netAnalysis_signalingChanges_scatter(cellchat, 
+                                            idents.use = "Basal",
+                                            dot.alpha = 8,
+                                            color.use = c("#6495ed", "#ffa503", "#ff6ab4"),
+                                            top.label = 1)
+gg1
+
+gg2 <- netAnalysis_signalingChanges_scatter(cellchat, 
+                                            idents.use = "Stroma",
+                                            dot.alpha = 8,
+                                            color.use = c("#6495ed", "#ffa503", "#ff6ab4"),
+                                            top.label = 1)
+gg2

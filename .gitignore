@@ -1,4 +1,5 @@
 .DS_Store
+.git/objects/07/90dd2cd3681928ad5ca3ca70e4e62d648da831
 .git/objects/08/4c7d4f5a59d7781e2a68a0d188a7be2d50aaa3
 .git/objects/0d/98d4df2bb1ec991a6f88995ba8b3830c31caa8
 .git/objects/0f/5839347ab0456cf8e002f709e0de220e576e27
@@ -104,15 +105,18 @@
 *originaldata/9999Stages/allStages.rds.zip
 *originaldata/9999Stages/allStageswithcycle.rds
 *originaldata/9999Stages/allStageswithcycle.rds.zip
+*originaldata/Harmony/harmony_All_Adipo_sub.rds
 *originaldata/Harmony/harmony_All_Stroma_sub.rds
 *originaldata/Harmony/harmony_All_sub_sub.rds
 *originaldata/Harmony/harmony_All_sub.rds
 *originaldata/Harmony/harmony_all.rds
 *originaldata/Harmony/harmony_epi.rds
+*originaldata/Harmony/harmony_HFD_Adipo_sub.rds
 *originaldata/Harmony/harmony_HFD_Stroma_sub.rds
 *originaldata/Harmony/harmony_HFD_sub_sub.rds
 *originaldata/Harmony/harmony_HFD_sub.rds
 *originaldata/Harmony/harmony_HFD.rds
+*originaldata/Harmony/harmony_ND_Adipo_sub.rds
 *originaldata/Harmony/harmony_ND_Stroma_sub.rds
 *originaldata/Harmony/harmony_ND_sub_sub.rds
 *originaldata/Harmony/harmony_ND_sub.rds
@@ -127,6 +131,7 @@
 4CellCellCommunication/01LIANA-sub-sub/HFD_LIANA_res.csv
 4CellCellCommunication/01LIANA-sub-sub/ND_LIANA_res.csv
 4CellCellCommunication/01NicheNet/relatedResources/ligand_target_matrix_nsga2r_final_mouse.rds
+4CellCellCommunication/01NicheNet/relatedResources/results/nichenet_output_Stroma_Aggregate_HFD_vs_ND.rds
 4CellCellCommunication/01NicheNet/relatedResources/weighted_networks_nsga2r_final_mouse.rds
 4CellCellCommunication/02CellChat-sub-sub/.RData
 4CellCellCommunication/02CellChat-sub-sub/CellChat-vignette.html
@@ -214,6 +219,11 @@
 9999prebutertyVsPuberty/formerVersion/elseSeuratObj/GSM4994965_pub.rds
 9999prebutertyVsPuberty/formerVersion/trajectoryOutput/All_stages_trajectory.rds
 9999prebutertyVsPuberty/formerVersion/trajectoryOutput/cds_obj.rds
+fig6-adipo/slingshot_results/Adipo_All_slingshot_sce.rds
+fig6-adipo/slingshot_results/Adipo_All_slingshot_seurat.rds
+fig6-adipo/slingshot_results/slingshot_All_sce.rds
+fig6-adipo/slingshot_results/slingshot_All_seurat_with_pt.rds
 NATMI/.git/objects/pack/pack-90ddb7e64e39eb314f6258fa621b203496171444.pack
 NATMI/homology/homologene.data
 originaldata/9999Stages/allStages.rds
+Thesis Yueqing Xu.pdf

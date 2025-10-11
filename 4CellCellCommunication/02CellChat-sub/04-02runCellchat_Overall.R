@@ -371,6 +371,7 @@ cellchat_HFD <- netAnalysis_computeCentrality(
   object = cellchat_HFD,
   thresh = 0.05
 )
+
 object.list <- list(ND = cellchat_ND, HFD = cellchat_HFD)
 cellchat <- mergeCellChat(object.list, add.names = names(object.list))
 par(mfrow = c(1,2), xpd=TRUE)
@@ -475,14 +476,190 @@ netVisual_aggregate(cellchat_HFD,
                       signaling = "EGF", 
                       layout = "chord")
 
-pathways.show <- c("EGF") 
-pathways.show <- c("FGF")
+pathways.show <- c("ADGRE")
+pathways.show <- c("GALECTIN")
 pathways.show <- c("IGF")
-pathways.show <- c("HGF")
+pathways.show <- c("JAM")
+pathways.show <- c("GAS")
+pathways.show <- c("NOTCH")
+pathways.show <- c("COLLAGEN")
 weight.max <- getMaxWeight(object.list, slot.name = c("netP"), attribute = pathways.show)
 par(mfrow = c(1,2), xpd=TRUE)
 for (i in 1:length(object.list)) {
   netVisual_aggregate(object.list[[i]], signaling = pathways.show, layout = "circle", edge.weight.max = weight.max[1], edge.width.max = 10, signaling.name = paste(pathways.show, names(object.list)[i]))
 }
 
+###################################################################
+###################################################################
+###################################################################
 
+pathways.show <- c("COLLAGEN") 
+pathways.show <- c("GALECTIN")
+pathways.show <- c("ADGRE") 
+pathways.show <- c("JAM")
+par(mfrow = c(1,2), xpd=TRUE)
+ht <- list()
+for (i in 1:length(object.list)) {
+  ht[[i]] <- netVisual_heatmap(object.list[[i]], 
+                               signaling = pathways.show,
+                               color.heatmap = "BuPu",
+                               title.name = paste(pathways.show, "signaling ",
+                                                  names(object.list)[i]))
+}
+#> Do heatmap based on a single object 
+#> 
+#> Do heatmap based on a single object
+ComplexHeatmap::draw(ht[[1]] + ht[[2]], ht_gap = unit(0.5, "cm"))
+
+###################################################################
+###################################################################
+###################################################################
+
+netVisual_heatmap(cellchat,
+                  signaling = "COLLAGEN")
+
+netVisual_heatmap(cellchat, 
+                         measure = "weight",
+                         signaling = "COLLAGEN")
+
+###################################################################
+###################################################################
+###################################################################
+
+gg1 <- netAnalysis_signalingChanges_scatter(cellchat, 
+                                            idents.use = "Basal",
+                                            dot.alpha = 8,
+                                            color.use = c("#6495ed", "#ffa503", "#ff6ab4"),
+                                            top.label = 1)
+gg1
+
+gg2 <- netAnalysis_signalingChanges_scatter(cellchat, 
+                                            idents.use = "Stroma",
+                                            dot.alpha = 8,
+                                            color.use = c("#6495ed", "#ffa503", "#ff6ab4"),
+                                            top.label = 1)
+gg2
+
+gg3 <- netAnalysis_signalingChanges_scatter(cellchat, 
+                                            idents.use = "HormSens",
+                                            dot.alpha = 8,
+                                            color.use = c("#6495ed", "#ffa503", "#ff6ab4"),
+                                            top.label = 1)
+
+gg4 <- netAnalysis_signalingChanges_scatter(cellchat, 
+                                            idents.use = "LumProg",
+                                            dot.alpha = 8,
+                                            color.use = c("#6495ed", "#ffa503", "#ff6ab4"),
+                                            top.label = 1)
+
+(gg1 + gg2)/(gg3 + gg4)
+
+###################################################################
+###################################################################
+###################################################################
+
+gg1 <- rankNet(cellchat, 
+               mode = "comparison", 
+               measure = "weight", 
+               stacked = T, 
+               do.stat = TRUE,
+               targets.use = "Adipo",
+               tol = 0.1,
+               color.use = c("#74c5be", "#e95503"))
+gg2 <- rankNet(cellchat, 
+               mode = "comparison", 
+               measure = "weight", 
+               stacked = F, 
+               do.stat = TRUE,
+               targets.use = "Adipo",
+               tol = 0.1,
+               color.use = c("#74c5be", "#e95503"))
+
+gg1 + gg2
+
+###################################################################
+###################################################################
+###################################################################
+p <- plotGeneExpression(
+  cellchat,
+  signaling = "COLLAGEN",
+  split.by = "datasets",
+  colors.ggplot = TRUE,
+  type = "violin",
+  color.use = c("#74c5be", "#e95503")
+)
+print(p)
+
+p <- plotGeneExpression(
+  cellchat,
+  signaling = "IGF",
+  split.by = "datasets",
+  colors.ggplot = TRUE,
+  type = "violin",
+  color.use = c("#74c5be", "#e95503")
+)
+print(p)
+
+###################################################################
+###################################################################
+###################################################################
+
+pathways.show <- c("COLLAGEN") 
+
+par(mfrow = c(1, 1), xpd=TRUE)
+
+for (i in 1:length(object.list)) {
+  netVisual_chord_gene(object.list[[i]], 
+                       signaling = pathways.show,
+                       targets.use = "Stroma", 
+                       lab.cex = 0.5, 
+                       title.name = paste0("Signaling into Stroma", names(object.list)[i])
+                       )
+}
+
+###################################################################
+###################################################################
+###################################################################
+
+gg1 <- netVisual_bubble(cellchat, 
+                        targets.use = "Stroma",  
+                        comparison = c(1, 2), 
+                        max.dataset = 2, 
+                        title.name = "Increased signaling in HFD", 
+                        angle.x = 45, 
+                        remove.isolate = T,
+                        signaling = "COLLAGEN")
+
+gg2 <- netVisual_bubble(cellchat, 
+                        targets.use = "Stroma",  
+                        comparison = c(1, 2), 
+                        max.dataset = 1, 
+                        title.name = "Decreased signaling in HFD", 
+                        angle.x = 45, 
+                        remove.isolate = T)
+
+gg1 + gg2
+
+par(mfrow = c(1,2), xpd=TRUE)
+
+netVisual_chord_gene(object.list[[2]], 
+                    targets.use = "Stroma",
+                     slot.name = 'net', 
+                     net = net.up, 
+                     lab.cex = 0.8, 
+                     small.gap = 3.5, 
+                     title.name = paste0("Up-regulated signaling in ", 
+                                         names(object.list)[2]),
+                    signaling = "COLLAGEN",
+                     )
+
+netVisual_chord_gene(object.list[[1]], 
+                     targets.use = "Stroma", 
+                     slot.name = 'net', 
+                     net = net.down, 
+                     lab.cex = 0.8, 
+                     small.gap = 3.5, 
+                     title.name = paste0("Down-regulated signaling in ", 
+                                         names(object.list)[2]),
+                     signaling = "COLLAGEN",
+                     )

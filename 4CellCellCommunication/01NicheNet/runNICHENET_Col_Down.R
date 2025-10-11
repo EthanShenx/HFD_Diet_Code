@@ -19,15 +19,15 @@ Idents(combine) <- "subcluster"
 nichenet_output_A_L <- nichenet_seuratobj_aggregate(
   seurat_obj            = combine,
   receiver              = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),
-  sender = "all",
   condition_colname     = "orig.ident",
   condition_oi          = "HFD",
   condition_reference   = "ND",
+  sender                = "all",
   ligand_target_matrix  = ligand_target_matrix,
   lr_network            = lr_network,
   weighted_networks     = weighted_networks,
   filter_top_ligands    = F,
-  top_n_targets         = 150,
+  top_n_targets         = 150
 )
 
 # saveRDS(nichenet_output_A_L, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/Nichenet/nichenet_output_A_L.rds")
@@ -60,48 +60,8 @@ nichenet_output_A_L <- nichenet_seuratobj_aggregate(
 
 L_T_heatmap_data <- nichenet_output_A_L$ligand_target_heatmap$data
 
-# L_T_heatmap_data <- L_T_heatmap_data %>%
-#   filter(str_starts(y, "Tgfb") & !str_starts(y, "Tgfbi")) %>%
-#   filter(score > 0) %>%
-#   mutate(score_norm = 0 + (score - min(score)) * (2 - 0) / (max(score) - min(score)))
-
-read_gmt_vec <- function(gmt_path) {
-  ln <- readLines(gmt_path, warn = FALSE)
-  if (length(ln) != 1L) {
-    stop(sprintf("Expected 1 line in %s, got %d", gmt_path, length(ln)))
-  }
-  parts <- strsplit(ln, "\t", fixed = TRUE)[[1]]
-  genes <- parts[3:length(parts)]
-  genes <- unique(trimws(genes[nzchar(genes)]))
-  return(genes)
-}
-
-ecm_dir <- "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/fig3-stroma/ECM_geneCategories/Naba_geneSets"
-gly_path <- file.path(ecm_dir, "NABA_ECM_GLYCOPROTEINS.v2025.1.Mm.gmt")
-col_path <- file.path(ecm_dir, "NABA_COLLAGENS.v2025.1.Mm.gmt")
-pro_path <- file.path(ecm_dir, "NABA_PROTEOGLYCANS.v2025.1.Mm.gmt")
-
-genes_gly <- read_gmt_vec(gly_path)
-genes_col <- read_gmt_vec(col_path)
-genes_pro <- read_gmt_vec(pro_path)
-
-ecm_core_ordered <- c(genes_gly, genes_col, genes_pro)
-
-x_genes <- unique(L_T_heatmap_data$x)
-ecm_in_x_ordered <- ecm_core_ordered[ecm_core_ordered %in% x_genes]
-
 L_T_heatmap_data <- L_T_heatmap_data %>%
-  dplyr::filter(x %in% ecm_in_x_ordered) %>%
-  dplyr::mutate(
-    x = factor(x, levels = ecm_in_x_ordered),
-    ecm_category = dplyr::case_when(
-      x %in% genes_gly ~ "ECM glycoproteins",
-      x %in% genes_col ~ "Collagens",
-      x %in% genes_pro ~ "Proteoglycans",
-      TRUE ~ NA_character_
-    )
-  ) %>%
-  dplyr::arrange(x) %>%
+  filter(grepl("^Col", y)) %>%
   filter(score > 0) %>%
   mutate(score_norm = 0 + (score - min(score)) * (2 - 0) / (max(score) - min(score)))
 
@@ -122,9 +82,7 @@ ggplot(L_T_heatmap_data, aes(x = x,
 
 ligand_expr <- nichenet_output_A_L$ligand_expression_dotplot$data
 ligand_expr <- ligand_expr %>%
-  filter(features.plot %in% L_T_heatmap_data$y)
-# ligand_expr <- ligand_expr %>%
-#   filter(str_starts(features.plot, "Tgfb") & !str_starts(features.plot, "Tgfbi"))
+  filter(grepl("^Col", features.plot))
 str(ligand_expr)
 
 col_fun <- colorRampPalette(c("#fcf0f4", "#e99bbc", "#c51c7d"))(100)
@@ -143,6 +101,7 @@ ggplot(ligand_expr, aes(x = id, y = features.plot)) +
     axis.line.x = element_line(color = "black", linewidth = 0.25),
     axis.line.y = element_line(color = "black", linewidth = 0.25)
   )
+
 
 ########################
 ########################
@@ -209,8 +168,45 @@ p3 <- ggplot(goi_expr_df, aes(x = id, y = features.plot)) +
   ) +
   scale_size_continuous(range = c(0.5, 3))
 
+#############################
+####### patch #########
+#############################
+
+common_gene_order <- L_T_heatmap_data$y %>% unique() %>% as.character()
+
+L_T_heatmap_data$y <- factor(L_T_heatmap_data$y, levels = rev(common_gene_order))
+
+ligand_expr$features.plot <- factor(ligand_expr$features.plot, levels = rev(common_gene_order))
+
+p1 <- ggplot(L_T_heatmap_data, aes(x = x, y = y, fill = score_norm)) +
+  geom_tile() +
+  scale_fill_distiller(palette = "BuPu", direction = 1) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(size = 7, angle = 45, hjust = 1, face = "italic"),
+    axis.text.y = element_text(size = 7, face = "italic")
+  ) +
+  labs(x = NULL, y = NULL, fill = "Score")
+
+p2 <- ggplot(ligand_expr, aes(x = id, y = features.plot)) +
+  geom_point(aes(size = pct.exp, color = avg.exp.scaled)) +
+  scale_color_gradientn(colors = col_fun) +
+  scale_size_continuous(range = c(0.5, 3)) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.ticks.y = element_blank(),
+    panel.grid = element_blank(),
+    axis.line = element_line(color = "black", linewidth = 0.2),
+    axis.ticks = element_line(color = "black", linewidth = 0.2),
+    axis.line.x = element_line(color = "black", linewidth = 0.25),
+    axis.line.y = element_blank()
+  )
+
+p2 + p1 + plot_layout(ncol = 2, widths = c(1, 13))
+
 ###########################################################
-######################### patch ###########################
+###########################################################
 ###########################################################
 
 library(patchwork)
@@ -263,9 +259,8 @@ p3 <- ggplot(goi_expr_df, aes(x = features.plot, y = id)) +
   ) +
   labs(x = NULL, y = NULL, size = "% Exp", color = "Scaled Exp")
 
-top_row    <- p2 + p1 + plot_layout(ncol = 2, widths = c(1, 0.5))
-bottom_row <- plot_spacer() + p3 + plot_layout(ncol = 2, widths = c(5, 2))
+top_row    <- p2 + p1 + plot_layout(ncol = 2, widths = c(5, 8))
+bottom_row <- plot_spacer() + p3 + plot_layout(ncol = 2, widths = c(5, 5))
 
-final_plot <- top_row / bottom_row + plot_layout(heights = c(10,1))
+final_plot <- top_row / bottom_row + plot_layout(heights = c(2, 0.5))
 final_plot
-

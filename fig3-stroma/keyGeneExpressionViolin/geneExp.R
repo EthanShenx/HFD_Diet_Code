@@ -462,29 +462,29 @@ Tnfrsf21
 #                              method = "wilcox.test", label = "p.format", size = 3, vjust = -0.5) 
 # Tgfb3
 # 
-# # ===== Tgfb2 Stroma =====
-# df <- combine_diet_df(cell_type = "Stroma", gene = "Tgfb2", slot = slot_used)
-# df <- na.omit(df)
-# wt <- wilcox.test(Expression ~ Condition, data = df, exact = FALSE)
-# wt$p.value
-# condition_colors <- c("ND" = "#74c5be", "HFD" = "#e95503")
-# y_lab <- "Expression"
-# Tgfb2 <- ggplot(df, aes(x = Condition, y = Expression, fill = Condition)) +
-#   geom_violin(scale = "width", trim = F, adjust = 1, width = 0.8, color = NA) +
-#   geom_boxplot(width = 0.12, fill = "white", alpha = 1,
-#                outlier.size = 0.8, outlier.color = "black",
-#                outlier.shape = 19, linewidth = 0.3) +
-#   scale_fill_manual(values = condition_colors) +
-#   theme_classic(base_family = "Arial") +
-#   theme(axis.title.x = element_blank(),
-#         axis.title.y = element_text(size = 12),
-#         xis.text.x  = element_text(size = 10, colour = "black"),
-#         xis.text.y  = element_text(size = 10, colour = "black"),
-#         legend.position = "none") +
-#   labs(y = y_lab) +
-#   ggpubr::stat_compare_means(comparisons = list(c("ND","HFD")),
-#                              method = "wilcox.test", label = "p.format", size = 3, vjust = -0.5) 
-# Tgfb2
+# ===== Tgfb1 Stroma =====
+df <- combine_diet_df(cell_type = "HormSens", gene = "Tgfb1", slot = slot_used)
+df <- na.omit(df)
+wt <- wilcox.test(Expression ~ Condition, data = df, exact = FALSE)
+wt$p.value
+condition_colors <- c("ND" = "#74c5be", "HFD" = "#e95503")
+y_lab <- "Expression"
+Tgfb2 <- ggplot(df, aes(x = Condition, y = Expression, fill = Condition)) +
+  geom_violin(scale = "width", trim = F, adjust = 1, width = 0.8, color = NA) +
+  geom_boxplot(width = 0.12, fill = "white", alpha = 1,
+               outlier.size = 0.8, outlier.color = "black",
+               outlier.shape = 19, linewidth = 0.3) +
+  scale_fill_manual(values = condition_colors) +
+  theme_classic(base_family = "Arial") +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 12),
+        xis.text.x  = element_text(size = 10, colour = "black"),
+        xis.text.y  = element_text(size = 10, colour = "black"),
+        legend.position = "none") +
+  labs(y = y_lab) +
+  ggpubr::stat_compare_means(comparisons = list(c("ND","HFD")),
+                             method = "wilcox.test", label = "p.format", size = 3, vjust = -0.5) 
+Tgfb2
 
 # ==== patch together ====
 library(patchwork)
