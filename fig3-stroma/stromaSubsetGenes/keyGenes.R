@@ -12,7 +12,7 @@ library(celldex)
 library(ggsci)
 library(scico)
 
-All <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_Stroma_sub.rds")
+Stroma_All <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_Stroma_sub.rds")
 
 Stroma_All$combo <- paste0(Stroma_All$orig.ident, "_", Stroma_All$subcluster)
 
@@ -312,6 +312,110 @@ res_gh <- pairwise_wilcox_for_features(Stroma_All,
                                          features = "Igf1", 
                                          group.by = "combo")
 res_gh
+
+##############################
+############ Pdgfra ############
+##############################
+Pdgfra <- VlnPlot(Stroma_All, 
+        features = "Pdgfra", 
+        pt.size = 0, 
+        group.by = "combo",
+        cols = cols_use) +
+  geom_boxplot(
+    width = 0.15,
+    fill = "white",
+    alpha = 1,
+    outlier.size = 0.8,
+    outlier.color = "black",
+    outlier.shape = 19,
+    linewidth = 0.3
+  )
+
+vio_layers <- which(sapply(Pdgfra$layers, function(l) inherits(l$geom, "GeomViolin")))
+for (i in vio_layers) {
+  Pdgfra$layers[[i]]$aes_params$colour <- NA
+  Pdgfra$layers[[i]]$aes_params$linewidth <- 0
+  Pdgfra$layers[[i]]$aes_params$size <- 0
+}
+
+print(Pdgfra) # pdf: 4.77 x 2.69
+
+Pdgfra_stats <- pairwise_wilcox_for_features(Stroma_All, 
+                                         features = "Pdgfra", 
+                                         group.by = "combo")
+Pdgfra_stats
+
+write_csv(Pdgfra_stats, file = "/Users/coellearth/Desktop/HFD_Paper/f-Fig5_ECMSignalling/pdgfra/Stroma_subset_expr_violinbox_stats_pdgfra.csv", col_names = T)
+
+##############################
+############ Cd34 ############
+##############################
+Cd34 <- VlnPlot(Stroma_All, 
+        features = "Cd34", 
+        pt.size = 0, 
+        group.by = "combo",
+        cols = cols_use) +
+  geom_boxplot(
+    width = 0.15,
+    fill = "white",
+    alpha = 1,
+    outlier.size = 0.8,
+    outlier.color = "black",
+    outlier.shape = 19,
+    linewidth = 0.3
+  )
+
+vio_layers <- which(sapply(Cd34$layers, function(l) inherits(l$geom, "GeomViolin")))
+for (i in vio_layers) {
+  Cd34$layers[[i]]$aes_params$colour <- NA
+  Cd34$layers[[i]]$aes_params$linewidth <- 0
+  Cd34$layers[[i]]$aes_params$size <- 0
+}
+
+print(Cd34) # pdf: 4.77 x 2.69
+
+Cd34_stats <- pairwise_wilcox_for_features(Stroma_All, 
+                                         features = "Cd34", 
+                                         group.by = "combo")
+Cd34_stats
+
+write_csv(Cd34_stats, file = "/Users/coellearth/Desktop/HFD_Paper/f-Fig5_ECMSignalling/pdgfra/Stroma_subset_expr_violinbox_stats_cd34.csv", col_names = T)
+
+##############################
+############ Thy1 ############
+##############################
+Thy1 <- VlnPlot(Stroma_All, 
+        features = "Thy1", 
+        pt.size = 0, 
+        group.by = "combo",
+        cols = cols_use) +
+  geom_boxplot(
+    width = 0.15,
+    fill = "white",
+    alpha = 1,
+    outlier.size = 0.8,
+    outlier.color = "black",
+    outlier.shape = 19,
+    linewidth = 0.3
+  )
+
+vio_layers <- which(sapply(Thy1$layers, function(l) inherits(l$geom, "GeomViolin")))
+for (i in vio_layers) {
+  Thy1$layers[[i]]$aes_params$colour <- NA
+  Thy1$layers[[i]]$aes_params$linewidth <- 0
+  Thy1$layers[[i]]$aes_params$size <- 0
+}
+
+print(Thy1) # pdf: 4.77 x 2.69
+
+Thy1_stats <- pairwise_wilcox_for_features(Stroma_All, 
+                                         features = "Thy1", 
+                                         group.by = "combo")
+Thy1_stats
+
+write_csv(Thy1_stats, file = "/Users/coellearth/Desktop/HFD_Paper/f-Fig5_ECMSignalling/pdgfra/Stroma_subset_expr_violinbox_stats_thy1.csv", col_names = T)
+
+Pdgfra / Cd34 / Thy1
 
 ##########################################################################################
 ########################################### SI ###########################################

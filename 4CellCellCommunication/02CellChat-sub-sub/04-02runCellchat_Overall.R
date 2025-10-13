@@ -440,6 +440,26 @@ p <- plotGeneExpression(
 )
 print(p)
 
+p <- plotGeneExpression(
+  cellchat,
+  signaling = "FN1",
+  split.by = "datasets",
+  colors.ggplot = TRUE,
+  type = "violin",
+  color.use = c("#74c5be", "#e95503")
+)
+print(p)
+
+p <- plotGeneExpression(
+  cellchat,
+  signaling = "LAMININ",
+  split.by = "datasets",
+  colors.ggplot = TRUE,
+  type = "violin",
+  color.use = c("#74c5be", "#e95503")
+)
+print(p)
+
 plotGeneExpression(cellchat, 
                    signaling = "WNT", 
                    split.by = "datasets", 
@@ -522,6 +542,57 @@ for (i in 1:length(object.list)) {
                       arrow.width = 1.2,
                       sources.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),
                       targets.use = c("HormSens", "Basal", "LumProg"),
+                      signaling.name = paste(pathways.show, names(object.list)[i]))
+}
+
+pathways.show <- c("COLLAGEN") 
+weight.max <- getMaxWeight(object.list, slot.name = c("netP"), attribute = pathways.show)
+par(mfrow = c(1,2), xpd=TRUE)
+for (i in 1:length(object.list)) {
+  netVisual_aggregate(object.list[[i]], 
+                      signaling = pathways.show, 
+                      layout = "circle", 
+                      edge.weight.max = weight.max[1], 
+                      edge.width.max = 8, 
+                      top = 0.15,
+                      # thresh = 0.01,
+                      arrow.size = 0.4,
+                      arrow.width = 1.2,
+                      # targets.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),
+                      signaling.name = paste(pathways.show, names(object.list)[i]))
+}
+
+pathways.show <- c("FN1") 
+weight.max <- getMaxWeight(object.list, slot.name = c("netP"), attribute = pathways.show)
+par(mfrow = c(1,2), xpd=TRUE)
+for (i in 1:length(object.list)) {
+  netVisual_aggregate(object.list[[i]], 
+                      signaling = pathways.show, 
+                      layout = "circle", 
+                      edge.weight.max = weight.max[1], 
+                      edge.width.max = 8, 
+                      top = 0.15,
+                      # thresh = 0.01,
+                      arrow.size = 0.4,
+                      arrow.width = 1.2,
+                      # targets.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),
+                      signaling.name = paste(pathways.show, names(object.list)[i]))
+}
+
+pathways.show <- c("LAMININ") 
+weight.max <- getMaxWeight(object.list, slot.name = c("netP"), attribute = pathways.show)
+par(mfrow = c(1,2), xpd=TRUE)
+for (i in 1:length(object.list)) {
+  netVisual_aggregate(object.list[[i]], 
+                      signaling = pathways.show, 
+                      layout = "circle", 
+                      edge.weight.max = weight.max[1], 
+                      edge.width.max = 8, 
+                      top = 0.15,
+                      # thresh = 0.01,
+                      arrow.size = 0.4,
+                      arrow.width = 1.2,
+                      # targets.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),
                       signaling.name = paste(pathways.show, names(object.list)[i]))
 }
 
@@ -619,3 +690,41 @@ gg1 <- netAnalysis_signalingChanges_scatter(cellchat,
                                             color.use = c("#6495ed", "#ffa503", "#ff6ab4"),
                                             top.label = 1)
 gg1
+
+###########################################
+###########################################
+###########################################
+
+pathways.show <- c("LAMININ") 
+par(mfrow = c(1,2), xpd=TRUE)
+ht <- list()
+for (i in 1:length(object.list)) {
+  ht[[i]] <- netVisual_heatmap(object.list[[i]], signaling = pathways.show, color.heatmap = "Reds",title.name = paste(pathways.show, "signaling ",names(object.list)[i]))
+}
+#> Do heatmap based on a single object 
+#> 
+#> Do heatmap based on a single object
+ComplexHeatmap::draw(ht[[1]] + ht[[2]], ht_gap = unit(0.5, "cm"))
+
+pathways.show <- c("FN1") 
+par(mfrow = c(1,2), xpd=TRUE)
+ht <- list()
+for (i in 1:length(object.list)) {
+  ht[[i]] <- netVisual_heatmap(object.list[[i]], signaling = pathways.show, color.heatmap = "Reds",title.name = paste(pathways.show, "signaling ",names(object.list)[i]))
+}
+#> Do heatmap based on a single object 
+#> 
+#> Do heatmap based on a single object
+ComplexHeatmap::draw(ht[[1]] + ht[[2]], ht_gap = unit(0.5, "cm"))
+
+###########################################
+###########################################
+###########################################
+
+par(mfrow = c(1, 2), xpd=TRUE)
+
+for (i in 1:length(object.list)) {
+  netVisual_chord_gene(object.list[[i]], sources.use = 4, targets.use = c(5:8), lab.cex = 0.5, title.name = paste0("Signaling from Inflam.FIB - ", names(object.list)[i]))
+}
+
+
