@@ -1,4 +1,5 @@
 setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/fig6-adipo")
+setwd("/Users/coellearth/Desktop/HFD_Paper/f-Fig6_AdipoFeatures/Stroma2Adipo")
 
 library(Seurat)
 library(scater)
@@ -73,12 +74,12 @@ All$subcluster <- factor(All$subcluster, levels = unique(c(All$subcluster, labs[
 Idents(All) <- "orig.ident"
 All_ND_sub_sub_sub <- subset(All, idents = "ND")
 All_HFD_sub_sub_sub <- subset(All, idents = "HFD")
-saveRDS(All_ND_sub_sub_sub, 
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_sub_sub_sub.rds")
-saveRDS(All_HFD_sub_sub_sub,
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_sub_sub_sub.rds")
-saveRDS(All,
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub_sub_sub.rds")
+# saveRDS(All_ND_sub_sub_sub, 
+#         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_sub_sub_sub.rds")
+# saveRDS(All_HFD_sub_sub_sub,
+#         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_sub_sub_sub.rds")
+# saveRDS(All,
+#         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub_sub_sub.rds")
 
 DimPlot(Adipo_All, reduction = "umap", label = F, group.by = "subcluster")
 DimPlot(Adipo_All, reduction = "umap", label = F, group.by = "subcluster") + NoLegend()
@@ -87,20 +88,20 @@ DimPlot(Adipo_All, reduction = "umap", label = F, group.by = "orig.ident", cols 
 
 ############## Store sub-adipo & Store sub-stroma ##############
 
-# # harmony_all <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub.rds")
-# 
-# # All <- subset(harmony_all, subset = subcluster == "Adipo" | subcluster == "Stroma")
-# # 
-# # Idents(All) <- "orig.ident"
-# # ND <- subset(All, idents = "ND")
-# # HFD <- subset(All, idents = "HFD")
-# # saveRDS(ND, 
-# #         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_Stroma2Adipo_sub.rds")
-# # saveRDS(HFD,
-# #         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_Stroma2Adipo_sub.rds")
-# # saveRDS(All,
-# #         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_Stroma2Adipo_sub.rds")
-# 
+harmony_all <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub_sub_sub.rds")
+
+All <- subset(harmony_all, subset = grepl("^(Adipo|Stroma)", subcluster))
+
+Idents(All) <- "orig.ident"
+ND <- subset(All, idents = "ND")
+HFD <- subset(All, idents = "HFD")
+saveRDS(ND, 
+        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_Stroma2Adipo_sub.rds")
+saveRDS(HFD,
+        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_Stroma2Adipo_sub.rds")
+saveRDS(All,
+        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_Stroma2Adipo_sub.rds")
+
 # library(renv)
 # renv::init()
 # install.packages("https://cran.r-project.org/src/contrib/Archive/igraph/igraph_1.6.0.tar.gz",
@@ -285,20 +286,164 @@ DimPlot(Adipo_All, reduction = "umap", label = F, group.by = "orig.ident", cols 
 ND_monocle2 <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/fig6-adipo/Monocle2_objects/ND_Stroma2Adipo_monocle2.rds")
 HFD_monocle2 <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/fig6-adipo/Monocle2_objects/HFD_Stroma2Adipo_monocle2.rds")
 
-ND_plot <- plot_cell_trajectory(ND_monocle2, color_by = "Pseudotime")
-ND_plot + scale_color_distiller(
-  palette   = "Spectral",
-  direction = 1,
-  na.value  = "grey80"
-) + labs(color = "Pseudotime")
-print(plot_cell_trajectory(ND_monocle2, color_by = "cell_type")) 
-print(plot_cell_trajectory(ND_monocle2, color_by = "State"))
+legend_right <- theme(
+  legend.position  = "right",
+  legend.direction = "vertical"
+)
 
-HFD_plot <- plot_cell_trajectory(HFD_monocle2, color_by = "Pseudotime")
-HFD_plot + scale_color_distiller(
-  palette   = "Spectral",
-  direction = 1,
-  na.value  = "grey80"
-) + labs(color = "Pseudotime")
-print(plot_cell_trajectory(HFD_monocle2, color_by = "cell_type")) 
-print(plot_cell_trajectory(HFD_monocle2, color_by = "State"))
+########## ND ##########
+
+### colored by pseudotime
+ND_plot <- plot_cell_trajectory(ND_monocle2, color_by = "Pseudotime", cell_size = 1)
+ND_plot +
+  scale_color_distiller(
+    palette   = "Spectral",
+    direction = 1,
+    na.value  = "grey80"
+  ) +
+  labs(color = "Pseudotime") +
+  guides(color = guide_colorbar(direction = "vertical",
+                                title.position = "top")) +
+  legend_right
+
+### colored by cell type
+library(RColorBrewer)
+pal12 <- brewer.pal(n = 12, name = "Set3")
+sub_lvls <- levels(factor(pData(ND_monocle2)$subcluster))
+names(pal12) <- sub_lvls
+
+p <- plot_cell_trajectory(ND_monocle2, color_by = "subcluster", cell_size = 1)
+p +
+  scale_color_manual(values = pal12, drop = FALSE) +
+  guides(color = guide_legend(
+    ncol = 1,
+    byrow = TRUE,
+    override.aes = list(size = 4)
+  )) +
+  theme_classic() +
+  legend_right
+
+### colored by state
+plot_cell_trajectory(ND_monocle2, color_by = "State", cell_size = 1) +
+  guides(color = guide_legend(ncol = 1, byrow = TRUE)) +
+  legend_right
+
+########## HFD ##########
+
+### colored by pseudotime
+HFD_plot <- plot_cell_trajectory(HFD_monocle2, color_by = "Pseudotime", cell_size = 1)
+HFD_plot +
+  scale_color_distiller(
+    palette   = "Spectral",
+    direction = 1,
+    na.value  = "grey80"
+  ) +
+  labs(color = "Pseudotime") +
+  guides(color = guide_colorbar(direction = "vertical",
+                                title.position = "top")) +
+  legend_right
+
+### colored by cell type
+library(RColorBrewer)
+pal12 <- brewer.pal(n = 12, name = "Set3")
+sub_lvls <- levels(factor(pData(HFD_monocle2)$subcluster))
+names(pal12) <- sub_lvls
+
+p <- plot_cell_trajectory(HFD_monocle2, color_by = "subcluster", cell_size = 1)
+p +
+  scale_color_manual(values = pal12, drop = FALSE) +
+  guides(color = guide_legend(
+    ncol = 1,
+    byrow = TRUE,
+    override.aes = list(size = 4)
+  )) +
+  theme_classic() +
+  legend_right
+
+### colored by state
+plot_cell_trajectory(HFD_monocle2, color_by = "State", cell_size = 1) +
+  guides(color = guide_legend(ncol = 1, byrow = TRUE)) +
+  legend_right
+
+################### gene #####################
+
+legend_right <- theme(
+  legend.position  = "right",
+  legend.direction = "vertical"
+)
+
+get_gene_row <- function(cds, gene) {
+  hit <- rownames(subset(fData(cds), gene_short_name == gene))
+  if (length(hit) == 0) stop(sprintf("Gene '%s' not found in fData(cds)$gene_short_name", gene))
+  hit[1]
+}
+
+gene <- "Pdgfra"
+
+g_nd  <- get_gene_row(ND_monocle2,  gene)
+g_hfd <- get_gene_row(HFD_monocle2, gene)
+
+p_nd_trend <- plot_genes_in_pseudotime(
+  ND_monocle2[g_nd, ], color_by = "ps", min_expr = 0
+) + labs(y = gene, x = "Pseudotime", color = "State", title = paste("ND:", gene)) +
+    theme_classic() + legend_right
+
+p_hfd_trend <- plot_genes_in_pseudotime(
+  HFD_monocle2[g_hfd, ], color_by = "State", min_expr = 0
+) + labs(y = gene, x = "Pseudotime", color = "State", title = paste("HFD:", gene)) +
+    theme_classic() + legend_right
+
+library(patchwork)
+p_nd_trend | p_hfd_trend
+
+plot_cell_trajectory(ND_monocle2, color_by = gene, cell_size = 1) +
+  scale_color_viridis_c(na.value = "grey80") +
+  labs(color = paste0(gene, " expression"), title = paste("ND:", gene)) +
+  legend_right +
+  coord_equal()
+
+plot_cell_trajectory(HFD_monocle2, color_by = gene, cell_size = 1) +
+  scale_color_viridis_c(na.value = "grey80") +
+  labs(color = paste0(gene, " expression"), title = paste("HFD:", gene)) +
+  legend_right +
+  coord_equal()
+
+get_gene_row <- function(cds, gene) {
+  hit <- rownames(subset(fData(cds), gene_short_name == gene))
+  if (length(hit) == 0) stop(sprintf("Gene '%s' not found in fData(cds)$gene_short_name", gene))
+  hit[1]
+}
+
+plot_gene_on_traj <- function(cds, gene, title_prefix = "") {
+  gid <- get_gene_row(cds, gene)
+  field <- paste0("expr_", gene)
+  pData(cds)[[field]] <- as.numeric(exprs(cds)[gid, ])
+
+  plot_cell_trajectory(cds, color_by = field, cell_size = 0.5) +
+    scale_color_viridis_c(na.value = "grey80"
+                          # , trans = "log1p"
+    ) +
+    labs(color = paste0(gene, " expression"),
+         title = paste(title_prefix, gene)) +
+    theme_classic() +
+    theme(legend.position = "right", legend.direction = "vertical")
+}
+
+gene <- "Dpp4"
+Dpp4_ND <- plot_gene_on_traj(ND_monocle2,  gene, "ND:")
+Dpp4_HFD <- plot_gene_on_traj(HFD_monocle2, gene, "HFD:")
+
+Dpp4_ND | Dpp4_HFD
+
+# revise below:
+diff_test_res <- differentialGeneTest(cds[expressed_genes[1:1000],],                                      fullModelFormulaStr = "~sm.ns(Pseudotime)")sig_gene_names <- row.names(subset(diff_test_res, qval < 0.1))pht <- plot_pseudotime_heatmap(cds[sig_gene_names,],                        num_clusters = 6,                        cores = 1,                        show_rownames = T，                        return_heatmap=T)pht
+
+clusters <- cutree(pht$tree_row, k = 6)clustering <- data.frame(clusters)clustering[,1] <- as.character(clustering[,1])colnames(clustering) <- "GeneClusters"table(clustering)head(clustering)
+
+library(magrittr)library(tidyverse)topNGenes <- top_n(diff_test_res, n = 100, desc(qval)) %>%  pull(gene_short_name) %>%  as.character()
+pht <- plot_pseudotime_heatmap(  cds[topNGenes,],  num_clusters = 3,  show_rownames = T,  return_heatmap = T)pht
+
+BEAM_res <- BEAM(lung, branch_point = 1, cores = 1)BEAM_res <- BEAM_res[order(BEAM_res$qval),]BEAM_res <- BEAM_res[,c("gene_short_name", "pval", "qval")]
+
+plot_genes_branched_heatmap(lung[row.names(subset(BEAM_res,                                          qval < 1e-4)),],                                          branch_point = 1,                                          num_clusters = 4,                                          cores = 1,                                          use_gene_short_name = T,                                          show_rownames = T)
+

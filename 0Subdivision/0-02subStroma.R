@@ -65,6 +65,92 @@ DimPlot(Stroma_All, reduction = "umap", label = F, group.by = "subcluster") + No
 DimPlot(Stroma_All, reduction = "umap", label = F, group.by = "orig.ident", cols = c(HFD = "lightblue", ND = "orange"))
 DimPlot(Stroma_All, reduction = "umap", label = F, group.by = "orig.ident", cols = c(HFD = "lightblue", ND = "orange"))  + NoLegend()
 
+# Dpp4_stroma_umap
+
+Dpp4 <- FeaturePlot(
+  Stroma_All,
+  features  = "Dpp4",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+Dpp4
+
+F3 <- FeaturePlot(
+  Stroma_All,
+  features  = "F3",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+F3
+
+Plin1 <- FeaturePlot(
+  Stroma_All,
+  features  = "Plin1",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+Plin1
+
+Adam12 <- FeaturePlot(
+  Stroma_All,
+  features  = "Adam12",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+Adam12
+
+Frem1 <- FeaturePlot(
+  Stroma_All,
+  features  = "Frem1",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+Frem1
+
+Map2 <- FeaturePlot(
+  Stroma_All,
+  features  = "Map2",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+Map2
+
+Acta2 <- FeaturePlot(
+  Stroma_All,
+  features  = "Acta2",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+Acta2
+
 # Idents(Stroma_All) <- "orig.ident"
 # Stroma_All_ND <- subset(Stroma_All, idents = "ND")
 # Stroma_All_HFD <- subset(Stroma_All, idents = "HFD")
@@ -75,19 +161,19 @@ DimPlot(Stroma_All, reduction = "umap", label = F, group.by = "orig.ident", cols
 # saveRDS(Stroma_All,
 #         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_Stroma_sub.rds")
 
-labs <- as.character(Stroma_All$subcluster)
-cells <- colnames(Stroma_All)
-sel <- !is.na(labs) & grepl("^Stroma_", labs)
-All$subcluster <- as.character(All$subcluster)
-All@meta.data[cells[sel], "subcluster"] <- labs[sel]
-All$subcluster <- factor(All$subcluster, levels = unique(c(All$subcluster, labs[sel])))
-
-Idents(All) <- "orig.ident"
-All_ND_sub_sub <- subset(All, idents = "ND")
-All_HFD_sub_sub <- subset(All, idents = "HFD")
-saveRDS(All_ND_sub_sub, 
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_sub_sub.rds")
-saveRDS(All_HFD_sub_sub,
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_sub_sub.rds")
-saveRDS(All,
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub_sub.rds")
+# labs <- as.character(Stroma_All$subcluster)
+# cells <- colnames(Stroma_All)
+# sel <- !is.na(labs) & grepl("^Stroma_", labs)
+# All$subcluster <- as.character(All$subcluster)
+# All@meta.data[cells[sel], "subcluster"] <- labs[sel]
+# All$subcluster <- factor(All$subcluster, levels = unique(c(All$subcluster, labs[sel])))
+# 
+# Idents(All) <- "orig.ident"
+# All_ND_sub_sub <- subset(All, idents = "ND")
+# All_HFD_sub_sub <- subset(All, idents = "HFD")
+# saveRDS(All_ND_sub_sub, 
+#         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_sub_sub.rds")
+# saveRDS(All_HFD_sub_sub,
+#         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_sub_sub.rds")
+# saveRDS(All,
+#         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub_sub.rds")

@@ -373,9 +373,15 @@ cellchat_HFD <- netAnalysis_computeCentrality(
 object.list <- list(ND = cellchat_ND, HFD = cellchat_HFD)
 cellchat <- mergeCellChat(object.list, add.names = names(object.list))
 par(mfrow = c(1,2), xpd=TRUE)
+rows_target <- c("HormSens", "LumProg", "Basal")
+cols_target <- paste0("Stroma_", 0:4)
 netVisual_diffInteraction(cellchat, 
+                          measure = "weight",
                           weight.scale = T, 
-                          vertex.size.max = 6)
+                          vertex.size.max = 6,
+                          sources.use = c("HormSens", "LumProg", "Basal"),
+                          targets.use = paste0("Stroma_", 0:4),
+                          remove.isolate = T)
 netVisual_diffInteraction(cellchat, 
                           weight.scale = T, 
                           measure = "weight",
@@ -627,8 +633,7 @@ for (i in 1:length(object.list)) {
 # }
 
 gg1 <- netVisual_bubble(cellchat, 
-                        sources.use = c(2,4,7), 
-                        targets.use = c(5,8,9,11,14),  
+                        targets.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),  
                         comparison = c(1, 2), 
                         max.dataset = 2, 
                         title.name = "Increased signaling in HFD", 
@@ -636,8 +641,7 @@ gg1 <- netVisual_bubble(cellchat,
                         remove.isolate = T)
 
 gg2 <- netVisual_bubble(cellchat, 
-                        sources.use = c(2,4,7), 
-                        targets.use = c(5,8,9,11,14),  
+                        targets.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),  
                         comparison = c(1, 2), 
                         max.dataset = 1, 
                         title.name = "Decreased signaling in HFD", 
@@ -724,7 +728,166 @@ ComplexHeatmap::draw(ht[[1]] + ht[[2]], ht_gap = unit(0.5, "cm"))
 par(mfrow = c(1, 2), xpd=TRUE)
 
 for (i in 1:length(object.list)) {
-  netVisual_chord_gene(object.list[[i]], sources.use = 4, targets.use = c(5:8), lab.cex = 0.5, title.name = paste0("Signaling from Inflam.FIB - ", names(object.list)[i]))
+  netVisual_chord_gene(object.list[[i]], 
+                       sources.use = 4, 
+                       targets.use = c(5:8), 
+                       lab.cex = 0.5, 
+                       title.name = paste0("Signaling from Inflam.FIB - ", names(object.list)[i]))
 }
 
+###########################################
+###########################################
+###########################################
+
+cellchat_HFD <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/4CellCellCommunication/02CellChat-sub-sub/CellChatObjects/cellchat_HFD_sub_sub.rds")
+cellchat_ND  <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/4CellCellCommunication/02CellChat-sub-sub/CellChatObjects/cellchat_ND_sub_sub.rds")
+
+count_HFD <- cellchat_HFD@net$count
+count_ND  <- cellchat_ND@net$count
+
+rows_target <- c("HormSens", "LumProg", "Basal")
+cols_target <- paste0("Stroma_", 0:4)
+
+mat_HFD <- matrix(0, nrow = length(rows_target), ncol = length(cols_target),
+                  dimnames = list(rows_target, cols_target))
+mat_ND  <- matrix(0, nrow = length(rows_target), ncol = length(cols_target),
+                  dimnames = list(rows_target, cols_target))
+
+rows_in_HFD <- intersect(rows_target, rownames(count_HFD))
+cols_in_HFD <- intersect(cols_target, colnames(count_HFD))
+if (length(rows_in_HFD) > 0 && length(cols_in_HFD) > 0) {
+  mat_HFD[rows_in_HFD, cols_in_HFD] <- count_HFD[rows_in_HFD, cols_in_HFD, drop = FALSE]
+}
+
+rows_in_ND <- intersect(rows_target, rownames(count_ND))
+cols_in_ND <- intersect(cols_target, colnames(count_ND))
+if (length(rows_in_ND) > 0 && length(cols_in_ND) > 0) {
+  mat_ND[rows_in_ND, cols_in_ND] <- count_ND[rows_in_ND, cols_in_ND, drop = FALSE]
+}
+
+diff_mat <- mat_HFD - mat_ND
+
+suppressPackageStartupMessages(library(pheatmap))
+
+abs_max <- max(abs(diff_mat), na.rm = TRUE)
+breaks  <- seq(-abs_max, abs_max, length.out = 101)
+cols    <- colorRampPalette(c("blue", "white", "red"))(length(breaks) - 1)
+
+p1 <- pheatmap(
+  diff_mat,
+  cluster_rows = FALSE,
+  cluster_cols = FALSE,
+  color = cols,
+  breaks = breaks,
+  border_color = "grey85",
+  display_numbers = TRUE,
+  number_color = "black",
+  fontsize_number = 10,
+  main = "Interaction number difference (HFD − ND)\nSenders: HormSens/LumProg/Basal  →  Receivers: Stroma_0~4"
+)
+
+cols_target <- c("HormSens", "LumProg", "Basal")
+rows_target <- paste0("Stroma_", 0:4)
+
+mat_HFD <- matrix(0, nrow = length(rows_target), ncol = length(cols_target),
+                  dimnames = list(rows_target, cols_target))
+mat_ND  <- matrix(0, nrow = length(rows_target), ncol = length(cols_target),
+                  dimnames = list(rows_target, cols_target))
+
+rows_in_HFD <- intersect(rows_target, rownames(count_HFD))
+cols_in_HFD <- intersect(cols_target, colnames(count_HFD))
+if (length(rows_in_HFD) > 0 && length(cols_in_HFD) > 0) {
+  mat_HFD[rows_in_HFD, cols_in_HFD] <- count_HFD[rows_in_HFD, cols_in_HFD, drop = FALSE]
+}
+
+rows_in_ND <- intersect(rows_target, rownames(count_ND))
+cols_in_ND <- intersect(cols_target, colnames(count_ND))
+if (length(rows_in_ND) > 0 && length(cols_in_ND) > 0) {
+  mat_ND[rows_in_ND, cols_in_ND] <- count_ND[rows_in_ND, cols_in_ND, drop = FALSE]
+}
+
+diff_mat <- mat_HFD - mat_ND
+
+suppressPackageStartupMessages(library(pheatmap))
+
+abs_max <- max(abs(diff_mat), na.rm = TRUE)
+breaks  <- seq(-abs_max, abs_max, length.out = 101)
+cols    <- colorRampPalette(c("blue", "white", "red"))(length(breaks) - 1)
+
+p2 <- pheatmap(
+  diff_mat,
+  cluster_rows = FALSE,
+  cluster_cols = FALSE,
+  color = cols,
+  breaks = breaks,
+  border_color = "grey85",
+  display_numbers = TRUE,
+  number_color = "black",
+  fontsize_number = 10,
+  main = "Interaction number difference (HFD − ND)\nSenders: HormSens/LumProg/Basal  →  Receivers: Stroma_0~4"
+)
+
+p1 / p2
+
+########################
+########################
+########################
+# —— 读入对象（保持你原路径） ——
+cellchat_HFD <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/4CellCellCommunication/02CellChat-sub-sub/CellChatObjects/cellchat_HFD_sub_sub.rds")
+cellchat_ND  <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/4CellCellCommunication/02CellChat-sub-sub/CellChatObjects/cellchat_ND_sub_sub.rds")
+
+# —— 提取 interaction strength（CellChat: @net$weight）——
+weight_HFD <- cellchat_HFD@net$weight
+weight_ND  <- cellchat_ND@net$weight
+
+# —— 设定目标发送者/接收者 —— 
+rows_target <- c("HormSens", "LumProg", "Basal")
+cols_target <- paste0("Stroma_", 0:4)
+
+# —— 构造只包含目标行列的强度矩阵；缺失补 0（表示未检测到/极弱）——
+mat_HFD <- matrix(0, nrow = length(rows_target), ncol = length(cols_target),
+                  dimnames = list(rows_target, cols_target))
+mat_ND  <- matrix(0, nrow = length(rows_target), ncol = length(cols_target),
+                  dimnames = list(rows_target, cols_target))
+
+rows_in_HFD <- intersect(rows_target, rownames(weight_HFD))
+cols_in_HFD <- intersect(cols_target, colnames(weight_HFD))
+if (length(rows_in_HFD) > 0 && length(cols_in_HFD) > 0) {
+  mat_HFD[rows_in_HFD, cols_in_HFD] <- weight_HFD[rows_in_HFD, cols_in_HFD, drop = FALSE]
+}
+
+rows_in_ND <- intersect(rows_target, rownames(weight_ND))
+cols_in_ND <- intersect(cols_target, colnames(weight_ND))
+if (length(rows_in_ND) > 0 && length(cols_in_ND) > 0) {
+  mat_ND[rows_in_ND, cols_in_ND] <- weight_ND[rows_in_ND, cols_in_ND, drop = FALSE]
+}
+
+# —— 差值矩阵：HFD − ND（正值代表 HFD 强度更高）——
+diff_mat_strength <- mat_HFD - mat_ND
+
+# —— 可视化（热图）——
+suppressPackageStartupMessages(library(pheatmap))
+
+# 对称色标（让 0 居中）
+abs_max <- max(abs(diff_mat_strength), na.rm = TRUE)
+# 处理极端离群：如希望更稳健，可用 quantile 截断（取消下一行注释即可）
+# abs_max <- max(abs(diff_mat_strength[diff_mat_strength >= quantile(diff_mat_strength, 0.02, na.rm=TRUE) &
+#                                      diff_mat_strength <= quantile(diff_mat_strength, 0.98, na.rm=TRUE)]), na.rm = TRUE)
+
+breaks <- seq(-abs_max, abs_max, length.out = 101)
+cols   <- colorRampPalette(c("blue", "white", "red"))(length(breaks) - 1)
+
+# 屏幕显示
+pheatmap(
+  diff_mat_strength,
+  cluster_rows = FALSE,
+  cluster_cols = FALSE,
+  color = cols,
+  breaks = breaks,
+  border_color = "grey85",
+  display_numbers = TRUE,
+  number_color = "black",
+  fontsize_number = 10,
+  main = "Interaction strength difference (HFD − ND)\nSenders: HormSens / LumProg / Basal  →  Receivers: Stroma_0~4"
+)
 

@@ -28,6 +28,16 @@ Pdgfra <- FeaturePlot(
   cols      = c("#fcf0f4", "#c51c7d")
 )
 
+Col1a1 <- FeaturePlot(
+  All,
+  features  = "Col1a1",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
 Cd34 <- FeaturePlot(
   All,
   features  = "Cd34",
@@ -48,4 +58,65 @@ Thy1 <- FeaturePlot(
   cols      = c("#fcf0f4", "#c51c7d")
 )
 
-(Pdgfra / Cd34 / Thy1)
+Adipoq <- FeaturePlot(
+  All,
+  features  = "Adipoq",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+Plin1 <- FeaturePlot(
+  All,
+  features  = "Plin1",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+wrap_plots(
+  list(Pdgfra, Col1a1, Cd34, Adipoq, Thy1, Plin1),
+  nrow = 3, ncol = 2, byrow = TRUE
+) + plot_layout(guides = "collect") &
+  theme(legend.position = "right", legend.direction = "vertical") &
+  coord_equal()
+
+Dpp4 <- FeaturePlot(
+  All,
+  features  = "Dpp4",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+Dpp4
+
+Esr1 <- FeaturePlot(
+  All,
+  features  = "Esr1",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+Esr1
+
+Egfr <- FeaturePlot(
+  All,
+  features  = "Egfr",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+Egfr
