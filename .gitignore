@@ -228,6 +228,7 @@
 9999prebutertyVsPuberty/formerVersion/elseSeuratObj/GSM4994965_pub.rds
 9999prebutertyVsPuberty/formerVersion/trajectoryOutput/All_stages_trajectory.rds
 9999prebutertyVsPuberty/formerVersion/trajectoryOutput/cds_obj.rds
+9pySCENIC/auc_mtx.csv
 fig6-adipo/Monocle2_objects/HFD_Stroma2Adipo_monocle2.rds
 fig6-adipo/Monocle2_objects/ND_Stroma2Adipo_monocle2.rds
 fig6-adipo/renv/library/macos/R-4.4/aarch64-apple-darwin20/HSMMSingleCell/data/HSMM_expr_matrix.rda

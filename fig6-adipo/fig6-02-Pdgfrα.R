@@ -28,6 +28,18 @@ Pdgfra <- FeaturePlot(
   cols      = c("#fcf0f4", "#c51c7d")
 )
 
+Ghr <- FeaturePlot(
+  All,
+  features  = "Ghr",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.001,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+
+
 Col1a1 <- FeaturePlot(
   All,
   features  = "Col1a1",
@@ -134,4 +146,3 @@ Pgr <- FeaturePlot(
 Pgr
 
 Idents(All) <- "cell_type"
-All <- subset(All, idents = "Stroma")

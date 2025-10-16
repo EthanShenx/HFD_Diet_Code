@@ -73,16 +73,16 @@ pairwise_wilcox_for_features <- function(obj, features, group.by = "combo") {
 }
 
 palette_10 <- c(
-  "#af9789", # muted brown
-  "#e29898", # soft pink
-  "#52a57f", # green
-  "#7b6ca3", # purple
-  "#f0a641", # orange
-  "#c8735e", # terracotta
-  "#af5878", # rose
-  "#a0c277", # sage
-  "#6671a7", # blue
-  "#8abdbf"  # teal
+  "#e27069", # muted brown
+  "#90943e", # soft pink
+  "#30ae7a", # green
+  "#349ecb", # sage
+  "#a26ea2", # purple
+  "#e27069", # muted brown
+  "#90943e", # soft pink
+  "#30ae7a", # green
+  "#349ecb", # sage
+  "#a26ea2"  # purple
 )
 grp_levels <- levels(factor(Stroma_All$combo))
 n_groups   <- length(grp_levels)
@@ -580,3 +580,64 @@ res_fgf18 <- pairwise_wilcox_for_features(Stroma_All,
                                          features = "Igf1", 
                                          group.by = "combo")
 res_fgf18
+
+##############################
+############ Dpp4 ###########
+##############################
+make_violin_plot <- function(gene_name) {
+
+  p <- VlnPlot(
+    Stroma_All, 
+    features = gene_name, 
+    pt.size = 0, 
+    group.by = "combo",
+    cols = cols_use
+  ) +
+    geom_boxplot(
+      width = 0.15,
+      fill = "white",
+      alpha = 1,
+      outlier.size = 0.5,
+      outlier.color = "black",
+      outlier.shape = 19,
+      linewidth = 0.3
+    )
+  
+  vio_layers <- which(sapply(p$layers, function(l) inherits(l$geom, "GeomViolin")))
+  for (i in vio_layers) {
+    p$layers[[i]]$aes_params$colour <- NA
+    p$layers[[i]]$aes_params$linewidth <- 0
+    p$layers[[i]]$aes_params$size <- 0
+  }
+  
+  p <- p + 
+    scale_x_discrete(labels = function(x) sub("^[^_]*_[^_]*_", "", x)) +
+    theme(
+      axis.text.x = element_text(angle = 0, hjust = 0.5, vjust = 0.5),
+      axis.line = element_line(linewidth = 0.25),
+      axis.ticks = element_line(linewidth = 0.25)
+    )
+  
+  return(p)
+}
+
+# not expressed
+Adipoq <- make_violin_plot("Adipoq")
+Plin1 <- make_violin_plot("Plin1")
+Adipor2 <- make_violin_plot("Adipor2")
+Cidec <- make_violin_plot("Cidec")
+Nrg4 <- make_violin_plot("Nrg4")
+# expressed
+Lpl <- make_violin_plot("Lpl")
+Pparg <- make_violin_plot("Pparg")
+
+Dpp4 <- make_violin_plot("Dpp4")
+Pdgfra <- make_violin_plot("Pdgfra")
+Pi16 <- make_violin_plot("Pi16")
+
+# expressed
+Lama2 <- make_violin_plot("Lama2") # expecial for _1
+Fbn1 <- make_violin_plot("Fbn1")
+Col3a1 <- make_violin_plot("Col3a1")
+Fap <- make_violin_plot("Fap") # expecial for _1
+

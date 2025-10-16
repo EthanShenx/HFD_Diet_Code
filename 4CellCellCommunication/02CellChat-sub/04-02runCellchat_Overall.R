@@ -486,7 +486,13 @@ pathways.show <- c("COLLAGEN")
 weight.max <- getMaxWeight(object.list, slot.name = c("netP"), attribute = pathways.show)
 par(mfrow = c(1,2), xpd=TRUE)
 for (i in 1:length(object.list)) {
-  netVisual_aggregate(object.list[[i]], signaling = pathways.show, layout = "circle", edge.weight.max = weight.max[1], edge.width.max = 10, signaling.name = paste(pathways.show, names(object.list)[i]))
+  netVisual_aggregate(object.list[[i]], 
+                      signaling = pathways.show, 
+                      layout = "circle", 
+                      arrow.size = 1.0,
+                      edge.weight.max = weight.max[1], 
+                      edge.width.max = 10, 
+                      signaling.name = paste(pathways.show, names(object.list)[i]))
 }
 
 ###################################################################
@@ -521,6 +527,11 @@ netVisual_heatmap(cellchat,
 netVisual_heatmap(cellchat, 
                          measure = "weight",
                          signaling = "COLLAGEN")
+
+netVisual_heatmap(cellchat, 
+                         measure = "weight",
+                         signaling = "IGF",
+                  color.heatmap = c("#6495ed", "#ff6ab4"))
 
 ###################################################################
 ###################################################################
@@ -600,6 +611,16 @@ p <- plotGeneExpression(
 )
 print(p)
 
+p <- plotGeneExpression(
+  cellchat,
+  signaling = "IGF",
+  split.by = "datasets",
+  colors.ggplot = TRUE,
+  type = "violin",
+  color.use = c("#74c5be", "#e95503")
+)
+print(p)
+
 ###################################################################
 ###################################################################
 ###################################################################
@@ -622,44 +643,45 @@ for (i in 1:length(object.list)) {
 ###################################################################
 
 gg1 <- netVisual_bubble(cellchat, 
-                        targets.use = "Stroma",  
+                        targets.use = c("Basal", "HormSens", "LumProg"),  
                         comparison = c(1, 2), 
                         max.dataset = 2, 
                         title.name = "Increased signaling in HFD", 
                         angle.x = 45, 
                         remove.isolate = T,
-                        signaling = "COLLAGEN")
+                        signaling = "IGF")
 
 gg2 <- netVisual_bubble(cellchat, 
-                        targets.use = "Stroma",  
+                        targets.use = c("Basal", "HormSens", "LumProg"),  
                         comparison = c(1, 2), 
                         max.dataset = 1, 
                         title.name = "Decreased signaling in HFD", 
                         angle.x = 45, 
-                        remove.isolate = T)
+                        remove.isolate = T,
+                        signaling = "IGF")
 
 gg1 + gg2
 
 par(mfrow = c(1,2), xpd=TRUE)
 
 netVisual_chord_gene(object.list[[2]], 
-                    targets.use = "Stroma",
+                    targets.use = c("Basal", "HormSens", "LumProg"),  
                      slot.name = 'net', 
                      net = net.up, 
                      lab.cex = 0.8, 
                      small.gap = 3.5, 
                      title.name = paste0("Up-regulated signaling in ", 
                                          names(object.list)[2]),
-                    signaling = "COLLAGEN",
+                    signaling = "IGF",
                      )
 
 netVisual_chord_gene(object.list[[1]], 
-                     targets.use = "Stroma", 
+                     targets.use = c("Basal", "HormSens", "LumProg"),  
                      slot.name = 'net', 
                      net = net.down, 
                      lab.cex = 0.8, 
                      small.gap = 3.5, 
                      title.name = paste0("Down-regulated signaling in ", 
                                          names(object.list)[2]),
-                     signaling = "COLLAGEN",
+                     signaling = "IGF",
                      )
