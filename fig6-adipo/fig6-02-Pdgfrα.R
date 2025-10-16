@@ -115,8 +115,23 @@ Egfr <- FeaturePlot(
   reduction = "umap",
   split.by  = "orig.ident",
   order     = TRUE,
-  pt.size   = 0.01,
+  pt.size   = 0.001,
   cols      = c("#fcf0f4", "#c51c7d")
 )
 
 Egfr
+
+Pgr <- FeaturePlot(
+  All,
+  features  = "Pgr",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.001,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+Pgr
+
+Idents(All) <- "cell_type"
+All <- subset(All, idents = "Stroma")

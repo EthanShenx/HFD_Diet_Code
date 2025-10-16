@@ -108,6 +108,7 @@
 *originaldata/Harmony/harmony_All_Adipo_sub.rds
 *originaldata/Harmony/harmony_All_Stroma_sub.rds
 *originaldata/Harmony/harmony_All_Stroma2Adipo_sub.rds
+*originaldata/Harmony/harmony_All_Stroma2AdipoAndEpi_sub.rds
 *originaldata/Harmony/harmony_All_sub_sub_sub.rds
 *originaldata/Harmony/harmony_All_sub_sub.rds
 *originaldata/Harmony/harmony_All_sub.rds
@@ -116,6 +117,7 @@
 *originaldata/Harmony/harmony_HFD_Adipo_sub.rds
 *originaldata/Harmony/harmony_HFD_Stroma_sub.rds
 *originaldata/Harmony/harmony_HFD_Stroma2Adipo_sub.rds
+*originaldata/Harmony/harmony_HFD_Stroma2AdipoAndEpi_sub.rds
 *originaldata/Harmony/harmony_HFD_sub_sub_sub.rds
 *originaldata/Harmony/harmony_HFD_sub_sub.rds
 *originaldata/Harmony/harmony_HFD_sub.rds
@@ -123,6 +125,7 @@
 *originaldata/Harmony/harmony_ND_Adipo_sub.rds
 *originaldata/Harmony/harmony_ND_Stroma_sub.rds
 *originaldata/Harmony/harmony_ND_Stroma2Adipo_sub.rds
+*originaldata/Harmony/harmony_ND_Stroma2AdipoAndEpi_sub.rds
 *originaldata/Harmony/harmony_ND_sub_sub_sub.rds
 *originaldata/Harmony/harmony_ND_sub_sub.rds
 *originaldata/Harmony/harmony_ND_sub.rds
@@ -227,6 +230,7 @@
 9999prebutertyVsPuberty/formerVersion/trajectoryOutput/cds_obj.rds
 fig6-adipo/Monocle2_objects/HFD_Stroma2Adipo_monocle2.rds
 fig6-adipo/Monocle2_objects/ND_Stroma2Adipo_monocle2.rds
+fig6-adipo/renv/library/macos/R-4.4/aarch64-apple-darwin20/HSMMSingleCell/data/HSMM_expr_matrix.rda
 fig6-adipo/slingshot_results/Adipo_All_slingshot_sce.rds
 fig6-adipo/slingshot_results/Adipo_All_slingshot_seurat.rds
 fig6-adipo/slingshot_results/slingshot_All_sce.rds

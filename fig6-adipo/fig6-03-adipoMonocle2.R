@@ -1,24 +1,34 @@
 setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/fig6-adipo")
 setwd("/Users/coellearth/Desktop/HFD_Paper/f-Fig6_AdipoFeatures/Stroma2Adipo")
 
+library(igraph)
 library(Seurat)
 library(scater)
 library(RColorBrewer)
 library(CytoTRACE2) 
-library(dplyr)
-library(plyr)
 library(glmGamPoi)
 library(patchwork)
+library(Matrix)
 library(Nebulosa)
 library(SingleR)
-library(celldex)
 library(monocle)
+library(celldex)
+library(dplyr)
+library(plyr)
+library(clusterProfiler)
+library(org.Mm.eg.db)
 
 ############## Subdivide Adipo ##############
 
 setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/0Subdivision")
 
 All <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub_sub.rds")
+
+# For mapping monocle2 state back to seurat
+All <- subset(
+  All,
+  subset = grepl("^(Stroma|Adipo)", subcluster)
+)
 
 Idents(All) <- "subcluster"
 
@@ -74,6 +84,11 @@ All$subcluster <- factor(All$subcluster, levels = unique(c(All$subcluster, labs[
 Idents(All) <- "orig.ident"
 All_ND_sub_sub_sub <- subset(All, idents = "ND")
 All_HFD_sub_sub_sub <- subset(All, idents = "HFD")
+
+# For mapping monocle2 state back to seurat
+ND_seurat <- subset(All, idents = "ND")
+HFD_seurat <- subset(All, idents = "HFD")
+
 # saveRDS(All_ND_sub_sub_sub, 
 #         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_sub_sub_sub.rds")
 # saveRDS(All_HFD_sub_sub_sub,
@@ -90,17 +105,20 @@ DimPlot(Adipo_All, reduction = "umap", label = F, group.by = "orig.ident", cols 
 
 harmony_all <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub_sub_sub.rds")
 
-All <- subset(harmony_all, subset = grepl("^(Adipo|Stroma)", subcluster))
+# All <- subset(
+#   harmony_all,
+#   subset = grepl("^(Stroma|Adipo)", subcluster) | cell_type %in% c("HormSens", "LumProg", "Basal")
+# )
 
 Idents(All) <- "orig.ident"
 ND <- subset(All, idents = "ND")
 HFD <- subset(All, idents = "HFD")
 saveRDS(ND, 
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_Stroma2Adipo_sub.rds")
+        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_Stroma2AdipoAndEpi_sub.rds")
 saveRDS(HFD,
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_Stroma2Adipo_sub.rds")
+        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_Stroma2AdipoAndEpi_sub.rds")
 saveRDS(All,
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_Stroma2Adipo_sub.rds")
+        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_Stroma2AdipoAndEpi_sub.rds")
 
 # library(renv)
 # renv::init()
@@ -285,6 +303,130 @@ saveRDS(All,
 
 ND_monocle2 <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/fig6-adipo/Monocle2_objects/ND_Stroma2Adipo_monocle2.rds")
 HFD_monocle2 <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/fig6-adipo/Monocle2_objects/HFD_Stroma2Adipo_monocle2.rds")
+
+state_map <- setNames(as.character(Biobase::pData(ND_monocle2)$State), rownames(Biobase::pData(ND_monocle2)))
+common_cells <- intersect(Seurat::Cells(ND_seurat), names(state_map))
+ND_seurat$Monocle2_State <- NA
+ND_seurat$Monocle2_State[common_cells] <- state_map[common_cells]
+
+state_map <- setNames(as.character(Biobase::pData(HFD_monocle2)$State), rownames(Biobase::pData(HFD_monocle2)))
+common_cells <- intersect(Seurat::Cells(HFD_seurat), names(state_map))
+HFD_seurat$Monocle2_State <- NA
+HFD_seurat$Monocle2_State[common_cells] <- state_map[common_cells]
+
+ND_State2_Adipo <- subset(ND_seurat,
+                          subset = grepl("^Adipo", subcluster) & Monocle2_State == "2")
+ND_State3_Adipo <- subset(ND_seurat,
+                          subset = grepl("^Adipo", subcluster) & Monocle2_State == "3")
+HFD_Adipo <- subset(HFD_seurat,
+                    subset = grepl("^Adipo", subcluster) & Monocle2_State == "2")
+
+ND_State2_Adipo$group <- "state2"
+ND_State3_Adipo$group <- "state3"
+ND_Adipo_states <- merge(ND_State2_Adipo, ND_State3_Adipo)
+Idents(ND_Adipo_states) <- "group"
+
+markers_ND_state2_vs_state3 <- FindMarkers(
+  ND_Adipo_states,
+  ident.1 = "state2",
+  ident.2 = "state3",
+  test.use = "wilcox",
+  logfc.threshold = 0.25,
+  min.pct = 0.1
+)
+
+if ("avg_logFC" %in% colnames(markers_ND_state2_vs_state3)) {
+  markers_ND_state2_vs_state3$avg_log2FC <- markers_ND_state2_vs_state3$avg_logFC
+}
+
+ND_state2_up_genes <- rownames(subset(markers_ND_state2_vs_state3, avg_log2FC > 0 & p_val_adj < 0.05))
+ND_state3_up_genes <- rownames(subset(markers_ND_state2_vs_state3, avg_log2FC < 0 & p_val_adj < 0.05))
+
+mm_state2 <- bitr(ND_state2_up_genes, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = org.Mm.eg.db)
+mm_state3 <- bitr(ND_state3_up_genes, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = org.Mm.eg.db)
+
+ego_state2 <- enrichGO(gene = unique(mm_state2$ENTREZID), 
+                       OrgDb = org.Mm.eg.db, 
+                       keyType = "ENTREZID", 
+                       ont = "BP", 
+                       pAdjustMethod = "BH", 
+                       pvalueCutoff = 0.05, 
+                       qvalueCutoff = 0.2, 
+                       readable = TRUE)
+ego_state3 <- enrichGO(gene = unique(mm_state3$ENTREZID), 
+                       OrgDb = org.Mm.eg.db, 
+                       keyType = "ENTREZID", 
+                       ont = "BP", 
+                       pAdjustMethod = "BH", 
+                       pvalueCutoff = 0.05, 
+                       qvalueCutoff = 0.2, 
+                       readable = TRUE)
+
+########## Branch Point Gene ##########
+
+branch_point <- 1
+
+beam <- BEAM(
+  ND_monocle2,
+  branch_point = branch_point,
+  cores = 4,
+  progenitor_method = "duplicate",
+  verbose = T
+)
+
+beam <- beam[order(beam$qval), ]
+sig_genes <- rownames(subset(beam, qval < 1e-4))
+
+cells_state2 <- rownames(subset(Biobase::pData(ND_monocle2), State %in% c("2", 2)))
+cells_state3 <- rownames(subset(Biobase::pData(ND_monocle2), State %in% c("3", 3)))
+
+expr <- Biobase::exprs(ND_monocle2)[sig_genes, c(cells_state2, cells_state3), drop = FALSE]
+m2 <- Matrix::rowMeans(expr[, cells_state2, drop = FALSE])
+m3 <- Matrix::rowMeans(expr[, cells_state3, drop = FALSE])
+
+genes_state2_branch <- names(which(m2 > m3))
+genes_state3_branch <- names(which(m3 > m2))
+
+gene_map <- setNames(as.character(Biobase::fData(ND_monocle2)$gene_short_name), rownames(Biobase::fData(ND_monocle2)))
+sym_state2 <- unique(na.omit(gene_map[genes_state2_branch]))
+sym_state3 <- unique(na.omit(gene_map[genes_state3_branch]))
+sym_state2 <- sym_state2[sym_state2 != ""]
+sym_state3 <- sym_state3[sym_state3 != ""]
+
+mm_state2 <- bitr(sym_state2, 
+                  fromType = "SYMBOL", 
+                  toType = "ENTREZID", 
+                  OrgDb = org.Mm.eg.db)
+mm_state3 <- bitr(sym_state3, 
+                  fromType = "SYMBOL", 
+                  toType = "ENTREZID", 
+                  OrgDb = org.Mm.eg.db)
+
+ego_state2 <- enrichGO(gene = unique(mm_state2$ENTREZID), OrgDb = org.Mm.eg.db, keyType = "ENTREZID", ont = "BP", pAdjustMethod = "BH", pvalueCutoff = 0.05, qvalueCutoff = 0.2, readable = TRUE)
+ego_state3 <- enrichGO(gene = unique(mm_state3$ENTREZID), OrgDb = org.Mm.eg.db, keyType = "ENTREZID", ont = "BP", pAdjustMethod = "BH", pvalueCutoff = 0.05, qvalueCutoff = 0.2, readable = TRUE)
+
+ekegg_state2 <- enrichKEGG(gene = unique(mm_state2$ENTREZID), organism = "mmu", pvalueCutoff = 0.05)
+ekegg_state3 <- enrichKEGG(gene = unique(mm_state3$ENTREZID), organism = "mmu", pvalueCutoff = 0.05)
+
+top_beam <- rownames(head(beam, 1000))
+ph <- plot_genes_branched_heatmap(
+  ND_monocle2[top_beam, ],
+  branch_point = branch_point,
+  num_clusters = 2,
+  use_gene_short_name = TRUE,
+  cores = 4,
+  return_heatmap = TRUE
+)
+
+write.csv(beam, "ND_BEAM_branchpoint1_all.csv")
+write.csv(sym_state2, "ND_BEAM_branchpoint1_genes_state2.csv", row.names = FALSE)
+write.csv(sym_state3, "ND_BEAM_branchpoint1_genes_state3.csv", row.names = FALSE)
+write.csv(as.data.frame(ego_state2), "ND_BEAM_branchpoint1_GO_state2.csv", row.names = FALSE)
+write.csv(as.data.frame(ego_state3), "ND_BEAM_branchpoint1_GO_state3.csv", row.names = FALSE)
+write.csv(as.data.frame(ekegg_state2), "ND_BEAM_branchpoint1_KEGG_state2.csv", row.names = FALSE)
+write.csv(as.data.frame(ekegg_state3), "ND_BEAM_branchpoint1_KEGG_state3.csv", row.names = FALSE)
+
+########## set param ##########
 
 legend_right <- theme(
   legend.position  = "right",
