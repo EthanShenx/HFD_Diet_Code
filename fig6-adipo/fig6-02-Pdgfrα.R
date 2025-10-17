@@ -28,6 +28,16 @@ Pdgfra <- FeaturePlot(
   cols      = c("#fcf0f4", "#c51c7d")
 )
 
+Egfr <- FeaturePlot(
+  All,
+  features  = "Egfr",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
 Ghr <- FeaturePlot(
   All,
   features  = "Ghr",
