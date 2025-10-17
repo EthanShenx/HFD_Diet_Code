@@ -9,6 +9,10 @@ immune_clusters <- c("T cell", "B cell", "cDC1",
 cells_to_keep <- subset(data, idents = immune_clusters)
 DimPlot(cells_to_keep, reduction = "umap", group.by = "subcluster")
 # 2. Preprocessing pipeline
+cells_to_keep$subcluster <- as.character(cells_to_keep$subcluster)
+cells_to_keep$subcluster[cells_to_keep$subcluster %in% c("Monocyte/Inf mac", "Tissue-resident mac")] <- "Macrophage"
+cells_to_keep$subcluster <- factor(cells_to_keep$subcluster)
+
 cells_to_keep <- NormalizeData(
   cells_to_keep,
   normalization.method = "LogNormalize",
@@ -77,3 +81,4 @@ DimPlot(HFD, reduction = "umap", group.by = "subcluster")
 saveRDS(cells_to_keep, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/Figure7_immune/All_immune.rds")
 saveRDS(ND, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/Figure7_immune/ND_immune.rds")
 saveRDS(HFD, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/Figure7_immune/HFD_immune.rds")
+

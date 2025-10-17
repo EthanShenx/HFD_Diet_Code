@@ -1,0 +1,7 @@
+"CellType"	"Chosen_Rank"	"Redefined"
+"B_cell"	2	TRUE
+"cDC1"	4	FALSE
+"Macrophage"	7	FALSE
+"Neutrophil_Granulocyte"	2	TRUE
+"Proliferating_immune"	2	TRUE
+"T_cell"	8	FALSE
