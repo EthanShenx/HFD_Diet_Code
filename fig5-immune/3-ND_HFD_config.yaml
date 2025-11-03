@@ -1,8 +1,8 @@
 default:
   Input:
     Discovery dataset name: "ND_HFD_merged"
-    Expression matrix: "/gpfsdata/home/renyixiang/SRTP/ecotyper/ND_HFD_merged/expr_matrix_filtered.txt.gz"
-    Annotation file: "/gpfsdata/home/renyixiang/SRTP/ecotyper/ND_HFD_merged/annotation_filtered_merged_fixed.txt"
+    Expression matrix: "/gpfsdata/home/renyixiang/SRTP/ecotyper/ND_HFD_merged/expr_matrix.txt.gz"
+    Annotation file: "/gpfsdata/home/renyixiang/SRTP/ecotyper/ND_HFD_merged/annotation.txt"
     Annotation file column to scale by: NULL
     Annotation file column(s) to plot: ["Sample"]
 
