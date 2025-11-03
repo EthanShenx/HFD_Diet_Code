@@ -551,7 +551,7 @@ for (i in 1:length(object.list)) {
                       signaling.name = paste(pathways.show, names(object.list)[i]))
 }
 
-pathways.show <- c("COLLAGEN") 
+pathways.show <- c("FN1") 
 weight.max <- getMaxWeight(object.list, slot.name = c("netP"), attribute = pathways.show)
 par(mfrow = c(1,2), xpd=TRUE)
 for (i in 1:length(object.list)) {
@@ -565,7 +565,9 @@ for (i in 1:length(object.list)) {
                       arrow.size = 0.4,
                       arrow.width = 1.2,
                       # targets.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),
-                      signaling.name = paste(pathways.show, names(object.list)[i]))
+                      sources.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),
+                      signaling.name = paste(pathways.show, names(object.list)[i]),
+                      remove.isolate = F)
 }
 
 pathways.show <- c("FN1") 
@@ -699,12 +701,19 @@ gg1
 ###########################################
 ###########################################
 
-pathways.show <- c("LAMININ") 
+pathways.show <- c("FN1") 
 par(mfrow = c(1,2), xpd=TRUE)
 ht <- list()
-for (i in 1:length(object.list)) {
-  ht[[i]] <- netVisual_heatmap(object.list[[i]], signaling = pathways.show, color.heatmap = "Reds",title.name = paste(pathways.show, "signaling ",names(object.list)[i]))
+for (i in seq_along(object.list)) {
+  ht[[i]] <- netVisual_heatmap(
+    object.list[[i]],
+    signaling = pathways.show,
+    color.heatmap = c("#FFFFFF", "#C03681"),
+    color.use = scales::hue_pal()(17),
+    title.name = paste(pathways.show, "signaling", names(object.list)[i])
+  )
 }
+
 #> Do heatmap based on a single object 
 #> 
 #> Do heatmap based on a single object
@@ -729,7 +738,7 @@ par(mfrow = c(1, 2), xpd=TRUE)
 
 for (i in 1:length(object.list)) {
   netVisual_chord_gene(object.list[[i]], 
-                       sources.use = 4, 
+                       sources.use = "S", 
                        targets.use = c(5:8), 
                        lab.cex = 0.5, 
                        title.name = paste0("Signaling from Inflam.FIB - ", names(object.list)[i]))
@@ -891,3 +900,43 @@ pheatmap(
   main = "Interaction strength difference (HFD − ND)\nSenders: HormSens / LumProg / Basal  →  Receivers: Stroma_0~4"
 )
 
+########################
+########################
+########################
+
+netVisual_bubble(cellchat, 
+                 sources.use = "Adipo", 
+                 targets.use = c("Tissue-resident mac", 
+                             "Monocyte/Inf mac", 
+                             "T cell",
+                             "cDC1",
+                             "Neutrophil/Granulocyte",
+                             "B cell",
+                             "Proliferating immune",
+                             "Endo",
+                             "Stroma_0",
+                             "Stroma_1",
+                             "Stroma_2",
+                             "Stroma_3",
+                             "Stroma_4"),  
+                 comparison = c(1, 2), 
+                 color.heatmap = c("viridis"),
+                 grid.on = F,
+                 angle.x = 45,
+                 signaling = c("GAS",
+                               "COMPLEMENT",
+                               "ADIPONECTIN",
+                               "CD46",
+                               "NOTCH",
+                               "IL6",
+                               "CCL",
+                               "CXCL",
+                               "VEGF",
+                               "ANGPT",
+                               "TGFb",
+                               "ADGRE",
+                               "ADGRG",
+                               "RESISTIN"),
+                 thresh = 0.1,
+                 dot.size.max = 3.5
+                 )

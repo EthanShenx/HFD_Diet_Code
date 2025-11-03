@@ -28,6 +28,17 @@ Pdgfra <- FeaturePlot(
   cols      = c("#fcf0f4", "#c51c7d")
 )
 
+Postn <- FeaturePlot(
+  All,
+  features  = "Fgf7",
+  reduction = "umap",
+  split.by  = "orig.ident",
+  order     = TRUE,
+  pt.size   = 0.01,
+  cols      = c("#fcf0f4", "#c51c7d")
+)
+
+
 Egfr <- FeaturePlot(
   All,
   features  = "Egfr",
@@ -37,6 +48,15 @@ Egfr <- FeaturePlot(
   pt.size   = 0.01,
   cols      = c("#fcf0f4", "#c51c7d")
 )
+
+All <- subset(All, subset = subcluster == "Stroma_0")
+
+VlnPlot(
+  object   = All,
+  features = "Igfbp5",        # 人类数据通常是 "POSTN"
+  group.by = "orig.ident",   # 直接按样本分组
+  pt.size  = 0               # 不显示散点
+) + scale_fill_manual(values = c("#fcf0f4", "#c51c7d"))
 
 Ghr <- FeaturePlot(
   All,

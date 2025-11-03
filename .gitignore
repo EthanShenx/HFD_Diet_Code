@@ -70,6 +70,7 @@
 .git/objects/pack/pack-0ef2013604968ae0226b0cf82614e1f5672263d1.pack
 .git/objects/pack/pack-37fd5e90d17af9cf9be78a51e666d74e88d9cf20.pack
 .git/objects/pack/pack-89a93a5d570776180d4cc0a3594752a8b2269bf9.pack
+.git/objects/pack/tmp_pack_55gr5X
 .git/objects/pack/tmp_pack_oBTNrP
 .Rapp.history
 .Rhistory
@@ -160,6 +161,8 @@
 4CellCellCommunication/02CellChat/CellChatObjects/cellchat_ND
 4CellCellCommunication/02CellChat/Comparison_analysis_of_multiple_datasets.html
 4CellCellCommunication/02CellChat/OfficialCellChat-vignette.html
+4CellCellCommunication/02CellPhoneDB/cpdb_inputs/HFD_test_counts.txt
+4CellCellCommunication/02CellPhoneDB/cpdb_inputs/ND_test_counts.txt
 4CellCellCommunication/02NATMI/Diff_HFD_vs_ND/Delta_edges_lrc2p/All_edges_mean.csv
 4CellCellCommunication/02NATMI/Diff_HFD_vs_ND/Delta_edges_lrc2p/DOWN-regulated_mean.csv
 4CellCellCommunication/02NATMI/Diff_HFD_vs_ND/Delta_edges_lrc2p/UP-regulated_mean.csv

@@ -18,16 +18,17 @@ Idents(combine) <- "subcluster"
 
 LumProg_nichenet_output_A_L <- nichenet_seuratobj_aggregate(
   seurat_obj            = combine,
-  receiver              = c("Stroma", "Adipo"),
+  receiver              = c("Basal", "LumProg", "HormSens"),
   condition_colname     = "orig.ident",
   condition_oi          = "HFD",
   condition_reference   = "ND",
-  sender                = c("LumProg"),
+  sender                = c("Tissue-resident mac", "Monocyte/Inf mac"),
   ligand_target_matrix  = ligand_target_matrix,
   
   lr_network            = lr_network,
   weighted_networks     = weighted_networks,
-  lfc_cutoff = 1
+  lfc_cutoff = 0.25,
+  expression_pct = 0.2
 )
 
 LumProg_nichenet_output_A_L$ligand_activity_target_heatmap

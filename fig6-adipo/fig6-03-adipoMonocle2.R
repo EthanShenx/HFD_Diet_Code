@@ -5,7 +5,7 @@ library(igraph)
 library(Seurat)
 library(scater)
 library(RColorBrewer)
-library(CytoTRACE2) 
+library(CytoTRACE2)
 library(glmGamPoi)
 library(patchwork)
 library(Matrix)
@@ -32,7 +32,7 @@ All <- subset(
 
 Idents(All) <- "subcluster"
 
-preprocess_subcluster <- function(obj, assay="RNA", nfeatures=2000, dims=1:20) {
+preprocess_subcluster <- function(obj, assay = "RNA", nfeatures = 2000, dims = 1:20) {
   obj <- NormalizeData(obj)
   obj <- FindVariableFeatures(obj, nfeatures = nfeatures)
   obj <- ScaleData(obj, features = VariableFeatures(obj))
@@ -51,7 +51,8 @@ DimPlot(Adipo_All, reduction = "umap", label = TRUE)
 DimPlot(Adipo_All, reduction = "umap", label = TRUE, group.by = "orig.ident")
 
 Adipo_All.markers <- FindAllMarkers(Adipo_All,
-  only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+  only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25
+)
 
 GPT_Adipo_All <- subset(Adipo_All.markers, cluster %in% c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)) |>
   group_by(cluster) |>
@@ -64,14 +65,15 @@ print(GPT_Adipo_All, n = 260)
 Adipo_All$subcluster <- mapvalues(
   x = Adipo_All$seurat_clusters,
   from = c("0", "1", "2", "3", "4", "5", "6"),
-  to   = c("Adipo_0",
-           "Adipo_1",
-           "Adipo_2",
-           "Adipo_3",
-           "Adipo_4",
-           "Adipo_5",
-           "Adipo_6"
-           )
+  to = c(
+    "Adipo_0",
+    "Adipo_1",
+    "Adipo_2",
+    "Adipo_3",
+    "Adipo_4",
+    "Adipo_5",
+    "Adipo_6"
+  )
 )
 
 labs <- as.character(Adipo_All$subcluster)
@@ -89,7 +91,7 @@ All_HFD_sub_sub_sub <- subset(All, idents = "HFD")
 ND_seurat <- subset(All, idents = "ND")
 HFD_seurat <- subset(All, idents = "HFD")
 
-# saveRDS(All_ND_sub_sub_sub, 
+# saveRDS(All_ND_sub_sub_sub,
 #         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_sub_sub_sub.rds")
 # saveRDS(All_HFD_sub_sub_sub,
 #         "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_sub_sub_sub.rds")
@@ -99,7 +101,7 @@ HFD_seurat <- subset(All, idents = "HFD")
 DimPlot(Adipo_All, reduction = "umap", label = F, group.by = "subcluster")
 DimPlot(Adipo_All, reduction = "umap", label = F, group.by = "subcluster") + NoLegend()
 DimPlot(Adipo_All, reduction = "umap", label = F, group.by = "orig.ident", cols = c(HFD = "lightblue", ND = "orange"))
-DimPlot(Adipo_All, reduction = "umap", label = F, group.by = "orig.ident", cols = c(HFD = "lightblue", ND = "orange"))  + NoLegend()
+DimPlot(Adipo_All, reduction = "umap", label = F, group.by = "orig.ident", cols = c(HFD = "lightblue", ND = "orange")) + NoLegend()
 
 ############## Store sub-adipo & Store sub-stroma ##############
 
@@ -113,66 +115,72 @@ harmony_all <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*or
 Idents(All) <- "orig.ident"
 ND <- subset(All, idents = "ND")
 HFD <- subset(All, idents = "HFD")
-saveRDS(ND, 
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_Stroma2AdipoAndEpi_sub.rds")
-saveRDS(HFD,
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_Stroma2AdipoAndEpi_sub.rds")
-saveRDS(All,
-        "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_Stroma2AdipoAndEpi_sub.rds")
+saveRDS(
+  ND,
+  "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_Stroma2AdipoAndEpi_sub.rds"
+)
+saveRDS(
+  HFD,
+  "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_Stroma2AdipoAndEpi_sub.rds"
+)
+saveRDS(
+  All,
+  "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_Stroma2AdipoAndEpi_sub.rds"
+)
 
 # library(renv)
 # renv::init()
 # install.packages("https://cran.r-project.org/src/contrib/Archive/igraph/igraph_1.6.0.tar.gz",
-#                  repos = NULL, 
+#                  repos = NULL,
 #                  type = "source")
-# 
+#
 # if (!requireNamespace("BiocManager", quietly = TRUE)) {
 #   install.packages("BiocManager")
 # }
 # BiocManager::install("monocle")
-# 
+#
 # remotes::install_version("igraph", version = "1.6.0")
-# 
+#
 # remotes::install_version("dplyr", version = "1.0.10")
 # remotes::install_version("ggplot2", version = "3.3.6")
 # remotes::install_version("Matrix", version = "1.5-3")
-# 
+#
 # remotes::install_version("Seurat", version = "4.3.0")
-# 
+#
 # install.packages(c("Biobase", "BiocGenerics", "BiocParallel"))
-# 
+#
 # library(monocle)
 # library(Seurat)
 # library(dplyr)
 # library(data.table)
 # library(ggplot2)
-# 
+#
 # get_seurat_hvgs <- function(seurat){
 #   seurat_hvg <- VariableFeatures(seurat)
 #   return(seurat_hvg)
 # }
-# 
-# perform_monocle2_hvgs_defined <- function(seurat, 
-#                                           regress_cellcycle=TRUE, 
-#                                           remove_cellcycle_gene=TRUE, 
-#                                           cellcycle_genes=NA, 
+#
+# perform_monocle2_hvgs_defined <- function(seurat,
+#                                           regress_cellcycle=TRUE,
+#                                           remove_cellcycle_gene=TRUE,
+#                                           cellcycle_genes=NA,
 #                                           seurat_hvgs=NA){
-# 
-#   expr <- GetAssayData(seurat, assay = 'RNA', layer = 'counts') 
+#
+#   expr <- GetAssayData(seurat, assay = 'RNA', layer = 'counts')
 #   p_data <- seurat@meta.data  # pheno data
-#   f_data <- data.frame(gene_short_name=rownames(seurat), 
-#                        row.names=rownames(seurat)) 
-#   
+#   f_data <- data.frame(gene_short_name=rownames(seurat),
+#                        row.names=rownames(seurat))
+#
 #   pd <- new("AnnotatedDataFrame", data = p_data)
 #   pd <- pd[colnames(expr), ]
 #   fd <- new("AnnotatedDataFrame", data = f_data)
-#   
-# 
+#
+#
 #   cds <- newCellDataSet(expr, phenoData = pd, featureData = fd,
 #                         expressionFamily=negbinomial.size())
 #   cds <- estimateSizeFactors(cds)
 #   cds <- estimateDispersions(cds)
-#   
+#
 #   if (length(seurat_hvgs) > 1) {
 #     if (remove_cellcycle_gene & !is.na(cellcycle_genes[1])) {
 #       ordering_genes <- setdiff(seurat_hvgs, cellcycle_genes)
@@ -185,74 +193,74 @@ saveRDS(All,
 #       ordering_genes <- setdiff(ordering_genes, cellcycle_genes)
 #     }
 #   }
-#   
+#
 #   cds <- setOrderingFilter(cds, ordering_genes)
-#   
-#   plot_ordering_genes(cds) 
+#
+#   plot_ordering_genes(cds)
 #   plot_pc_variance_explained(cds, return_all = FALSE)
-#   
+#
 #   if(regress_cellcycle & all(c("S.Score", "G2M.Score") %in% colnames(p_data))){
-#     cds <- reduceDimension(cds, 
-#                            max_components = 2, 
-#                            num_dim = 20, 
-#                            reduction_method = 'DDRTree', 
+#     cds <- reduceDimension(cds,
+#                            max_components = 2,
+#                            num_dim = 20,
+#                            reduction_method = 'DDRTree',
 #                            residualModelFormulaStr = "~S.Score + G2M.Score",
 #                            verbose = FALSE)
 #   } else {
-#     cds <- reduceDimension(cds, 
-#                            max_components = 2, 
-#                            num_dim = 30, 
-#                            reduction_method = 'DDRTree', 
+#     cds <- reduceDimension(cds,
+#                            max_components = 2,
+#                            num_dim = 30,
+#                            reduction_method = 'DDRTree',
 #                            verbose = FALSE)
 #   }
-#   
+#
 #   cds <- orderCells(cds)
-#   
+#
 #   return(list(cds = cds, order_genes = ordering_genes))
 # }
-# 
+#
 # seurat_data_path <- '/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_Adipo_sub.rds'
-# 
+#
 # # seurat_data_path <- '/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_Adipo_sub.rds'
-# 
+#
 # regress_cellcycle_param <- TRUE
 # remove_cellcycle_genes_param <- TRUE
-# 
+#
 # sample_name <- gsub("_seu\\.rds$", "", basename(seurat_data_path))
 # base_output_dir <- "/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/fig6-adipo/Monocle2"
 # output_dir <- file.path(base_output_dir, sample_name)
-# 
+#
 # if (!dir.exists(output_dir)) {
 #   dir.create(output_dir, recursive = TRUE)
 # }
-# 
+#
 # seurat <- readRDS(seurat_data_path)
-# 
+#
 # DefaultAssay(seurat) <- "RNA"
-# 
+#
 # compute_cell_cycle <- regress_cellcycle_param || remove_cellcycle_genes_param
-# 
+#
 # if(compute_cell_cycle && !all(c("S.Score", "G2M.Score") %in% colnames(seurat@meta.data))){
 #   cat("Computing cell cycle scores for regression/filtering...\n")
-# 
+#
 #   data("cc.genes", package = "Seurat")
-# 
-#   s.genes.mouse <- paste0(toupper(substr(cc.genes$s.genes, 1, 1)), 
+#
+#   s.genes.mouse <- paste0(toupper(substr(cc.genes$s.genes, 1, 1)),
 #                           tolower(substr(cc.genes$s.genes, 2, nchar(cc.genes$s.genes))))
-#   g2m.genes.mouse <- paste0(toupper(substr(cc.genes$g2m.genes, 1, 1)), 
+#   g2m.genes.mouse <- paste0(toupper(substr(cc.genes$g2m.genes, 1, 1)),
 #                             tolower(substr(cc.genes$g2m.genes, 2, nchar(cc.genes$g2m.genes))))
-#   
-#   seurat <- CellCycleScoring(seurat, 
-#                              s.features = s.genes.mouse, 
-#                              g2m.features = g2m.genes.mouse, 
+#
+#   seurat <- CellCycleScoring(seurat,
+#                              s.features = s.genes.mouse,
+#                              g2m.features = g2m.genes.mouse,
 #                              set.ident = TRUE)
 #   cellcycle_genes <- c(s.genes.mouse, g2m.genes.mouse)
 # } else if(compute_cell_cycle) {
-# 
+#
 #   data("cc.genes", package = "Seurat")
-#   s.genes.mouse <- paste0(toupper(substr(cc.genes$s.genes, 1, 1)), 
+#   s.genes.mouse <- paste0(toupper(substr(cc.genes$s.genes, 1, 1)),
 #                           tolower(substr(cc.genes$s.genes, 2, nchar(cc.genes$s.genes))))
-#   g2m.genes.mouse <- paste0(toupper(substr(cc.genes$g2m.genes, 1, 1)), 
+#   g2m.genes.mouse <- paste0(toupper(substr(cc.genes$g2m.genes, 1, 1)),
 #                             tolower(substr(cc.genes$g2m.genes, 2, nchar(cc.genes$g2m.genes))))
 #   cellcycle_genes <- c(s.genes.mouse, g2m.genes.mouse)
 #   cat("Using existing cell cycle scores...\n")
@@ -260,9 +268,9 @@ saveRDS(All,
 #   cellcycle_genes <- NA
 #   cat("Skipping cell cycle analysis as requested...\n")
 # }
-# 
+#
 # hvg_genes <- get_seurat_hvgs(seurat)
-# 
+#
 # results <- perform_monocle2_hvgs_defined(
 #   seurat,
 #   regress_cellcycle = regress_cellcycle_param,
@@ -270,23 +278,23 @@ saveRDS(All,
 #   cellcycle_genes = cellcycle_genes,
 #   seurat_hvgs = hvg_genes
 # )
-# 
+#
 # cds <- results$cds
 # order_genes <- results$order_genes
-# 
+#
 # components <- as.data.frame(t(reducedDimS(cds)))
 # colnames(components) <- c("Component_1", "Component_2")
 # cds$Component_1 <- components$Component_1
 # cds$Component_2 <- components$Component_2
-# 
+#
 # saveRDS(cds, file = paste0(output_dir, '/', sample_name, '_monocle2.rds'))
-# write.csv(order_genes, file = paste0(output_dir, "/", sample_name, "_ordering_genes.csv"), 
+# write.csv(order_genes, file = paste0(output_dir, "/", sample_name, "_ordering_genes.csv"),
 #           col.names = TRUE, row.names = FALSE, quote = FALSE)
-# 
+#
 # print(plot_cell_trajectory(cds, color_by = "Pseudotime"))
-# print(plot_cell_trajectory(cds, color_by = "cell_type")) 
+# print(plot_cell_trajectory(cds, color_by = "cell_type"))
 # print(plot_cell_trajectory(cds, color_by = "State"))
-# 
+#
 # df <- pData(cds)
 # p_density <- ggplot(df, aes(x = Pseudotime, color = cell_type, fill = cell_type)) +
 #   geom_density(alpha = 0.5) +
@@ -295,8 +303,8 @@ saveRDS(All,
 #        x = "Pseudotime",
 #        y = "Density") +
 #   theme(legend.position = "bottom")
-# 
-# ggsave(paste0(output_dir, '/3.', sample_name, '_pseudotime_density.pdf'), 
+#
+# ggsave(paste0(output_dir, '/3.', sample_name, '_pseudotime_density.pdf'),
 #        plot = p_density, height = 4, width = 8)
 
 # saveRDS(seurat, file = paste0(output_dir, '/', sample_name, '_seu_with_pseudotime.rds'))
@@ -315,16 +323,23 @@ HFD_seurat$Monocle2_State <- NA
 HFD_seurat$Monocle2_State[common_cells] <- state_map[common_cells]
 
 ND_State2_Adipo <- subset(ND_seurat,
-                          subset = grepl("^Adipo", subcluster) & Monocle2_State == "2")
+  subset = grepl("^Adipo", subcluster) & Monocle2_State == "2"
+)
 ND_State3_Adipo <- subset(ND_seurat,
-                          subset = grepl("^Adipo", subcluster) & Monocle2_State == "3")
+  subset = grepl("^Adipo", subcluster) & Monocle2_State == "3"
+)
 HFD_Adipo <- subset(HFD_seurat,
-                    subset = grepl("^Adipo", subcluster) & Monocle2_State == "2")
+  subset = grepl("^Adipo", subcluster) & Monocle2_State == "2"
+)
 
 ND_State2_Adipo$group <- "state2"
 ND_State3_Adipo$group <- "state3"
 ND_Adipo_states <- merge(ND_State2_Adipo, ND_State3_Adipo)
 Idents(ND_Adipo_states) <- "group"
+
+saveRDS(ND_State2_Adipo, file = "/Users/coellearth/Desktop/HFD_Paper/f-Fig6_AdipoFeatures/AdipoPCA/stateObjects/ND_State2.rds")
+saveRDS(ND_State3_Adipo, file = "/Users/coellearth/Desktop/HFD_Paper/f-Fig6_AdipoFeatures/AdipoPCA/stateObjects/ND_State3.rds")
+saveRDS(HFD_Adipo, file = "/Users/coellearth/Desktop/HFD_Paper/f-Fig6_AdipoFeatures/AdipoPCA/stateObjects/State3_HFD.rds")
 
 markers_ND_state2_vs_state3 <- FindMarkers(
   ND_Adipo_states,
@@ -345,22 +360,104 @@ ND_state3_up_genes <- rownames(subset(markers_ND_state2_vs_state3, avg_log2FC < 
 mm_state2 <- bitr(ND_state2_up_genes, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = org.Mm.eg.db)
 mm_state3 <- bitr(ND_state3_up_genes, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = org.Mm.eg.db)
 
-ego_state2 <- enrichGO(gene = unique(mm_state2$ENTREZID), 
-                       OrgDb = org.Mm.eg.db, 
-                       keyType = "ENTREZID", 
-                       ont = "BP", 
-                       pAdjustMethod = "BH", 
-                       pvalueCutoff = 0.05, 
-                       qvalueCutoff = 0.2, 
-                       readable = TRUE)
-ego_state3 <- enrichGO(gene = unique(mm_state3$ENTREZID), 
-                       OrgDb = org.Mm.eg.db, 
-                       keyType = "ENTREZID", 
-                       ont = "BP", 
-                       pAdjustMethod = "BH", 
-                       pvalueCutoff = 0.05, 
-                       qvalueCutoff = 0.2, 
-                       readable = TRUE)
+ego_state2 <- enrichGO(
+  gene = unique(mm_state2$ENTREZID),
+  OrgDb = org.Mm.eg.db,
+  keyType = "ENTREZID",
+  ont = "BP",
+  pAdjustMethod = "BH",
+  pvalueCutoff = 0.05,
+  qvalueCutoff = 0.2,
+  readable = TRUE
+)
+ego_state3 <- enrichGO(
+  gene = unique(mm_state3$ENTREZID),
+  OrgDb = org.Mm.eg.db,
+  keyType = "ENTREZID",
+  ont = "BP",
+  pAdjustMethod = "BH",
+  pvalueCutoff = 0.05,
+  qvalueCutoff = 0.2,
+  readable = TRUE
+)
+
+df2 <- as.data.frame(ego_state2)
+df3 <- as.data.frame(ego_state3)
+
+pathways_to_keep_2 <- c(
+  "cytoplasmic translation",
+  "ribosome biogenesis",
+  "regeneration",
+  "ribosome assembly",
+  "rRNA processing",
+  "regulation of translation",
+  "animal organ regeneration",
+  "ribosomal small subunit assembly"
+)
+
+pathways_to_keep_3 <- c(
+  "cellular response to peptide hormone stimulus",
+  "response to insulin",
+  "fat cell differentiation",
+  "regulation of developmental growth",
+  "fatty acid oxidation",
+  "Wnt signaling pathway",
+  "lipid oxidation",
+  "Golgi vesicle transport"
+)
+
+df2_sel <- df2 %>%
+  filter(Description %in% pathways_to_keep_2) %>%
+  mutate(State = "state2")
+
+df3_sel <- df3 %>%
+  filter(Description %in% pathways_to_keep_3) %>%
+  mutate(State = "state3")
+
+df_sel <- bind_rows(df2_sel, df3_sel)
+
+parse_ratio <- function(x) {
+  suppressWarnings(eval(parse(text = x)))
+}
+df_sel <- df_sel %>%
+  mutate(
+    GeneRatio_num = vapply(GeneRatio, parse_ratio, numeric(1)),
+    negLog10Padj = -log10(p.adjust)
+  )
+
+order_tbl <- df_sel %>%
+  dplyr::group_by(Description) %>%
+  dplyr::summarise(minPadj = min(p.adjust, na.rm = TRUE), .groups = "drop") %>%
+  dplyr::arrange(minPadj)
+
+df_sel <- df_sel %>%
+  mutate(Description = factor(Description, levels = rev(order_tbl$Description)))
+
+p <- ggplot(df_sel, aes(x = State, y = Description)) +
+  geom_point(aes(size = GeneRatio_num, color = negLog10Padj)) +
+  scale_size_continuous(name = "GeneRatio", range = c(2, 8)) +
+  scale_color_distiller(
+    name = expression(-log[10](adj. ~ p)),
+    palette = "Spectral",
+    direction = -1
+  ) +
+  labs(
+    x = NULL, y = NULL,
+    title = "Selected GO BP terms (manual)",
+    subtitle = "Dot size: GeneRatio; Color: -log10(adjusted p)"
+  ) +
+  theme_classic(base_size = 12) +
+  theme(
+    legend.title = element_blank(),
+    plot.title = element_text(hjust = 0.5, 
+                              face = "bold.italic", 
+                              size = 18),
+    axis.ticks = element_line(colour = "black", linewidth = 0.25),
+    axis.line = element_line(colour = "black", linewidth = 0.25),
+    axis.text.x = element_text(colour = "black"),
+    axis.text.y = element_text(colour = "black")
+  )
+print(p)
 
 ########## Branch Point Gene ##########
 
@@ -393,14 +490,16 @@ sym_state3 <- unique(na.omit(gene_map[genes_state3_branch]))
 sym_state2 <- sym_state2[sym_state2 != ""]
 sym_state3 <- sym_state3[sym_state3 != ""]
 
-mm_state2 <- bitr(sym_state2, 
-                  fromType = "SYMBOL", 
-                  toType = "ENTREZID", 
-                  OrgDb = org.Mm.eg.db)
-mm_state3 <- bitr(sym_state3, 
-                  fromType = "SYMBOL", 
-                  toType = "ENTREZID", 
-                  OrgDb = org.Mm.eg.db)
+mm_state2 <- bitr(sym_state2,
+  fromType = "SYMBOL",
+  toType = "ENTREZID",
+  OrgDb = org.Mm.eg.db
+)
+mm_state3 <- bitr(sym_state3,
+  fromType = "SYMBOL",
+  toType = "ENTREZID",
+  OrgDb = org.Mm.eg.db
+)
 
 ego_state2 <- enrichGO(gene = unique(mm_state2$ENTREZID), OrgDb = org.Mm.eg.db, keyType = "ENTREZID", ont = "BP", pAdjustMethod = "BH", pvalueCutoff = 0.05, qvalueCutoff = 0.2, readable = TRUE)
 ego_state3 <- enrichGO(gene = unique(mm_state3$ENTREZID), OrgDb = org.Mm.eg.db, keyType = "ENTREZID", ont = "BP", pAdjustMethod = "BH", pvalueCutoff = 0.05, qvalueCutoff = 0.2, readable = TRUE)
@@ -444,8 +543,10 @@ ND_plot +
     na.value  = "grey80"
   ) +
   labs(color = "Pseudotime") +
-  guides(color = guide_colorbar(direction = "vertical",
-                                title.position = "top")) +
+  guides(color = guide_colorbar(
+    direction = "vertical",
+    title.position = "top"
+  )) +
   legend_right
 
 ### colored by cell type
@@ -481,8 +582,10 @@ HFD_plot +
     na.value  = "grey80"
   ) +
   labs(color = "Pseudotime") +
-  guides(color = guide_colorbar(direction = "vertical",
-                                title.position = "top")) +
+  guides(color = guide_colorbar(
+    direction = "vertical",
+    title.position = "top"
+  )) +
   legend_right
 
 ### colored by cell type
@@ -522,18 +625,20 @@ get_gene_row <- function(cds, gene) {
 
 gene <- "Pdgfra"
 
-g_nd  <- get_gene_row(ND_monocle2,  gene)
+g_nd <- get_gene_row(ND_monocle2, gene)
 g_hfd <- get_gene_row(HFD_monocle2, gene)
 
 p_nd_trend <- plot_genes_in_pseudotime(
-  ND_monocle2[g_nd, ], color_by = "ps", min_expr = 0
+  ND_monocle2[g_nd, ],
+  color_by = "ps", min_expr = 0
 ) + labs(y = gene, x = "Pseudotime", color = "State", title = paste("ND:", gene)) +
-    theme_classic() + legend_right
+  theme_classic() + legend_right
 
 p_hfd_trend <- plot_genes_in_pseudotime(
-  HFD_monocle2[g_hfd, ], color_by = "State", min_expr = 0
+  HFD_monocle2[g_hfd, ],
+  color_by = "State", min_expr = 0
 ) + labs(y = gene, x = "Pseudotime", color = "State", title = paste("HFD:", gene)) +
-    theme_classic() + legend_right
+  theme_classic() + legend_right
 
 library(patchwork)
 p_nd_trend | p_hfd_trend
@@ -562,30 +667,20 @@ plot_gene_on_traj <- function(cds, gene, title_prefix = "") {
   pData(cds)[[field]] <- as.numeric(exprs(cds)[gid, ])
 
   plot_cell_trajectory(cds, color_by = field, cell_size = 0.5) +
-    scale_color_viridis_c(na.value = "grey80"
-                          # , trans = "log1p"
+    scale_color_viridis_c(
+      na.value = "grey80"
+      # , trans = "log1p"
     ) +
-    labs(color = paste0(gene, " expression"),
-         title = paste(title_prefix, gene)) +
+    labs(
+      color = paste0(gene, " expression"),
+      title = paste(title_prefix, gene)
+    ) +
     theme_classic() +
     theme(legend.position = "right", legend.direction = "vertical")
 }
 
 gene <- "Dpp4"
-Dpp4_ND <- plot_gene_on_traj(ND_monocle2,  gene, "ND:")
+Dpp4_ND <- plot_gene_on_traj(ND_monocle2, gene, "ND:")
 Dpp4_HFD <- plot_gene_on_traj(HFD_monocle2, gene, "HFD:")
 
 Dpp4_ND | Dpp4_HFD
-
-# revise below:
-diff_test_res <- differentialGeneTest(cds[expressed_genes[1:1000],],                                      fullModelFormulaStr = "~sm.ns(Pseudotime)")sig_gene_names <- row.names(subset(diff_test_res, qval < 0.1))pht <- plot_pseudotime_heatmap(cds[sig_gene_names,],                        num_clusters = 6,                        cores = 1,                        show_rownames = T，                        return_heatmap=T)pht
-
-clusters <- cutree(pht$tree_row, k = 6)clustering <- data.frame(clusters)clustering[,1] <- as.character(clustering[,1])colnames(clustering) <- "GeneClusters"table(clustering)head(clustering)
-
-library(magrittr)library(tidyverse)topNGenes <- top_n(diff_test_res, n = 100, desc(qval)) %>%  pull(gene_short_name) %>%  as.character()
-pht <- plot_pseudotime_heatmap(  cds[topNGenes,],  num_clusters = 3,  show_rownames = T,  return_heatmap = T)pht
-
-BEAM_res <- BEAM(lung, branch_point = 1, cores = 1)BEAM_res <- BEAM_res[order(BEAM_res$qval),]BEAM_res <- BEAM_res[,c("gene_short_name", "pval", "qval")]
-
-plot_genes_branched_heatmap(lung[row.names(subset(BEAM_res,                                          qval < 1e-4)),],                                          branch_point = 1,                                          num_clusters = 4,                                          cores = 1,                                          use_gene_short_name = T,                                          show_rownames = T)
-

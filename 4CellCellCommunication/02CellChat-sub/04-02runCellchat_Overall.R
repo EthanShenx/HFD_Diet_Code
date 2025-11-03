@@ -1,4 +1,4 @@
-setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/4CellCellCommunication/02CellChat-sub")
+setwd("/Users/coellearth/Desktop")
 ND <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD_sub.rds")
 HFD <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND_sub.rds")
 library(CellChat)
@@ -461,23 +461,25 @@ plotGeneExpression(cellchat,
                    colors.ggplot = T, 
                    type = "violin")
 
-pathways.show <- c("FGF") 
+pathways.show <- c("PDGF") 
 
 par(mfrow = c(1,2), xpd=TRUE)
 
 for (i in 1:length(object.list)) {
   netVisual_aggregate(object.list[[i]], 
                       signaling = pathways.show, 
-                      layout = "chord", 
+                      layout = "circle", 
                       signaling.name = paste(pathways.show, names(object.list)[i]))
 }
 
-netVisual_aggregate(cellchat_HFD, 
-                      signaling = "EGF", 
-                      layout = "chord")
+netVisual_aggregate(cellchat_ND, 
+                      signaling = "PDGF", 
+                      layout = "circle")
 
-pathways.show <- c("ADGRE")
-pathways.show <- c("GALECTIN")
+
+
+pathways.show <- c("Ccl7")
+pathways.show <- c("F")
 pathways.show <- c("IGF")
 pathways.show <- c("JAM")
 pathways.show <- c("GAS")
@@ -488,11 +490,106 @@ par(mfrow = c(1,2), xpd=TRUE)
 for (i in 1:length(object.list)) {
   netVisual_aggregate(object.list[[i]], 
                       signaling = pathways.show, 
-                      layout = "circle", 
+                      layout = "circle",
+                      sources.use = c("Monocyte/Inf mac","Tissue-resident mac"),
+                      targets.use = c("Basal", "LumProg", "HormSens"),
                       arrow.size = 1.0,
                       edge.weight.max = weight.max[1], 
                       edge.width.max = 10, 
                       signaling.name = paste(pathways.show, names(object.list)[i]))
+}
+
+out.dir <- "adipo_epi_cellchat_pathway_plots"
+if (!dir.exists(out.dir)) dir.create(out.dir)
+
+pathways.show <- unique(cellchat@DB$interaction$pathway_name)
+
+for (p in pathways.show) {
+  weight.max <- getMaxWeight(object.list, slot.name = "netP", attribute = p)
+  pdf(file.path(out.dir, paste0("net_", p, ".pdf")), width = 12, height = 6)
+  par(mfrow = c(1, length(object.list)), xpd = TRUE)
+  for (i in seq_along(object.list)) {
+    netVisual_aggregate(
+      object.list[[i]],
+      signaling        = p,
+      layout           = "circle",
+      sources.use      = "Adipo",
+      targets.use      = c("Basal", "LumProg", "HormSens"),
+      arrow.size       = 1.0,
+      edge.weight.max  = weight.max[1],
+      edge.width.max   = 10,
+      signaling.name   = paste(p, names(object.list)[i])
+    )
+  }
+  dev.off()
+}
+
+## 若还没定义，先列出所有可见通路
+if (!exists("pathways.show")) {
+  pathways.show <- unique(unlist(lapply(object.list, function(x) {
+    if (!is.null(x@netP$pathways)) x@netP$pathways else NULL
+  })))
+}
+
+pathways.show <- unique(cellchat@DB$interaction$pathway_name)
+
+# pathways.show <- c("ADIPONECTIN",
+#                    "FGF",
+#                    "GAP",
+#                    "CD46",
+#                    "Glutamate",
+#                    "HGF")
+
+if (!exists("out.dir")) out.dir <- "cellchat_pathway_plots"
+if (!dir.exists(out.dir)) dir.create(out.dir, recursive = TRUE)
+
+.safe <- function(expr) tryCatch(expr, error = function(e) message("跳过：", conditionMessage(e)))
+
+for (p in pathways.show) {
+
+  idx <- which(vapply(object.list, function(x) {
+    !is.null(x@netP$pathways) && (p %in% x@netP$pathways)
+  }, logical(1)))
+
+  if (length(idx) == 0L) {
+    message("无该通路：", p, " —— 跳过")
+    next
+  }
+
+  weight.max <- getMaxWeight(object.list[idx], slot.name = "netP", attribute = p)
+
+  pdf(file.path(out.dir, paste0("net_", p, ".pdf")), width = 5.5, height = 2.7)
+  par(mfrow = c(1, length(idx)), xpd = TRUE)
+
+  for (i in idx) {
+    .safe(
+      netVisual_aggregate(
+        object.list[[i]],
+        signaling        = p,
+        layout           = "circle",
+        sources.use      = "Adipo",
+        targets.use      = c("Tissue-resident mac", 
+                             "Monocyte/Inf mac", 
+                             "T cell",
+                             "cDC1",
+                             "Neutrophil/Granulocyte",
+                             "B cell",
+                             "Proliferating immune",
+                             "Endo",
+                             "Stroma"),
+        arrow.size       = 0.5,
+        edge.weight.max  = weight.max[1],
+        vertex.label.cex = 0.6,
+        title.space = 20,
+        pt.title = 6,
+        vertex.weight    = 26,
+        edge.width.max   = 12,
+        signaling.name   = paste(p, names(object.list)[i]),
+        remove.isolate = F
+      )
+    )
+  }
+  dev.off()
 }
 
 ###################################################################
@@ -503,6 +600,7 @@ pathways.show <- c("COLLAGEN")
 pathways.show <- c("GALECTIN")
 pathways.show <- c("ADGRE") 
 pathways.show <- c("JAM")
+pathways.show <- c("PDGF")
 par(mfrow = c(1,2), xpd=TRUE)
 ht <- list()
 for (i in 1:length(object.list)) {
@@ -625,14 +723,13 @@ print(p)
 ###################################################################
 ###################################################################
 
-pathways.show <- c("COLLAGEN") 
+pathways.show <- c("GAS") 
 
 par(mfrow = c(1, 1), xpd=TRUE)
 
 for (i in 1:length(object.list)) {
   netVisual_chord_gene(object.list[[i]], 
                        signaling = pathways.show,
-                       targets.use = "Stroma", 
                        lab.cex = 0.5, 
                        title.name = paste0("Signaling into Stroma", names(object.list)[i])
                        )
@@ -685,3 +782,74 @@ netVisual_chord_gene(object.list[[1]],
                                          names(object.list)[2]),
                      signaling = "IGF",
                      )
+
+###################################################################
+###################################################################
+###################################################################
+
+netVisual_bubble(cellchat, 
+                 sources.use = "Adipo", 
+                 targets.use = c("Tissue-resident mac", 
+                             "Monocyte/Inf mac", 
+                             "T cell",
+                             "cDC1",
+                             "Neutrophil/Granulocyte",
+                             "B cell",
+                             "Proliferating immune",
+                             "Endo",
+                             "Stroma"),  
+                 comparison = c(1, 2), 
+                 color.heatmap = c("viridis"),
+                 grid.on = F,
+                 angle.x = 45,
+                 signaling = c("GAS",
+                               "COMPLEMENT",
+                               "ADIPONECTIN",
+                               "CD46",
+                               "NOTCH",
+                               "IL6",
+                               "CCL",
+                               "CXCL",
+                               "IGF",
+                               "VEGF",
+                               "ANGPT",
+                               "TGFb",
+                               "ADGRE",
+                               "ADGRG",
+                               "RESISTIN"),
+                 thresh = 0.1,
+                 dot.size.max = 3.5
+                 )
+
+netVisual_bubble
+
+########################################
+########################################
+########################################
+
+# define a positive dataset, i.e., the dataset with positive fold change against the other dataset
+pos.dataset = "HFD"
+# define a char name used for storing the results of differential expression analysis
+features.name = paste0(pos.dataset, ".merged")
+
+# perform differential expression analysis 
+# Of note, compared to CellChat version < v2, CellChat v2 now performs an ultra-fast Wilcoxon test using the presto package, which gives smaller values of logFC. Thus we here set a smaller value of thresh.fc compared to the original one (thresh.fc = 0.1). Users can also provide a vector and dataframe of customized DEGs by modifying the cellchat@var.features$LS.merged and cellchat@var.features$LS.merged.info. 
+
+cellchat <- identifyOverExpressedGenes(cellchat, group.dataset = "datasets", pos.dataset = pos.dataset, features.name = features.name, only.pos = FALSE, thresh.pc = 0.1, thresh.fc = 0.05,thresh.p = 0.05, group.DE.combined = FALSE) 
+#> Use the joint cell labels from the merged CellChat object
+
+# map the results of differential expression analysis onto the inferred cell-cell communications to easily manage/subset the ligand-receptor pairs of interest
+net <- netMappingDEG(cellchat, features.name = features.name, variable.all = TRUE)
+# extract the ligand-receptor pairs with upregulated ligands in LS
+net.up <- subsetCommunication(cellchat, net = net, datasets = "HFD",ligand.logFC = 0.05, receptor.logFC = NULL)
+# extract the ligand-receptor pairs with upregulated ligands and upregulated receptors in NL, i.e.,downregulated in LS
+net.down <- subsetCommunication(cellchat, net = net, datasets = "ND",ligand.logFC = -0.05, receptor.logFC = NULL)
+
+gene.up <- extractGeneSubsetFromPair(net.up, cellchat)
+gene.down <- extractGeneSubsetFromPair(net.down, cellchat)
+
+par(mfrow = c(1,2), xpd=TRUE)
+
+netVisual_chord_gene(object.list[[2]], sources.use = c("Tissue-resident mac", "Monocyte/Inf mac"), targets.use = c("Basal", "LumProg", "HormSens"), slot.name = 'net', net = net.up, lab.cex = 0.8, small.gap = 3.5, title.name = paste0("Up-regulated signaling in ", names(object.list)[2]))
+netVisual_chord_gene(object.list[[1]], sources.use = c("Tissue-resident mac", "Monocyte/Inf mac"), targets.use = c("Basal", "LumProg", "HormSens"), slot.name = 'net', net = net.down, lab.cex = 0.8, small.gap = 3.5, title.name = paste0("Down-regulated signaling in ", names(object.list)[2]))
+#> You may try the function `netVisual_chord_cell` for visualizing individual signaling pathway

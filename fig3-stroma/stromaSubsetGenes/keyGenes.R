@@ -93,6 +93,71 @@ cols_use <- palette_10[seq_len(min(n_groups, length(palette_10)))]
 ##############################
 
 egfr <- VlnPlot(Stroma_All, 
+        features = "Igfbp5", 
+        pt.size = 0, 
+        group.by = "combo",
+        cols = cols_use) +
+  geom_boxplot(
+    width = 0.125,
+    fill = "white",
+    alpha = 1,
+    outlier.size = 0.8,
+    outlier.color = "black",
+    outlier.shape = 19,
+    linewidth = 0.3
+  )
+
+vio_layers <- which(sapply(egfr$layers, function(l) inherits(l$geom, "GeomViolin")))
+for (i in vio_layers) {
+  egfr$layers[[i]]$aes_params$colour <- NA
+  egfr$layers[[i]]$aes_params$linewidth <- 0
+  egfr$layers[[i]]$aes_params$size <- 0
+}
+
+print(egfr) # pdf: 4.77 x 2.69
+
+res_egfr <- pairwise_wilcox_for_features(Stroma_All, 
+                                         features = "Egfr", 
+                                         group.by = "combo")
+res_egfr
+  
+##############################
+############ IGF1 ###########
+##############################
+igf1 <- VlnPlot(Stroma_All, 
+        features = "Igf1", 
+        pt.size = 0, 
+        group.by = "combo",
+        cols = cols_use) +
+  geom_boxplot(
+    width = 0.125,
+    fill = "white",
+    alpha = 1,
+    outlier.size = 0.8,
+    outlier.color = "black",
+    outlier.shape = 19,
+    linewidth = 0.3
+  )
+
+vio_layers <- which(sapply(igf1$layers, function(l) inherits(l$geom, "GeomViolin")))
+for (i in vio_layers) {
+  igf1$layers[[i]]$aes_params$colour <- NA
+  igf1$layers[[i]]$aes_params$linewidth <- 0
+  igf1$layers[[i]]$aes_params$size <- 0
+}
+
+print(igf1) # pdf: 4.77 x 2.69
+
+res_igf1 <- pairwise_wilcox_for_features(Stroma_All, 
+                                         features = "Igf1", 
+                                         group.by = "combo")
+res_igf1
+
+##############################
+############ EGFR ###########
+##############################
+
+egfr <- VlnPlot(Stroma_All, 
         features = "Egfr", 
         pt.size = 0, 
         group.by = "combo",

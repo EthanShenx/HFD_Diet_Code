@@ -28,7 +28,7 @@ to_variable_info <- function(df, id_type = "symbol", order_col = "logFC") {
     organism     = "org.Mm.eg.db"
   )
 
-  keep_back <- c("variable_id", tolower(order_col), intersect(c("FDR","regulation"), names(df)))
+  keep_back <- c("variable_id", tolower(order_col), intersect(c("fdr","regulation"), names(df)))
   vi <- vi %>% left_join(dplyr::select(df, any_of(keep_back)), by = "variable_id")
 
   vi
@@ -40,22 +40,28 @@ variable_info_list <- imap(deg_list,
                                              order_col = "logFC"))
 
 basal_down_info <- variable_info_list$Basal %>%
-  filter(regulation == "Down")
+  filter(fdr < 0.05) %>%
+  filter(logfc < -0.5)
 
 hs_down_info <- variable_info_list$HormSens %>%
-  filter(regulation == "Down")
+  filter(fdr < 0.05) %>%
+  filter(logfc < -0.5)
 
 lp_down_info <- variable_info_list$LumProg %>%
-  filter(regulation == "Down")
+  filter(fdr < 0.05) %>%
+  filter(logfc < -0.5)
 
 basal_up_info <- variable_info_list$Basal %>%
-  filter(regulation == "Up")
+  filter(fdr < 0.05) %>%
+  filter(logfc > 0.5)
 
 hs_up_info <- variable_info_list$HormSens %>%
-  filter(regulation == "Up")
+  filter(fdr < 0.05) %>%
+  filter(logfc > 0.5)
 
 lp_up_info <- variable_info_list$LumProg %>%
-  filter(regulation == "Up")
+  filter(fdr < 0.05) %>%
+  filter(logfc > 0.5)
 
 basal_ora_down <- enrich_pathway(
   variable_info   = basal_down_info,
@@ -215,23 +221,9 @@ lp_up_similarity_result <-
     measure.method.reactome = "jaccard"     # Gene overlap similarity
   )
 
-basal_down_functional_modules <- 
-  get_functional_modules(
-    object = basal_down_similarity_result,
-    sim.cutoff = 0.5,
-    cluster_method = "louvain"
-  )
-
 basal_up_functional_modules <-
   get_functional_modules(
     object = basal_up_similarity_result,
-    sim.cutoff = 0.3,
-    cluster_method = "louvain"
-  )
-
-hs_down_functional_modules <-
-  get_functional_modules(
-    object = hs_down_similarity_result,
     sim.cutoff = 0.45,
     cluster_method = "louvain"
   )
@@ -239,52 +231,42 @@ hs_down_functional_modules <-
 hs_up_functional_modules <-
   get_functional_modules(
     object = hs_up_similarity_result,
-    sim.cutoff = 0.5,
-    cluster_method = "louvain"
-  )
-
-lp_down_functional_modules <-
-  get_functional_modules(
-    object = lp_down_similarity_result,
-    sim.cutoff = 0.5,
+    sim.cutoff = 0.45,
     cluster_method = "louvain"
   )
 
 lp_up_functional_modules <-
   get_functional_modules(
     object = lp_up_similarity_result,
-    sim.cutoff = 0.5,
+    sim.cutoff = 0.45,
     cluster_method = "louvain"
   )
 
 plot_similarity_network(
-  object = basal_down_functional_modules,
+  object = basal_up_functional_modules,
   level = "functional_module",
   degree_cutoff = 3,
   text = TRUE
 )
 
-plot_similarity_network(
-  object = basal_up_functional_modules,
-  level = "module",
-  database = "reactome",
-  degree_cutoff = 1,
-  text = TRUE
-)
-
-plot_similarity_network(
+ plot_similarity_network(
   object = lp_up_functional_modules,
   level = "functional_module",
-  database = "reactome",
-  degree_cutoff = 1,
+  degree_cutoff = 4,
   text = TRUE
 )
 
 plot_similarity_network(
   object = hs_up_functional_modules,
   level = "functional_module",
-  degree_cutoff = 1,
+  degree_cutoff = 4,
   text = TRUE
 )
 
+write.csv(basal_up_functional_modules@merged_module$functional_module_result,
+          file = "/Users/coellearth/Desktop/HFD_Paper/Yixiang/Basal_SI.csv")
+write.csv(lp_up_functional_modules@merged_module$functional_module_result,
+          file = "/Users/coellearth/Desktop/HFD_Paper/Yixiang/LumProg_SI.csv")
+write.csv(hs_up_functional_modules@merged_module$functional_module_result,
+          file = "/Users/coellearth/Desktop/HFD_Paper/Yixiang/HormSens_SI.csv")
 

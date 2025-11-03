@@ -4,6 +4,7 @@ library(pheatmap)
 library(RColorBrewer)
 library(stringr)
 
+setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/9pySCENIC")
 auc_mtx <- read.csv("auc_mtx.csv", row.names = 1, check.names = FALSE)
 
 seurat_obj <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_All_sub_sub.rds")
@@ -59,9 +60,9 @@ pheatmap(cluster_avg,
 Idents(seurat_obj) <- "subcluster"
 
 seurat_HFD <- subset(seurat_obj, 
-                     subset = orig.ident == "HFD" & grepl("Stroma_", subcluster))
+                     subset = orig.ident == "HFD")
 seurat_ND <- subset(seurat_obj, 
-                     subset = orig.ident == "ND" & grepl("Stroma_", subcluster))
+                     subset = orig.ident == "ND")
 
 avg_HFD <- AverageExpression(seurat_HFD, assays = "SCENIC_AUC")$SCENIC_AUC
 avg_ND  <- AverageExpression(seurat_ND, assays = "SCENIC_AUC")$SCENIC_AUC

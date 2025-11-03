@@ -26,9 +26,11 @@ nichenet_output_A_L <- nichenet_seuratobj_aggregate(
   ligand_target_matrix  = ligand_target_matrix,
   lr_network            = lr_network,
   weighted_networks     = weighted_networks,
-  filter_top_ligands    = F,
-  top_n_targets         = 150
+  lfc_cutoff = 0.5,
+  expression_pct = 0.2,
 )
+
+nichenet_output_A_L$ligand_activity_target_heatmap
 
 # saveRDS(nichenet_output_A_L, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/Nichenet/nichenet_output_A_L.rds")
 
@@ -259,8 +261,8 @@ p3 <- ggplot(goi_expr_df, aes(x = features.plot, y = id)) +
   ) +
   labs(x = NULL, y = NULL, size = "% Exp", color = "Scaled Exp")
 
-top_row    <- p2 + p1 + plot_layout(ncol = 2, widths = c(5, 8))
+top_row    <- p2 + p1 + plot_layout(ncol = 2, widths = c(5, 2))
 bottom_row <- plot_spacer() + p3 + plot_layout(ncol = 2, widths = c(5, 5))
 
-final_plot <- top_row / bottom_row + plot_layout(heights = c(2, 0.5))
+final_plot <- top_row / bottom_row + plot_layout(heights = c(3, 2))
 final_plot

@@ -1,4 +1,4 @@
-setwd("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/4CellCellCommunication/02CellChat")
+setwd("/Users/coellearth/Desktop")
 ND <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_ND.rds")
 HFD <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originaldata/Harmony/harmony_HFD.rds")
 library(CellChat)
@@ -362,7 +362,8 @@ ggplot(combined, aes(
 
 ##########################################
 # === Comparison analysis of multiple datasets using CellChat 2025-9-17 ===
-
+cellchat_ND <- computeCommunProbPathway(cellchat_ND)
+cellchat_ND <- aggregateNet(cellchat_ND)
 cellchat_ND <- netAnalysis_computeCentrality(
   object = cellchat_ND,
   thresh = 0.05
@@ -391,3 +392,55 @@ gg2 <- netAnalysis_signalingChanges_scatter(cellchat,
                                             color.use = c("#6495ed", "#ffa503", "#ff6ab4"),
                                             top.label = 1)
 gg2
+
+pathways.show <- c("ADIPONECTIN",
+                   "FGF",
+                   "GAP",
+                   "CD46",
+                   "Glutamate",
+                   "HGF")
+
+## 输出目录
+if (!exists("out.dir")) out.dir <- "cellchat_pathway_plots"
+if (!dir.exists(out.dir)) dir.create(out.dir, recursive = TRUE)
+
+.safe <- function(expr) tryCatch(expr, error = function(e) message("跳过：", conditionMessage(e)))
+
+for (p in pathways.show) {
+
+  idx <- which(vapply(object.list, function(x) {
+    !is.null(x@netP$pathways) && (p %in% x@netP$pathways)
+  }, logical(1)))
+
+  if (length(idx) == 0L) {
+    message("无该通路：", p, " —— 跳过")
+    next
+  }
+
+  weight.max <- getMaxWeight(object.list[idx], slot.name = "netP", attribute = p)
+
+  pdf(file.path(out.dir, paste0("net_", p, ".pdf")), width = 5.5, height = 2.7)
+  par(mfrow = c(1, length(idx)), xpd = TRUE)
+
+  for (i in idx) {
+    .safe(
+      netVisual_aggregate(
+        object.list[[i]],
+        signaling        = p,
+        layout           = "circle",
+        sources.use      = "Adipo",
+        targets.use      = c("Basal", "LumProg", "HormSens"),
+        arrow.size       = 0.5,
+        edge.weight.max  = weight.max[1],
+        vertex.label.cex = 0.6,
+        title.space = 20,
+        pt.title = 6,
+        vertex.weight    = 26,
+        edge.width.max   = 12,
+        signaling.name   = paste(p, names(object.list)[i]),
+        remove.isolate = F
+      )
+    )
+  }
+  dev.off()
+}

@@ -20,18 +20,17 @@ Idents(combine) <- "subcluster"
 
 nichenet_output_A_L <- nichenet_seuratobj_aggregate(
   seurat_obj            = combine,
-  receiver              = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),
+  receiver              = c("Stroma_3"),
   condition_colname     = "orig.ident",
   condition_oi          = "HFD",
   condition_reference   = "ND",
   sender                = "all",
-  lfc_cutoff = 0.5,
+  lfc_cutoff = 0,
   # c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4")
   # "all"
   ligand_target_matrix  = ligand_target_matrix,
   lr_network            = lr_network,
-  weighted_networks     = weighted_networks,
-  cutoff_visualization = 0.1
+  weighted_networks     = weighted_networks
 )
 
 nichenet_output_A_L$ligand_activity_target_heatmap
@@ -70,7 +69,7 @@ nichenet_output_A_L$ligand_expression_dotplot
 L_T_heatmap_data <- nichenet_output_A_L$ligand_target_heatmap$data
 
 L_T_heatmap_data <- L_T_heatmap_data %>%
-  filter(grepl("^Mmp", x)) %>%
+  filter(grepl("^Col", x)) %>%
   filter(score > 0) %>%
   mutate(score_norm = 0 + (score - min(score)) * (2 - 0) / (max(score) - min(score)))
 

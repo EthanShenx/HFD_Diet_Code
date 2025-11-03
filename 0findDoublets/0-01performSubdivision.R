@@ -15,6 +15,7 @@ All <- readRDS("/Users/coellearth/Desktop/Mammary_Gland_Diet_Project/*originalda
 # BiocManager::install("scDblFinder")
 
 library(scDblFinder)
+package.version("scDblFinder")
 
 # scDblFinder works on SingleCellExperiment; convert from Seurat
 sce <- as.SingleCellExperiment(All)

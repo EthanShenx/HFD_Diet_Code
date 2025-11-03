@@ -18,17 +18,19 @@ Idents(combine) <- "cell_type"
 
 nichenet_output_A_L <- nichenet_seuratobj_aggregate(
   seurat_obj            = combine,
-  receiver              = c("Stroma"),
-  sender = "all",
+  receiver              = c("Immune"),
+  sender = c("Adipo"),
   condition_colname     = "orig.ident",
   condition_oi          = "HFD",
   condition_reference   = "ND",
   ligand_target_matrix  = ligand_target_matrix,
   lr_network            = lr_network,
   weighted_networks     = weighted_networks,
-  lfc_cutoff = 0.5,
-  cutoff_visualization = 0
+  lfc_cutoff = 0.25,
+  expression_pct = 0.1
 )
+
+nichenet_output_A_L$ligand_activity_target_heatmap
 
 # saveRDS(nichenet_output_A_L, file = "D:/data/23BMI/ND_HFD_MG_snRNAseq/Nichenet/nichenet_output_A_L.rds")
 
