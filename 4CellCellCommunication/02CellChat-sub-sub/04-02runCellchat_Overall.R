@@ -379,13 +379,16 @@ netVisual_diffInteraction(cellchat,
                           measure = "weight",
                           weight.scale = T, 
                           vertex.size.max = 6,
-                          sources.use = c("HormSens", "LumProg", "Basal"),
-                          targets.use = paste0("Stroma_", 0:4),
+                          sources.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4","Adipo","LumProg", "Basal", "HormSens", "Endo"),
+                          targets.use = c("Tissue-resident mac", "Monocyte/Inf mac"),
                           remove.isolate = T)
 netVisual_diffInteraction(cellchat, 
                           weight.scale = T, 
-                          measure = "weight",
-                          vertex.size.max = 6)
+                          measure = "count",
+                          sources.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4","Adipo","LumProg", "Basal", "HormSens", "Endo"),
+                          targets.use = c("Tissue-resident mac", "Monocyte/Inf mac", "cDC1", "B cell", "Neutrophil/Granulocyte", "T cell", "Proliferating immune"),
+                          vertex.size.max = 6,
+                         remove.isolate = T)
 
 gg1 <- netVisual_heatmap(cellchat)
 gg2 <- netVisual_heatmap(cellchat, measure = "weight")
@@ -635,7 +638,8 @@ for (i in 1:length(object.list)) {
 # }
 
 gg1 <- netVisual_bubble(cellchat, 
-                        targets.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),  
+                        sources.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),  
+                        targets.use = c("Tissue-resident mac", "Monocyte/Inf mac"),
                         comparison = c(1, 2), 
                         max.dataset = 2, 
                         title.name = "Increased signaling in HFD", 
@@ -643,7 +647,8 @@ gg1 <- netVisual_bubble(cellchat,
                         remove.isolate = T)
 
 gg2 <- netVisual_bubble(cellchat, 
-                        targets.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),  
+                        sources.use = c("Stroma_0", "Stroma_1", "Stroma_2", "Stroma_3", "Stroma_4"),  
+                        targets.use = c("Tissue-resident mac", "Monocyte/Inf mac"),  
                         comparison = c(1, 2), 
                         max.dataset = 1, 
                         title.name = "Decreased signaling in HFD", 

@@ -233,6 +233,7 @@
 9999prebutertyVsPuberty/formerVersion/trajectoryOutput/All_stages_trajectory.rds
 9999prebutertyVsPuberty/formerVersion/trajectoryOutput/cds_obj.rds
 9pySCENIC/auc_mtx.csv
+fig5-immune/ecotyperResult/ND_HFD/Macrophage/heatmap_data.txt
 fig6-adipo/Monocle2_objects/HFD_Stroma2Adipo_monocle2.rds
 fig6-adipo/Monocle2_objects/ND_Stroma2Adipo_monocle2.rds
 fig6-adipo/renv/library/macos/R-4.4/aarch64-apple-darwin20/HSMMSingleCell/data/HSMM_expr_matrix.rda
@@ -244,3 +245,4 @@ NATMI/.git/objects/pack/pack-90ddb7e64e39eb314f6258fa621b203496171444.pack
 NATMI/homology/homologene.data
 originaldata/9999Stages/allStages.rds
 Thesis Yueqing Xu.pdf
+XuData/ND_corrected.rds
