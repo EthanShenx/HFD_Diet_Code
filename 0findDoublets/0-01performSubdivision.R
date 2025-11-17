@@ -21,16 +21,17 @@ package.version("scDblFinder")
 sce <- as.SingleCellExperiment(All)
 
 # Run (set dbr to expected doublet rate; scDblFinder estimates if NULL)
-sce <- scDblFinder(sce, dbr = 0.05)
+sce <- scDblFinder(sce, dbr = 0.01)
 
 # Bring labels/scores back to Seurat metadata
 All$scDblFinder_class <- as.character(sce$scDblFinder.class)
 All$scDblFinder_score <- as.numeric(sce$scDblFinder.score)
 
 # Visualize
-p3 <- DimPlot(All, reduction = "umap", group.by = "scDblFinder_class") +
+p3 <- DimPlot(All, reduction = "umap", group.by = "scDblFinder_class", pt.size = 0.001) +
   ggtitle("scDblFinder: Predicted doublets")
-p4 <- FeaturePlot(All, features = "scDblFinder_score", reduction = "umap") +
+p4 <- FeaturePlot(All, features = "scDblFinder_score", reduction = "umap", pt.size = 0.001) +
   ggtitle("scDblFinder score")
 
 p3 + p4
+
