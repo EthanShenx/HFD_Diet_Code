@@ -131,6 +131,9 @@
 *originaldata/Harmony/harmony_ND_sub_sub.rds
 *originaldata/Harmony/harmony_ND_sub.rds
 *originaldata/Harmony/harmony_ND.rds
+*originaldata/NMF_Immune/All_for_CCC.rds
+*originaldata/NMF_Immune/cellchat_HFD_mac_state.rds
+*originaldata/NMF_Immune/cellchat_ND_mac_state.rds
 *Seurat2Anndata/All.h5ad
 *Seurat2Anndata/All.h5Seurat
 0Subdivision/.RDataTmp
