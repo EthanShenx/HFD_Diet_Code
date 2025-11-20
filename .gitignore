@@ -134,11 +134,22 @@
 *originaldata/NMF_Immune/All_for_CCC.rds
 *originaldata/NMF_Immune/cellchat_HFD_mac_state.rds
 *originaldata/NMF_Immune/cellchat_ND_mac_state.rds
+*originaldata/Spatial_Transcriptomics/sample_1.h5ad
+*originaldata/Spatial_Transcriptomics/sample_10.h5ad
+*originaldata/Spatial_Transcriptomics/sample_2.h5ad
+*originaldata/Spatial_Transcriptomics/sample_3.h5ad
+*originaldata/Spatial_Transcriptomics/sample_4.h5ad
+*originaldata/Spatial_Transcriptomics/sample_5.h5ad
+*originaldata/Spatial_Transcriptomics/sample_6.h5ad
+*originaldata/Spatial_Transcriptomics/sample_7.h5ad
+*originaldata/Spatial_Transcriptomics/sample_8.h5ad
+*originaldata/Spatial_Transcriptomics/sample_9.h5ad
 *Seurat2Anndata/All.h5ad
 *Seurat2Anndata/All.h5Seurat
 0Subdivision/.RDataTmp
 0Subdivision/Cell Immune Cell Subdivision.pdf
 0Subdivision/ND_with_subclusters.rds
+20-11-2025-WorkPresentation.pptx
 2DEG/DEG_results/All_CellTypes_Combined_DEGs_all.csv
 2DEG/DEG_results/All_CellTypes_Combined_DEGs.csv
 4CellCellCommunication/01LIANA-sub-sub/HFD_LIANA_res.csv
