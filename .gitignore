@@ -131,6 +131,11 @@
 *originaldata/Harmony/harmony_ND_sub_sub.rds
 *originaldata/Harmony/harmony_ND_sub.rds
 *originaldata/Harmony/harmony_ND.rds
+*originaldata/human_atlas/human_atlas_fibro.rds
+*originaldata/human_atlas/scRNAseq-human-all-cells.h5ad
+*originaldata/human_atlas/ST-patient-79_seurat.rds
+*originaldata/human_atlas/ST-patient-79.h5ad
+*originaldata/human_atlas/ST-patient-79.h5seurat
 *originaldata/NMF_Immune/All_for_CCC.rds
 *originaldata/NMF_Immune/cellchat_HFD_mac_state.rds
 *originaldata/NMF_Immune/cellchat_ND_mac_state.rds
@@ -149,6 +154,8 @@
 0Subdivision/.RDataTmp
 0Subdivision/Cell Immune Cell Subdivision.pdf
 0Subdivision/ND_with_subclusters.rds
+10SpatialTranscriptomics/CellChat_object/cellchat_human_atlas.rds
+10SpatialTranscriptomics/CellChat_object/ST-patient-79_cellchat.rds
 20-11-2025-WorkPresentation.pptx
 2DEG/DEG_results/All_CellTypes_Combined_DEGs_all.csv
 2DEG/DEG_results/All_CellTypes_Combined_DEGs.csv
