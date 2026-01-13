@@ -32,71 +32,70 @@ sig_label <- ifelse(p_value < 0.001, "***",
                     ifelse(p_value < 0.01, "**", 
                            ifelse(p_value < 0.05, "*", "ns")))
 
-# Prepare data for Sankey plot
-sankey_data <- metadata %>%
-  group_by(orig.ident, celltype_state) %>%
-  summarise(count = n(), .groups = 'drop')
+library(scales)  # 用来把 x 轴显示成百分比
 
-# NPG (Nature) color palette for 4 cell types
+## 1. 统计 ND / HFD 中各 MacS0* 的比例 --------------------------
+comp_data <- metadata %>%
+  group_by(orig.ident, celltype_state) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(orig.ident) %>%
+  mutate(freq = count / sum(count))  # 每个组内标准化到 0–1
+
+# 看一眼数据
+print(comp_data)
+
+## 2. 画 100% 堆积条形图（两条横杠：ND 和 HFD） -----------------
+# 颜色仍然用你之前的 NPG 调色板
 cell_colors <- c("MacS01" = "#E64B35",  # Red
                  "MacS02" = "#4DBBD5",  # Blue
                  "MacS03" = "#00A087",  # Teal/Green
                  "MacS04" = "#F39B7F")  # Orange
 
-# Colors for orig.ident (ND vs HFD)
-sample_colors <- c("#3C5488", "#DC0000")  # Navy blue for ND, Red for HFD
+p <- ggplot(comp_data,
+            aes(y = orig.ident,   # ND / HFD 放在纵轴
+                x = freq,         # 横轴 0–100%
+                fill = celltype_state)) +
+  geom_col(width = 0.6,
+           color = "black",
+           linewidth = 0.3) +
+  scale_x_continuous(labels = percent_format(accuracy = 1),
+                     expand = c(0, 0)) +
+  scale_fill_manual(values = cell_colors, name = "Mac subtype") +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Macrophage subtype composition",
+    subtitle = paste0(
+      "Chi-square test: p ",
+      ifelse(p_value < 0.001, "< 0.001",
+             ifelse(p_value < 0.01, paste("= ", round(p_value, 3)),
+                    paste("= ", round(p_value, 4))))
+    )
+  ) +
+  theme_classic() +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.y = element_text(size = 12, face = "bold"),
+    axis.text.x = element_text(size = 10),
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, size = 11),
+    legend.position = "right",
+    legend.title = element_text(size = 11, face = "bold"),
+    legend.text = element_text(size = 10)
+  )
 
-# Create Sankey plot
-p <- ggplot(sankey_data,
-            aes(axis1 = orig.ident, 
-                axis2 = celltype_state, 
-                y = count)) +
-  geom_alluvium(aes(fill = celltype_state), 
-                width = 1/12, 
-                alpha = 0.8, 
-                curve_type = "sigmoid") +
-  geom_stratum(width = 1/12, 
-               fill = "white", 
-               color = "black", 
-               linewidth = 0.5) +
-  geom_text(stat = "stratum", 
-            aes(label = after_stat(stratum)), 
-            size = 4,
-            fontface = "bold") +
-  scale_x_discrete(limits = c("Sample", "Cell Type"),
-                   expand = c(0.15, 0.05)) +
-  scale_fill_manual(values = cell_colors) +
-  labs(title = "Macrophage Subtype Composition Change",
-       subtitle = paste0("Chi-square test: p ", 
-                         ifelse(p_value < 0.001, "< 0.001", 
-                                ifelse(p_value < 0.01, paste("=", round(p_value, 3)),
-                                       paste("=", round(p_value, 4))))),
-       fill = "Cell Type",
-       y = "Cell Count") +
-  theme_minimal() +
-  theme(panel.grid = element_blank(),
-        axis.text.y = element_text(size = 10),
-        axis.text.x = element_text(size = 13, face = "bold"),
-        axis.title.x = element_blank(),
-        axis.title.y = element_text(size = 11),
-        plot.title = element_text(hjust = 0.5, size = 15, face = "bold"),
-        plot.subtitle = element_text(hjust = 0.5, size = 11),
-        legend.position = "right",
-        legend.title = element_text(size = 11, face = "bold"),
-        legend.text = element_text(size = 10))
+## 3. 加整体显著性标记（放在 ND / HFD 中间上方） ----------------
+p <- p +
+  annotate(
+    "text",
+    x = 0.5,       # 横轴中间（50% 的位置）
+    y = 1.5,       # 介于第一行和第二行之间
+    label = sig_label,
+    size = 6,
+    fontface = "bold",
+    color = ifelse(sig_label == "ns", "grey30", "red")
+  )
 
-# Add significance annotation for the entire diet vs. subtype difference
-max_y <- sum(sankey_data$count) / length(unique(sankey_data$orig.ident))
-p <- p + 
-  annotate("text", 
-           x = 1.5,  # Position between the two axes
-           y = max_y * 1.15,  # Above the flows
-           label = sig_label, 
-           size = 12,  # Larger size for visibility
-           color = ifelse(sig_label == "ns", "grey30", "red"),
-           fontface = "bold")
-
-# Print the plot
 print(p)
 
 # Save the plot
